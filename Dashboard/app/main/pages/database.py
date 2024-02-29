@@ -12,12 +12,11 @@ content_style = {
 }
 
 
-
 dash.register_page(__name__, path="/database", name="Database", title="Database", order=3)
 
 layout = html.Div([
     html.H1('Database'),
-    html.H6('All Sequences'),
+    html.H2('All Sequences'),
             html.Div(
                 [
                     dash.dash_table.DataTable(
@@ -33,4 +32,4 @@ layout = html.Div([
                 ],
                 className="table",
             )
-        ])
+        ], style=content_style)
