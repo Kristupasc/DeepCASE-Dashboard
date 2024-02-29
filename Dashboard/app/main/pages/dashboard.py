@@ -1,10 +1,19 @@
+import base64
 import os
+from datetime import datetime
+
+
 import dash
-from dash import html, dcc, callback
-from dash.dependencies import Input, Output
+import pandas as pd
+from dash import html, dcc, callback, dash_table
+from dash.dependencies import Input, Output, State
 from Dashboard.data import dummyData
 import plotly.graph_objs as go
 
+
+import numpy as np
+import holoviews as hv
+import hvplot.pandas
 
 
 GRAPH_INTERVAL = os.environ.get("GRAPH_INTERVAL", 5000)
@@ -53,9 +62,10 @@ plot = html.Div(
                 dash.dash_table.DataTable(
                     id='cluster-details',
                     columns=[
-                        {"name": "Date", "id": ""},
-                        {"name": "Source", "id": "Cluster"},
-                        {"name": "Type", "id": ""},
+                        {"name": "Time", "id": "Time"},
+                        {"name": "Source", "id": "Source"},
+                        {"name": "Type", "id": "Type"},
+                        {"name": "Weight", "id": "Weight"},
                         {"name": "Risk Label", "id": "Risk Label"}
                     ],
                     data=dummyData.df_clusters.to_dict('records'),
@@ -67,10 +77,13 @@ plot = html.Div(
     ]
 )
 
+
+
 layout = html.Div([
     html.H1('Dashboard'),
     plot
 ], style=content_style)
+
 
 
 
@@ -82,8 +95,8 @@ def generate_scatter_plot(interval):
     for cluster_name, cluster_group in dummyData.df_clusters.groupby("Risk Label"):
         traces.append(
             go.Scatter(
-                x=cluster_group["x"],
-                y=cluster_group["y"],
+                x=cluster_group["Time"],
+                y=cluster_group["Weight"],
                 mode='markers',
                 opacity=0.7,
                 marker={
@@ -98,8 +111,8 @@ def generate_scatter_plot(interval):
     return {
         "data": traces,
         "layout": go.Layout(
-            xaxis={"title": "X-axis"},
-            yaxis={"title": "Y-axis"},
+            xaxis={"title": "Timeline"},
+            yaxis={"title": "Security score"},
             margin={"l": 40, "b": 40, "t": 10, "r": 10},
             legend={"x": 0, "y": 1},
             hovermode="closest",
@@ -109,3 +122,6 @@ def generate_scatter_plot(interval):
             font={"color": colors["text"]},
         ),
     }
+
+
+
