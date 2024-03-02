@@ -28,4 +28,3 @@ clusters_data = {
     'Risk Label': np.random.choice(['Info', 'Low', 'Medium', 'High', 'Attack', 'Suspicious', 'Unlabeled'], 100)
 }
 df_clusters = pd.DataFrame(clusters_data)
-print(df_clusters.head())
