@@ -8,7 +8,7 @@ from Dashboard.data import createDf
 import io
 from dash.dependencies import Input, Output, State
 
-#TODO: create and transfer to style file
+# TODO: create and transfer to style file
 
 # Define the main content style
 content_style = {
@@ -16,7 +16,6 @@ content_style = {
     'margin-right': '5%',
     'padding': '20px 10px'
 }
-
 
 dash.register_page(__name__, path="/database", name="Database", title="Database", order=3)
 
@@ -54,15 +53,15 @@ layout = html.Div([
         dcc.Location(id='url', refresh=False),
         html.Div(id='output-data-upload')
     ]),
-], style = content_style)
+], style=content_style)
 
 
-
+# Called when a user uploads a new file
 @callback(Output('output-data-upload', 'children', allow_duplicate=True),
-              Input('upload-data', 'contents'),
-              State('upload-data', 'filename'),
-              State('upload-data', 'last_modified'),
-              prevent_initial_call=True
+          Input('upload-data', 'contents'),
+          State('upload-data', 'filename'),
+          State('upload-data', 'last_modified'),
+          prevent_initial_call=True
           )
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
@@ -70,8 +69,11 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
             createDf.parse_contents(c, n, d) for c, n, d in
             zip(list_of_contents, list_of_names, list_of_dates)]
         return children
+
+
+# Called when at the start
 @callback(Output('output-data-upload', 'children'),
-              Input('url', 'pathname'))
+          Input('url', 'pathname'))
 def display_table(pathname):
     table = createDf.displayDataFile()
     return table
