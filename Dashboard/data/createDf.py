@@ -19,6 +19,8 @@ def concat_csv(dataframe):
     return
 
 def displayDataFile():
+    if not os.path.isfile("sequence_data.csv"):
+        return dash.dash_table.DataTable()
     df = pd.read_csv("sequence_data.csv")
     return dash.dash_table.DataTable(
             df.to_dict('records'),

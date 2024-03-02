@@ -50,19 +50,28 @@ layout = html.Div([
         # Allow multiple files to be uploaded
         multiple=True
     ),
-    html.Div(id='output-data-upload'),
+    html.Div([
+        dcc.Location(id='url', refresh=False),
+        html.Div(id='output-data-upload')
+    ]),
 ], style = content_style)
 
 
 
-@callback(Output('output-data-upload', 'children'),
+@callback(Output('output-data-upload', 'children', allow_duplicate=True),
               Input('upload-data', 'contents'),
               State('upload-data', 'filename'),
-              State('upload-data', 'last_modified'))
+              State('upload-data', 'last_modified'),
+              prevent_initial_call=True
+          )
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
         children = [
             createDf.parse_contents(c, n, d) for c, n, d in
             zip(list_of_contents, list_of_names, list_of_dates)]
         return children
-
+@callback(Output('output-data-upload', 'children'),
+              Input('url', 'pathname'))
+def display_table(pathname):
+    table = createDf.displayDataFile()
+    return table
