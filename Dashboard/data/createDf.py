@@ -11,24 +11,48 @@ import io
 def concat_csv(dataframe):
     dataframe.to_csv("new.csv", index=False)
     with open("new.csv", 'r') as f1:
+        f1.readline()
         csv_to_add = f1.read()
+    # TODO Fix sequence_data path
     with open('sequence_data.csv', 'a') as f2:
         f2.write('\n')
         f2.write(csv_to_add)
     os.remove("new.csv")
     return
 
+
 # Returns dash table with all stored data
 def displayDataFile():
+    # TODO Fix sequence_data path
     if not os.path.isfile("sequence_data.csv"):
-        # Return empty table if the data file is empty
-        return dash.dash_table.DataTable()
+        create_empty_data()
     df = pd.read_csv("sequence_data.csv")
     return dash.dash_table.DataTable(
         # Return a table from data file
         df.to_dict('records'),
         [{'name': i, 'id': i} for i in df.columns]
     )
+
+
+def get_sequence_data_frame():
+    # TODO Fix sequence_data path
+    if not os.path.isfile("sequence_data.csv"):
+        create_empty_data()
+    return pd.read_csv("sequence_data.csv")
+
+
+def create_empty_data():
+    empty_data_frame = {
+        'Time': [],
+        'Type': [],
+        'Source': [],
+        'Weight': [],
+        'Risk Label': []
+    }
+    df_clusters = pd.DataFrame(empty_data_frame)
+    # TODO Fix sequence_data path
+    df_clusters.to_csv("sequence_data.csv", index=False)
+    return
 
 
 def parse_contents(contents, filename, date):

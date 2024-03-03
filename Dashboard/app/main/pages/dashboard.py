@@ -1,20 +1,15 @@
-import base64
 import os
-from datetime import datetime
-
 
 import dash
 import pandas as pd
 from dash import html, dcc, callback, dash_table
 from dash.dependencies import Input, Output, State
-from Dashboard.data import dummyData
+from Dashboard.data import dummyData, createDf
 import plotly.graph_objs as go
 
-
-import numpy as np
-import holoviews as hv
-import hvplot.pandas
-
+#create csv x2
+#upload through database
+#make it cluster on dashboard
 
 GRAPH_INTERVAL = os.environ.get("GRAPH_INTERVAL", 5000)
 
@@ -32,7 +27,7 @@ colors = {
     "background": "#FFFFFF",  # white background
     "text": "#000000",       # black text for visibility
     "Risk Label": {
-        "Info": "#A9A9A9",   # grey
+        "Info": "#45B6FE",   # blue
         "Low": "#FFD700",    # gold
         "Medium": "#FF8C00", # darkorange
         "High": "#FF4500",   # orangered
@@ -88,11 +83,14 @@ layout = html.Div([
 
 
 @callback(
-    Output("scatter-plot", "figure"), [Input("scatter-update", "n_intervals")]
+    Output("scatter-plot", "figure"),
+    [Input("scatter-update", "n_intervals")]
 )
 def generate_scatter_plot(interval):
     traces = []
-    for cluster_name, cluster_group in dummyData.df_clusters.groupby("Risk Label"):
+    # data = dummyData.df_clusters
+    data = createDf.get_sequence_data_frame()
+    for cluster_name, cluster_group in data.groupby("Risk Label"):
         traces.append(
             go.Scatter(
                 x=cluster_group["Time"],
