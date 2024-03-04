@@ -24,8 +24,8 @@ def concat_csv(dataframe):
             weight = int(line.split(',')[3])
             csv_to_add += str(timestamp) + "," + line.split(',')[1] + "," + line.split(',')[2] + "," + str(weight) + "," + str(dummyData.choose_risk(weight * 10)) + "\n"
     # TODO Fix sequence_data path
-    with open('sequence_data.csv', 'a') as f2:
-        f2.write('\n')
+    with open('sequence_data.csv', 'w') as f2:
+        f2.write('Time,Source,Type,Weight,Risk Label\n')
         f2.write(csv_to_add)
     os.remove("new.csv")
     return
