@@ -5,14 +5,24 @@ import dash
 import pandas as pd
 from dash import html
 import io
+from Dashboard.data import dummyData
+from datetime import datetime
 
 
 # converts dataframe to csv and appends it to all_Sequences
 def concat_csv(dataframe):
+    csv_to_add = ""
     dataframe.to_csv("new.csv", index=False)
-    with open("new.csv", 'r') as f1:
-        f1.readline()
-        csv_to_add = f1.read()
+    # open the new.csv and iterate through each line and add a risk label to the line
+    with open('new.csv', 'r') as f:
+        lines = f.readlines()
+        for i, line in enumerate(lines):
+            if i == 0:
+                continue
+            # get the weight
+            timestamp = datetime.utcfromtimestamp(float(line.split(',')[0]))
+            weight = int(line.split(',')[3])
+            csv_to_add += str(timestamp) + "," + line.split(',')[1] + "," + line.split(',')[2] + "," + str(weight) + "," + str(dummyData.choose_risk(weight * 10)) + "\n"
     # TODO Fix sequence_data path
     with open('sequence_data.csv', 'a') as f2:
         f2.write('\n')
