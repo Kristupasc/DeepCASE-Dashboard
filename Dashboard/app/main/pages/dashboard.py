@@ -7,9 +7,9 @@ from dash.dependencies import Input, Output, State
 from Dashboard.data import dummyData, createDf
 import plotly.graph_objs as go
 
-#create csv x2
-#upload through database
-#make it cluster on dashboard
+# create csv x2
+# upload through database
+# make it cluster on dashboard
 
 GRAPH_INTERVAL = os.environ.get("GRAPH_INTERVAL", 5000)
 
@@ -22,22 +22,22 @@ content_style = {
     'padding': '20px 10px'
 }
 
-#Define color scheme
+# Define color scheme
 colors = {
     "background": "#FFFFFF",  # white background
-    "text": "#000000",       # black text for visibility
+    "text": "#000000",  # black text for visibility
     "Risk Label": {
-        "Info": "#45B6FE",   # blue
-        "Low": "#FFD700",    # gold
-        "Medium": "#FF8C00", # darkorange
-        "High": "#FF4500",   # orangered
-        "Attack": "#DC143C", # crimson
-        "Suspicious": "#800080", # purple
+        "Info": "#45B6FE",  # blue
+        "Low": "#FFD700",  # gold
+        "Medium": "#FF8C00",  # darkorange
+        "High": "#FF4500",  # orangered
+        "Attack": "#DC143C",  # crimson
+        "Suspicious": "#800080",  # purple
         "Unlabeled": "#808080"  # grey
     }
 }
 
-#the main scatterplot for the clusters
+# the main scatterplot for the clusters
 plot = html.Div(
     [
         html.Div(
@@ -72,14 +72,23 @@ plot = html.Div(
     ]
 )
 
-
-
 layout = html.Div([
     html.H1('Dashboard'),
     plot
 ], style=content_style)
 
 
+# check if the datapoint in the scatterplot is clicked
+@callback(
+    Output('cluster-details', 'data'),
+    [Input('scatter-plot', 'clickData')]
+)
+def display_click_data(clickData):
+    if clickData is None:
+        return
+    # here we would get the data from the click and display it in the table
+    # it looks something like this:
+    # {'points': [{'curveNumber': 2, 'pointNumber': 26895, 'pointIndex': 26895, 'x': '2017-07-03 18:01:27.4085', 'y': 3, 'bbox': {'x0': 934.83, 'x1': 949.83, 'y0': 357.5, 'y1': 372.5}}]}
 
 
 @callback(
@@ -100,7 +109,7 @@ def generate_scatter_plot(interval):
                 marker={
                     'size': 15,
                     'line': {'width': 0.5, 'color': 'white'},
-                    'color': colors ["Risk Label"][cluster_name]
+                    'color': colors["Risk Label"][cluster_name]
                 },
                 name=cluster_name
             )
@@ -120,6 +129,3 @@ def generate_scatter_plot(interval):
             font={"color": colors["text"]},
         ),
     }
-
-
-
