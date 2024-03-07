@@ -110,7 +110,7 @@ def train_context_builder(file):
 
     # Save the builder
     context_builder.save("builder.save")
-    # the result is an ordered dict of weights so I don't know how do we convert it to .csv to make it make sense
+    # TODO: the result is an ordered dict of weights so I don't know how do we convert it to .csv to make it make sense
 
 
 def create_interpreter_clusters(file):
@@ -170,6 +170,42 @@ def create_interpreter_clusters(file):
     interpreter.save("interpreter.save")
 
 
+def manual_mode(file):
+    """
+    Run the deepcase algorithm in manual mode
+    :param file: the uploaded file
+    """
+
+    # the command to run it is:
+    # python3 -m deepcase manual --load-sequences sequences.save --load-builder builder.save
+    # --load-interpreter interpreter.save --load-clusters clusters.csv --save-interpreter interpreter_fitted.save
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    context_builder = ContextBuilder.load("builder.save", device)
+
+    interpreter = Interpreter.load(
+        "interpreter.save",
+        context_builder=context_builder,
+    )
+
+    # Load labels from csv file
+    labels = pd.read_csv(
+        "clusters.csv",
+        index_col=False,
+    )['labels'].values
+
+    # Use given labels to compute score for each cluster
+    scores = interpreter.score_clusters(labels, strategy="max")
+    # Manually assign computed scores
+    interpreter.score(scores, verbose=True)
+    interpreter.save("interpreter_fitted.save")
+
+    #TODO: open the interpreter_fitted.save and get the clusters and scores to store in the .csv file
+
+
+
 # create_sequences("alerts.csv")
 # train_context_builder("alerts.csv")
-create_interpreter_clusters("alerts.csv")
+# create_interpreter_clusters("alerts.csv")
+manual_mode("alerts.csv")
