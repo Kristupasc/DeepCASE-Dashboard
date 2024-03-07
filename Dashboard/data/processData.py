@@ -1,6 +1,8 @@
 import os
-from deepcase.preprocessing.preprocessor import Preprocessor # potentially change all this to use the deepcase module
+from deepcase.preprocessing.preprocessor import Preprocessor  # potentially change all this to use the deepcase module
 from deepcase.context_builder.context_builder import ContextBuilder
+from deepcase.interpreter.interpreter import Interpreter
+import pandas as pd
 
 import torch
 
@@ -9,11 +11,11 @@ This file is used to process the data from the database and return it in a forma
 Specifically, here we run the DeepCASE algorithm on the uploaded data and return the specific steps
 """
 
+
 def create_sequences(file):
     """
     Create sequences from the uploaded file
     :param file: the uploaded file
-    :return: the sequences
     """
 
     # the command to run it is:
@@ -64,14 +66,110 @@ def train_context_builder(file):
     """
     Train the context builder on the uploaded file
     :param file: the uploaded file
-    :return: the trained context builder
     """
 
     # the command to run it is:
     # python3 -m deepcase train --load-sequences sequences.save --save-builder builder.save
 
+    # Load labels from the mapping.csv into a dict (Inefficient)
+    mapping = {}
+    with open("mapping.csv", "r") as mapping_file:
+        next(mapping_file)
+        for line in mapping_file:
+            key, value = line.strip().split(',')
+            mapping[key] = value
+
+    events = len(mapping)
+
+    context_builder = ContextBuilder(
+        input_size=events,
+        output_size=events,
+        hidden_size=128,  # default value
+        num_layers=1,
+        max_length=10,  # default value
+        bidirectional=False,
+        LSTM=False,
+    )
+
+    with open("sequences.save", 'rb') as infile:
+        sequences = torch.load(infile)
+        context = sequences["context"]
+        events = sequences["events"]
+        labels = sequences["labels"]
+
+    # Train the ContextBuilder
+    context_builder.fit(
+        X=context,
+        y=events.reshape(-1, 1),
+        epochs=10,  # default value
+        batch_size=128,  # default value
+        learning_rate=0.01,
+        teach_ratio=0.5,
+        verbose=True,
+    )
+
+    # Save the builder
+    context_builder.save("builder.save")
+    # the result is an ordered dict of weights so I don't know how do we convert it to .csv to make it make sense
 
 
+def create_interpreter_clusters(file):
+    """
+    Create the interpreter clusters from the uploaded file
+    :param file: the uploaded file
+    """
+
+    # the command to run it is:
+    # python3 -m deepcase cluster --load-sequences sequences.save --load-builder builder.save
+    #                                                   --save-interpreter interpreter.save --save-clusters clusters.csv
+
+    # Load sequences
+    with open("sequences.save", 'rb') as infile:
+        sequences = torch.load(infile)
+        context = sequences["context"]
+        events = sequences["events"]
+        labels = sequences["labels"]
+
+    # Load context builder
+    with open("builder.save", 'rb') as infile:
+        context_builder = torch.load(infile)
+
+    # load labels from the mapping.csv into a dict (Inefficient)
+    mapping = {}
+    with open("mapping.csv", "r") as mapping_file:
+        next(mapping_file)
+        for line in mapping_file:
+            key, value = line.strip().split(',')
+            mapping[key] = value
+
+    # Create Interpreter
+    interpreter = Interpreter(
+        context_builder=context_builder,
+        features=len(mapping),
+        eps=0.1,  # default value
+        min_samples=5,  # default value
+        threshold=0.2,  # default value
+    )
+
+    # Cluster samples with the interpreter
+    clusters = interpreter.cluster(
+        X=context,
+        y=events.reshape(-1, 1),
+        iterations=100,
+        batch_size=1024,
+        verbose=True,
+    )
+
+    # Save to file
+    pd.DataFrame({
+        'clusters': clusters,
+        'labels': labels,
+    }).to_csv("clusters.csv", index=False)
+
+    # Save the interpreter
+    interpreter.save("interpreter.save")
 
 
-create_sequences("alerts.csv")
+# create_sequences("alerts.csv")
+# train_context_builder("alerts.csv")
+create_interpreter_clusters("alerts.csv")
