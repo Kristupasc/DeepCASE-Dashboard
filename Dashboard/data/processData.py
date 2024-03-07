@@ -204,8 +204,51 @@ def manual_mode(file):
     #TODO: open the interpreter_fitted.save and get the clusters and scores to store in the .csv file
 
 
+def automatic_mode(file):
+    """
+    Run the deepcase algorithm in automatic mode
+    :param file: the uploaded file
+    """
+
+    # the command to run it is:
+    # python3 -m deepcase automatic --load-sequences sequences.save --load-builder builder.save
+    #                                      --load-interpreter interpreter_fitted.save --save-prediction prediction.csv
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    context_builder = ContextBuilder.load("builder.save", device)
+
+    interpreter = Interpreter.load(
+        "interpreter.save",
+        context_builder=context_builder,
+    )
+
+    with open("sequences.save", 'rb') as infile:
+        sequences = torch.load(infile)
+        context = sequences["context"]
+        events = sequences["events"]
+
+    # Compute predicted scores
+    prediction = interpreter.predict(
+        X=context,
+        y=events.reshape(-1, 1),
+        iterations=100,
+        batch_size=1024,
+        verbose=True,
+    )
+
+    # Save to file
+    pd.DataFrame({
+        'labels': prediction,
+    }).to_csv("prediction.csv", index=False)
+
+    #TODO: this is for some reason, not the result we get if we run all this in the command line. We need to check why
+
+
+
 
 # create_sequences("alerts.csv")
 # train_context_builder("alerts.csv")
 # create_interpreter_clusters("alerts.csv")
 manual_mode("alerts.csv")
+automatic_mode("alerts.csv")
