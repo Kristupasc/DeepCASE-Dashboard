@@ -1,5 +1,7 @@
 import os
-from deepcase.preprocessing.preprocessor import Preprocessor
+from deepcase.preprocessing.preprocessor import Preprocessor # potentially change all this to use the deepcase module
+from deepcase.context_builder.context_builder import ContextBuilder
+
 import torch
 
 """
@@ -56,6 +58,18 @@ def create_sequences(file):
         mapping_file.write("Key,Value\n")
         for key, value in mapping.items():
             mapping_file.write(f"{key},{value}\n")
+
+
+def train_context_builder(file):
+    """
+    Train the context builder on the uploaded file
+    :param file: the uploaded file
+    :return: the trained context builder
+    """
+
+    # the command to run it is:
+    # python3 -m deepcase train --load-sequences sequences.save --save-builder builder.save
+
 
 
 
