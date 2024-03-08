@@ -129,8 +129,9 @@ def create_interpreter_clusters():
         labels = sequences["labels"]
 
     # Load context builder
-    with open("builder.save", 'rb') as infile:
-        context_builder = torch.load(infile)
+    context_builder = ContextBuilder.load("builder.save")
+    # with open("builder.save", 'rb') as infile:
+    #     context_builder = torch.load(infile)
 
     # load labels from the mapping.csv into a dict (Inefficient)
     mapping = {}
