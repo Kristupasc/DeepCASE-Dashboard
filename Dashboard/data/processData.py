@@ -62,10 +62,9 @@ def create_sequences(file):
             mapping_file.write(f"{key},{value}\n")
 
 
-def train_context_builder(file):
+def train_context_builder():
     """
     Train the context builder on the uploaded file
-    :param file: the uploaded file
     """
 
     # the command to run it is:
@@ -113,10 +112,9 @@ def train_context_builder(file):
     # TODO: the result is an ordered dict of weights so I don't know how do we convert it to .csv to make it make sense
 
 
-def create_interpreter_clusters(file):
+def create_interpreter_clusters():
     """
     Create the interpreter clusters from the uploaded file
-    :param file: the uploaded file
     """
 
     # the command to run it is:
@@ -170,10 +168,9 @@ def create_interpreter_clusters(file):
     interpreter.save("interpreter.save")
 
 
-def manual_mode(file):
+def manual_mode():
     """
     Run the deepcase algorithm in manual mode
-    :param file: the uploaded file
     """
 
     # the command to run it is:
@@ -204,10 +201,9 @@ def manual_mode(file):
     #TODO: open the interpreter_fitted.save and get the clusters and scores to store in the .csv file
 
 
-def automatic_mode(file):
+def automatic_mode():
     """
     Run the deepcase algorithm in automatic mode
-    :param file: the uploaded file
     """
 
     # the command to run it is:
@@ -245,10 +241,8 @@ def automatic_mode(file):
     #TODO: this is for some reason, not the result we get if we run all this in the command line. We need to check why
 
 
-
-
-# create_sequences("alerts.csv")
-# train_context_builder("alerts.csv")
-# create_interpreter_clusters("alerts.csv")
-manual_mode("alerts.csv")
-automatic_mode("alerts.csv")
+create_sequences("alerts.csv")
+train_context_builder()
+create_interpreter_clusters()
+manual_mode()
+automatic_mode()
