@@ -3,8 +3,12 @@ from deepcase.preprocessing.preprocessor import Preprocessor  # potentially chan
 from deepcase.context_builder.context_builder import ContextBuilder
 from deepcase.interpreter.interpreter import Interpreter
 import pandas as pd
+import numpy as np
 
 import torch
+from sklearn.metrics import classification_report
+
+from DeepCase.deepcase.utils import confusion_report
 
 """
 This file is used to process the data from the database and return it in a format that can be used by the front end.
@@ -202,7 +206,7 @@ def manual_mode():
     #TODO: open the interpreter_fitted.save and get the clusters and scores to store in the .csv file
 
 
-def automatic_mode():
+def automatic_mode(printing = False):
     """
     Run the deepcase algorithm in automatic mode
     """
@@ -239,11 +243,38 @@ def automatic_mode():
         'labels': prediction,
     }).to_csv("prediction.csv", index=False)
 
+    if printing:
+        # PRINTING
+        labels = pd.read_csv(
+            "prediction.csv",
+            index_col=False,
+        )['labels'].values
+
+        print("Classification report")
+        print(classification_report(
+            y_pred=prediction,
+            y_true=labels,
+            digits=4,
+            zero_division=0,
+        ))
+
+        # Print confusion matrix
+        print("Confusion matrix")
+        all_labels = np.unique(labels).tolist()
+        print(confusion_report(
+            y_pred=prediction,
+            y_true=labels,
+            labels=[-3, -2, -1] + all_labels,
+            target_names=['LOW CONFIDENCE', 'NOT IN TRAIN', 'LOW EPS'] + all_labels,
+            skip_x=all_labels,
+            skip_y=['LOW CONFIDENCE', 'NOT IN TRAIN', 'LOW EPS']
+        ))
+
     #TODO: this is for some reason, not the result we get if we run all this in the command line. We need to check why
 
 
-create_sequences("alerts.csv")
-train_context_builder()
-create_interpreter_clusters()
-manual_mode()
+#create_sequences("alerts.csv")
+#train_context_builder()
+#create_interpreter_clusters()
+#manual_mode()
 automatic_mode()
