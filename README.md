@@ -21,6 +21,11 @@ and pandas a subpart of dash(some python installation comes with it.)
 ```
 pip install pandas
 ```
+### More liberies
+argformat
+```
+pip install argformat
+```
 ## Running DeepCASE-Dashboard
 In order to run DeepCASE, simply run 
 Dashboard.app.main.app file.
