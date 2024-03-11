@@ -1,16 +1,5 @@
-import os
 import subprocess
-
-from deepcase.preprocessing.preprocessor import Preprocessor  # potentially change all this to use the deepcase module
-from deepcase.context_builder.context_builder import ContextBuilder
-from deepcase.interpreter.interpreter import Interpreter
-import pandas as pd
-import numpy as np
-
 import torch
-from sklearn.metrics import classification_report
-
-from DeepCase.deepcase.utils import confusion_report
 
 """
 This file is used to process the data from the database and return it in a format that can be used by the front end.
