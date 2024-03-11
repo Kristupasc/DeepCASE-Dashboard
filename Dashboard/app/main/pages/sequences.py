@@ -18,6 +18,8 @@ dash_table.DataTable(
     ],
     data=df.to_dict('records'), page_size = 10)
 # https://dash.plotly.com/datatable/filtering
+
+
 ])
 
 
