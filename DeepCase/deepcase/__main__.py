@@ -7,10 +7,10 @@ import pandas as pd
 import torch
 
 # DeepCASE imports
-from deepcase.preprocessing   import Preprocessor
-from deepcase.context_builder import ContextBuilder
-from deepcase.interpreter     import Interpreter
-from deepcase.utils           import confusion_report, show_sequences
+from DeepCase.deepcase.preprocessing   import Preprocessor
+from DeepCase.deepcase.context_builder import ContextBuilder
+from DeepCase.deepcase.interpreter     import Interpreter
+from DeepCase.deepcase.utils           import confusion_report, show_sequences
 
 if __name__ == "__main__":
 
@@ -124,6 +124,8 @@ if __name__ == "__main__":
                 "labels" : labels,
                 "mapping": mapping,
             }, outfile)
+
+
 
     # Load sequences if necessary
     if args.load_sequences:

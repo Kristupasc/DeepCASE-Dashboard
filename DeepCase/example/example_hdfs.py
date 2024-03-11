@@ -4,8 +4,8 @@ import numpy as np
 import torch
 
 # DeepCASE Imports
-from deepcase.preprocessing   import Preprocessor
-from deepcase.context_builder import ContextBuilder
+from DeepCase.deepcase.preprocessing   import Preprocessor
+from DeepCase.deepcase.context_builder import ContextBuilder
 
 if __name__ == "__main__":
     ########################################################################
