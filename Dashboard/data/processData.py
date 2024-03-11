@@ -41,7 +41,7 @@ def create_sequences(file):
     with open("mapping.csv", "w") as mapping_file:
         mapping_file.write("Key,Value\n")
         for key, value in mapping.items():
-            mapping_file.write(f"{key},{value}\n")
+            mapping_file.write(f'{key},"{value}"\n')
 
     #TODO: maybe add a return True here, so that the server knows that the file was processed correctly?
 
