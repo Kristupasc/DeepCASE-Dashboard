@@ -35,7 +35,7 @@ def create_sequences(file):
     with open("sequences.csv", "w") as result_file:
         result_file.write("Context,Event,Label\n")
         for i in range(len(context)):
-            result_file.write(f'"{context[i]}",{events[i]},{labels[i]}\n')
+            result_file.write(f'"{context[i].tolist()}",{events[i]},{labels[i]}\n')
 
     # add the mapping to mapping.csv
     with open("mapping.csv", "w") as mapping_file:
