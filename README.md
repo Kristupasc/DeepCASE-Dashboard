@@ -3,7 +3,7 @@ DeepCASE-Dashboard makes from deepCASE a visualisation.
 This can be used to gain trust in deepCASE and in practical cases.
 ## Installation
 Besides the obvious that python is required.
-A few liberties are highlighted to be installed:
+A few libraries are highlighted to be installed:
 In order to run deepCase-Dashboard for windows,\
 simply do:
 ```

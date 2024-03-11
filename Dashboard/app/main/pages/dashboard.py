@@ -74,7 +74,6 @@ plot = html.Div(
 
 layout = html.Div([
     html.H1('Dashboard'),
-    plot
 ], style=content_style)
 
 

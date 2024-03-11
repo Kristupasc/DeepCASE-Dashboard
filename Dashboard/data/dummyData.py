@@ -20,21 +20,22 @@ import pandas as pd
 # print(df_clusters)
 
 def choose_risk(weight):
-    # A weight can be between 0 and 100. The higher the weight, the higher the risk
-    if weight == 0:
-        return "Unlabeled"
-    elif weight < 10:
-        return "Info"
-    elif weight < 30:
-        return "Low"
-    elif weight < 50:
-        return "Medium"
-    elif weight < 70:
-        return "High"
-    elif weight < 90:
-        return "Suspicious"
-    else:
-        return "Attack"
+    # # A weight can be between 0 and 100. The higher the weight, the higher the risk
+    # if weight == 0:
+    #     return "Unlabeled"
+    # elif weight < 10:
+    #     return "Info"
+    # elif weight < 30:
+    #     return "Low"
+    # elif weight < 50:
+    #     return "Medium"
+    # elif weight < 70:
+    #     return "High"
+    # elif weight < 90:
+    #     return "Suspicious"
+    # else:
+    #     return "Attack"
+    return "Unlabeled"
 
 weights = np.random.randint(0, 11, 100)
 risk_labels = [choose_risk(weight) for weight in weights]

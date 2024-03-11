@@ -6,9 +6,9 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 # Custom imports
-from deepcase.context_builder       import ContextBuilder
-from deepcase.interpreter           import Interpreter
-from deepcase.context_builder.utils import unique_2d
+from DeepCase.deepcase.context_builder       import ContextBuilder
+from DeepCase.deepcase.interpreter           import Interpreter
+from DeepCase.deepcase.context_builder.utils import unique_2d
 
 # Set logger
 logger = logging.getLogger(__name__)
