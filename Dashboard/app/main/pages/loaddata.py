@@ -1,4 +1,5 @@
 import pandas as pd
+format_time = "%H:%M, %d %b %Y" # For second %s %ssss
 def read_data(filepath):
     df = pd.read_csv(filepath)
     df.reindex
@@ -10,7 +11,7 @@ def concatTwoFiles(filepath1, filepath2):
 def formatSequence():
     df = concatTwoFiles('../../data/sequences.csv', '../../data/alerts.csv')
     df = df[['timestamp', 'machine', 'Event', 'label', 'Context']]
-    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
+    df['timestamp'] = pd.DatetimeIndex(pd.to_datetime(df['timestamp'], unit='s')).strftime(format_time)
     df['label'] = pd.to_numeric(df['label'])
     df['Event'] = pd.to_numeric(df['Event'])
     return df
