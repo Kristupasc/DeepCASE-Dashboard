@@ -10,6 +10,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Dashboard\data\clusters.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Dashboard\data\dao\alerts.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Dashboard\data\mapping.csv">
           <value>
             <Attribute>
@@ -25,6 +39,13 @@
           </value>
         </entry>
         <entry key="\Dashboard\data\sequences.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Dashboard\processing\alerts.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
