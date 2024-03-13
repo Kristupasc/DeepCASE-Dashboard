@@ -10,6 +10,7 @@ df = load.formatSequence()
 layout = html.Div([
     html.H1('Sequence'),
     dash_table.DataTable(
+        id='sequence',
         columns = [
             {'name': 'timestamp', 'id':'timestamp', 'type': 'any'},
             {'name': 'machine', 'id':'machine', 'type': 'any'},
@@ -20,7 +21,7 @@ layout = html.Div([
         data=df.to_dict('records'),
         filter_action='native',
         style_data={
-            'width': '150px', 'minWidth': '150px', 'maxWidth': '150px',
+            'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
             'overflow': 'hidden',
             'textOverflow': 'ellipsis',
         },
