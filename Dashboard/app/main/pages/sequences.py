@@ -1,7 +1,8 @@
 import dash
 from dash import html, dash_table
 import pandas as pd
-import Dashboard.app.main.pages.loaddata as load
+import Dashboard.app.main.recources.loaddata as load
+import Dashboard.app.main.recources.style as style
 
 dash.register_page(__name__, path="/sequences", name="Sequences", title="Sequences", order=5)
 df = load.formatSequence()
@@ -27,7 +28,7 @@ layout = html.Div([
     # https://dash.plotly.com/datatable/filtering
 
 
-])
+], style=style.content_style)
 
 
 

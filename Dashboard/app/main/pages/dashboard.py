@@ -6,7 +6,7 @@ from dash import html, dcc, callback, dash_table
 from dash.dependencies import Input, Output, State
 from Dashboard.data import dummyData, createDf
 import plotly.graph_objs as go
-
+import Dashboard.app.main.recources.style as style
 # create csv x2
 # upload through database
 # make it cluster on dashboard
@@ -14,13 +14,6 @@ import plotly.graph_objs as go
 GRAPH_INTERVAL = os.environ.get("GRAPH_INTERVAL", 5000)
 
 dash.register_page(__name__, path="/", name="Dashboard", title="Dashboard", order=0)
-
-# Define the main content style
-content_style = {
-    'margin-left': '25%',
-    'margin-right': '5%',
-    'padding': '20px 10px'
-}
 
 # Define color scheme
 colors = {
@@ -74,7 +67,7 @@ plot = html.Div(
 
 layout = html.Div([
     html.H1('Dashboard'),
-], style=content_style)
+], style=style.content_style)
 
 
 # check if the datapoint in the scatterplot is clicked
