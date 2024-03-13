@@ -1,0 +1,101 @@
+# Other imports
+import numpy as np
+import pandas as pd
+# DeepCASE Imports
+from Dashboard.processing.processor import Processor
+from Dashboard.data.dao.dao_db import DAO_db
+
+class ProcessorAccessObject(object):
+    def __init__(self):
+        # Initialise new processor
+        self.processor = Processor()
+
+        # Initialise empty tensors
+        self.context = np.zeros(0)
+        self.events = np.zeros(0)
+        self.labels = np.zeros(0)
+        self.context_train = np.zeros(0)
+        self.context_test = np.zeros(0)
+        self.events_train = np.zeros(0)
+        self.events_test = np.zeros(0)
+        self.labels_train = np.zeros(0)
+        self.labels_test = np.zeros(0)
+
+        #initialise dao
+        self.dao = DAO_db()
+
+    def create_sequences(self, path):
+        self.context, self.events, self.labels, self.mapping = self.processor.sequence_data(path)
+        # CALL DAO
+        self.dao.save_sequencing_results( self.context, self.events, self.labels, self.mapping)
+
+
+        # print(pd.DataFrame(self.context.cpu().numpy()))
+        # print(pd.DataFrame(self.labels.cpu().numpy()))
+        # print(pd.DataFrame(self.events.cpu().numpy()))
+
+        self.events_train = self.events[:self.events.shape[0] // 5]
+        self.events_test = self.events[self.events.shape[0] // 5:]
+
+        self.context_train = self.context[:self.events.shape[0] // 5]
+        self.context_test = self.context[self.events.shape[0] // 5:]
+
+        self.labels_train = self.labels[:self.events.shape[0] // 5]
+        self.labels_test = self.labels[self.events.shape[0] // 5:]
+        return
+
+    def train_context_builder(self):
+        self.processor.train_context_builder(self.context_train, self.events_train)
+        return
+
+    def create_interpreter_clusters(self):
+        """
+        clusters : np.array of shape=(n_samples,)
+                Clusters per input sample.
+        """
+        clusters = self.processor.clustering(self.context_train, self.events_train)
+        print("clusters", clusters, type(clusters), len(clusters))
+        # DAOOOOOOOOO clusters
+        confidence, attention = self.processor.get_attention(self.context_train, self.events_train)
+        return
+
+    def manual_mode(self):
+        """
+        scores : np.array of shape=(n_samples)
+                Scores for individual sequences computed using clustering
+                strategy. All datapoints within a cluster are guaranteed to have
+                the same score.
+        """
+        scores = self.processor.scoring(self.labels_train)
+        return
+
+    def automatic_mode(self):
+        """
+        prediction : np.array of shape=(n_samples,)
+                    Predicted maliciousness score.
+                    Positive scores are maliciousness scores.
+                    A score of 0 means we found a match that was not malicious.
+                    Special cases:
+
+                    * -1: Not confident enough for prediction
+                    * -2: Label not in training
+                    * -3: Closest cluster > epsilon
+        """
+        prediction = self.processor.predict(self.context_test, self.events_test)
+        print("prediction", prediction, type(prediction), len(prediction))
+
+
+
+        confidence, attention = self.processor.get_attention(self.context_test, self.events_test)
+        return
+
+
+
+
+if __name__ == '__main__':
+    pao = ProcessorAccessObject()
+    pao.create_sequences('alerts.csv')
+    # pao.train_context_builder()
+    # pao.create_interpreter_clusters()
+    # pao.manual_mode()
+    # pao.automatic_mode()
