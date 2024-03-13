@@ -15,4 +15,6 @@ def formatSequence():
     df['label'] = pd.to_numeric(df['label'])
     df['Event'] = pd.to_numeric(df['Event'])
     df['event'] = pd.Series(df['event'], dtype="string")
+    df['Context'] = pd.Series(df['Context'], dtype="string")
+    df['timestamp'] = pd.Series(df['timestamp'], dtype="string")
     return df

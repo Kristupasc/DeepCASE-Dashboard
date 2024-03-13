@@ -13,12 +13,12 @@ layout = html.Div([
     dash_table.DataTable(
         id='manual-analysis',
         columns = [
-            {'name': 'Date', 'id':'timestamp', 'type': 'datetime'},
+            {'name': 'Date', 'id':'timestamp', 'type': 'text'},
             {'name': 'Source', 'id':'machine', 'type': 'text'},
             {'name': 'Event', 'id':'Event', 'type': 'numeric', 'hideable': True},
             {'name': 'Event_text', 'id':'event', 'type': 'text', 'hideable': True},
             {'name': 'Risk', 'id':'label', 'type': 'numeric', 'editable': True},
-            {'name': 'Context', 'id':'Context', 'type': 'any'}
+            {'name': 'Context', 'id':'Context', 'type': 'text'}
             ],
         data=df.to_dict('records'),
         filter_action='native',
