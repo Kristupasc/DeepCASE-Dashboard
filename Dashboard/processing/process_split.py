@@ -56,6 +56,8 @@ class ProcessorAccessObject(object):
         clusters = self.processor.clustering(self.context_train, self.events_train)
         # DAOOOOOOOOO clusters
         confidence, attention = self.processor.get_attention(self.context_train, self.events_train)
+
+
         self.dao.save_clustering_results(clusters, confidence, attention)
         return
 

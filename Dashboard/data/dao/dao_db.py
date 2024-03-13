@@ -100,6 +100,28 @@ class DAO_db(DAO):
         #                                           )
         #                     AND id_cluster IS NULL''')
 
+        if attention.is_cuda:
+            attention = attention.cpu()
+
+        attention_df = pd.DataFrame(attention)
+
+
+        print(attention_df)
+
+        self.cur.execute('''DROP TABLE IF EXISTS temp_attention''')
+        self.cur.execute('''CREATE TABLE temp_attention (id_sequence INTEGER PRIMARY KEY, attention NUM)''')
+
+        attention_melted_df = attention_df.reset_index().melt(id_vars=["index"], var_name='event_position',
+                                                  value_name='attention')
+        attention_melted_df.rename(columns={'index': 'id_sequence'}, inplace=True)
+        attention_melted_df.to_sql('temp_attention', con=self.conn, if_exists='replace', index=False)
+
+        attention_combined_df = pd.read_sql_query('''SELECT context_events.id_sequence,context_events.event_position, temp_attention.attention, context_events.mapping_value
+                            FROM context_events, temp_attention
+                             WHERE context_events.id_sequence = temp_attention.id_sequence
+                             AND context_events.event_position = temp_attention.event_position''', self.conn)
+        #print(attention_combined_df)
+        attention_combined_df.to_sql('context_events', con=self.conn, if_exists='replace', index=False)
 
         pass
 
