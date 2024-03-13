@@ -13,9 +13,10 @@ layout = html.Div([
     dash_table.DataTable(
         id='manual-analysis',
         columns = [
-            {'name': 'Date', 'id':'timestamp', 'type': 'any'},
-            {'name': 'Source', 'id':'machine', 'type': 'any'},
-            {'name': 'Event', 'id':'Event', 'type': 'numeric'},
+            {'name': 'Date', 'id':'timestamp', 'type': 'datetime'},
+            {'name': 'Source', 'id':'machine', 'type': 'text'},
+            {'name': 'Event', 'id':'Event', 'type': 'numeric', 'hideable': True},
+            {'name': 'Event_text', 'id':'event', 'type': 'text', 'hideable': True},
             {'name': 'Risk', 'id':'label', 'type': 'numeric', 'editable': True},
             {'name': 'Context', 'id':'Context', 'type': 'any'}
             ],

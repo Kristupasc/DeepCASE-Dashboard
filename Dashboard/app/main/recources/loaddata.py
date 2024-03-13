@@ -10,8 +10,9 @@ def concatTwoFiles(filepath1, filepath2):
     return pd.concat([df1, df2], axis=1, join='inner')
 def formatSequence():
     df = concatTwoFiles('../../data/sequences.csv', '../../data/alerts.csv')
-    df = df[['timestamp', 'machine', 'Event', 'label', 'Context']]
+    df = df[['timestamp', 'machine', 'Event','event', 'label', 'Context']]
     df['timestamp'] = pd.DatetimeIndex(pd.to_datetime(df['timestamp'], unit='s')).strftime(format_time)
     df['label'] = pd.to_numeric(df['label'])
     df['Event'] = pd.to_numeric(df['Event'])
+    df['event'] = pd.Series(df['event'], dtype="string")
     return df
