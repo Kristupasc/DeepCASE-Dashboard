@@ -54,9 +54,9 @@ class ProcessorAccessObject(object):
                 Clusters per input sample.
         """
         clusters = self.processor.clustering(self.context_train, self.events_train)
-        print("clusters", clusters, type(clusters), len(clusters))
         # DAOOOOOOOOO clusters
         confidence, attention = self.processor.get_attention(self.context_train, self.events_train)
+        self.dao.save_clustering_results(clusters, confidence, attention)
         return
 
     def manual_mode(self):
@@ -95,7 +95,7 @@ class ProcessorAccessObject(object):
 if __name__ == '__main__':
     pao = ProcessorAccessObject()
     pao.create_sequences('alerts.csv')
-    # pao.train_context_builder()
-    # pao.create_interpreter_clusters()
+    pao.train_context_builder()
+    pao.create_interpreter_clusters()
     # pao.manual_mode()
     # pao.automatic_mode()
