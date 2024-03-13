@@ -8,6 +8,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(BASE_DIR, "deepcase.db")
 
+
 class DAO_db(DAO):
     def __init__(self):
         self.conn = sqlite3.connect(db_path)
@@ -52,30 +53,28 @@ class DAO_db(DAO):
         events_df = pd.DataFrame(events_array)
         labels_df = pd.DataFrame(labels_array)
 
-        # for key, value in mapping.items():
-        #     self.cur.execute("INSERT OR REPLACE INTO mapping (id, name) VALUES (?, ?)", (key, value))
-        #     self.conn.commit()
-
-        #read df row by row making row index seq index + main event index
-        #loop over columns per row and insert to db after getting all db columns info
-        #event id from 0 to 9
-        for index, row in context_df.iterrows():
-            id_sequence = index
-            #loop for i in range(0,len(events))
-            mapping_main_event = events_df.iloc[index,0]
-            risk_label = labels_df.iloc[index, 0]
-            self.cur.execute("INSERT INTO sequences (id_sequence, mapping_value, risk_label) "
-                             "VALUES (?, ?, ?)", (id_sequence, mapping_main_event, risk_label))
+        for key, value in mapping.items():
+            self.cur.execute("INSERT OR REPLACE INTO mapping (id, name) VALUES (?, ?)", (key, value))
             self.conn.commit()
-            for column, value in row.items():
-                id_event = column
-                mapping_value = value
-                self.cur.execute("INSERT INTO context_events (id_event, id_sequence, mapping_value) "
-                                 "VALUES (?, ?, ?)", (id_event, id_sequence, mapping_value))
-                self.conn.commit()
+
+        # Melt the DataFrame
+        melted_df = context_df.reset_index().melt(id_vars=["index"], var_name='event_position',
+                                                  value_name='mapping_value')
+        melted_df.rename(columns={'index': 'id_sequence'}, inplace=True)
+
+        # Upload to context events table
+        melted_df.to_sql('context_events', con=self.conn, if_exists='append', index=False)
+
+        # Join the DataFrame
+        joined_df = events_df.join(labels_df, lsuffix='mapping_value', rsuffix='risk_label')
+        joined_df.rename(columns={'0mapping_value': 'mapping_value', '0risk_label': 'risk_label', 'index': 'id_sequence'}, inplace=True)
+
+        #Upload to sequence table
+        joined_df.to_sql('sequences', con=self.conn, if_exists='append', index=False)
 
 
     def save_clustering_results(self, context, events, labels, mapping):
+
         pass
 
     def save_prediction_results(self, prediction):
