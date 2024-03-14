@@ -1,11 +1,13 @@
 import sqlite3
 import pandas as pd
 import os
+
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Create a file path for "example.txt" in the script's directory
 file_path = os.path.join(script_dir, 'deepcase.db')
+
 
 class Database(object):
     def __init__(self):
@@ -62,6 +64,11 @@ class Database(object):
         return
 
     def store_mapping(self, mapping):
+        sequences_old_df = pd.read_sql_query('''SELECT * FROM sequences''', self.conn)
+        context_events_old_df = pd.read_sql_query('''SELECT * FROM context_events''', self.conn)
+        print(sequences_old_df)
+        print(context_events_old_df)
+        print("--------------------------------")
         # Iterate through dict and upload to mapping table
         for key, value in mapping.items():
             self.cur.execute("INSERT OR REPLACE INTO mapping (id, name) VALUES (?, ?)", (key, value))
@@ -74,60 +81,40 @@ class Database(object):
         return
 
     def store_clusters(self, clusters_df: pd.DataFrame):
-        self.cur.execute('''DROP TABLE IF EXISTS temporary''')
-        self.cur.execute('''CREATE TABLE temporary (id_sequence INTEGER PRIMARY KEY, id_cluster TEXT)''')
-        clusters_df.to_sql('temporary', con=self.conn, if_exists='replace', index=False)
-        # no such column: temporary.id_sequence
+        clusters_old_df = pd.read_sql_query('''SELECT * FROM sequences''', self.conn)
+        # Append updated attention column to the old attention dataframe
+        merged_df = clusters_old_df.merge(clusters_df, on='id_sequence', how='left', suffixes=('', '_updated'))
 
-        cluster_valued_df = pd.read_sql_query('''SELECT sequences.id_sequence, temporary.id_cluster, sequences.mapping_value, sequences.risk_label
-                            FROM sequences, temporary
-                             WHERE sequences.id_sequence = temporary.id_sequence''', self.conn)
-        cluster_null_df = pd.read_sql_query('''SELECT sequences.id_sequence, sequences.mapping_value, sequences.risk_label
-                                                        FROM sequences
-                                                        LEFT JOIN temporary ON sequences.id_sequence = temporary.id_sequence
-                                                        WHERE temporary.id_sequence IS NULL;
-                                                        ''', self.conn)
-        # print(cluster_null_df)
-        # TODO: join df and null_df
-        cluster_valued_df.to_sql('sequences', con=self.conn, if_exists='replace', index=False)
+        # Ensure 'attention' and 'attention_updated' columns are of a numeric type
+        cols_to_convert = ['id_cluster', 'id_cluster_updated']
+        merged_df[cols_to_convert] = merged_df[cols_to_convert].apply(pd.to_numeric, errors='coerce')
 
-        # self.cur.execute('''UPDATE sequences
-        #                     SET id_cluster = (SELECT tm.id_cluster
-        #                                       FROM temporary tm
-        #                                       WHERE  tm.id_sequence = id_sequence)
-        #                     WHERE id_sequence IN (SELECT id_sequence
-        #                                           FROM temporary tm
-        #                                           WHERE tm.id_sequence= id_sequence
-        #                                           )
-        #                     AND id_cluster IS NULL''')
-        # TODO: Drop temp table
+        # Filling null values in 'attention' column with values from 'attention_updated'
+        merged_df['id_cluster'] = merged_df['id_cluster'].fillna(merged_df['id_cluster_updated'])
+        merged_df.drop(columns=['id_cluster_updated'], inplace=True)
+        merged_df.to_sql('sequences', con=self.conn, if_exists='replace', index=False)
+
         return
 
     def store_attention(self, attention_df: pd.DataFrame):
-        self.cur.execute('''DROP TABLE IF EXISTS temp_attention''')
-        self.cur.execute('''CREATE TABLE temp_attention (id_sequence INTEGER PRIMARY KEY, attention NUM)''')
 
-        attention_df.to_sql('temp_attention', con=self.conn, if_exists='replace', index=False)
+        attention_old_df = pd.read_sql_query('''SELECT * FROM context_events''', self.conn)
+        print(attention_old_df)
+        # Append updated attention column to the old attention dataframe
+        merged_df = attention_old_df.merge(attention_df, on=['id_sequence', 'event_position'], how='left',
+                                           suffixes=('', '_updated'))
+        print(merged_df)
+        # Ensure 'attention' and 'attention_updated' columns are of a numeric type
+        cols_to_convert = ['attention', 'attention_updated']
+        merged_df[cols_to_convert] = merged_df[cols_to_convert].apply(pd.to_numeric, errors='coerce')
 
-        # attention_combined_df = pd.read_sql_query('''SELECT context_events.id_sequence,context_events.event_position, temp_attention.attention, context_events.mapping_value
-        #                     FROM context_events, temp_attention
-        #                      WHERE context_events.id_sequence = temp_attention.id_sequence
-        #                      AND context_events.event_position = temp_attention.event_position''', self.conn)
-        attention_null_df = pd.read_sql_query('''SELECT context_events.id_sequence, context_events.event_position, 
-                                                               temp_attention.attention, context_events.mapping_value
-                                                        FROM context_events
-                                                        LEFT JOIN temp_attention 
-                                                        ON context_events.id_sequence = temp_attention.id_sequence
-                                                        AND context_events.event_position = temp_attention.event_position
-                                                        WHERE context_events.attention IS NULL
-                                                        ''', self.conn)
-
-        # print(attention_null_df)
-        attention_null_df.to_sql('context_events', con=self.conn, if_exists='replace', index=False)
-        # TODO: Drop temp table
+        # Filling null values in 'attention' column with values from 'attention_updated'
+        merged_df['attention'] = merged_df['attention'].fillna(merged_df['attention_updated'])
+        merged_df.drop(columns=['attention_updated'], inplace=True)
+        print(merged_df)
+        merged_df.to_sql('context_events', con=self.conn, if_exists='replace', index=False)
         return
 
     def store_risk_labels(self, risk_label_df: pd.DataFrame):
         print(risk_label_df)
         return
-
