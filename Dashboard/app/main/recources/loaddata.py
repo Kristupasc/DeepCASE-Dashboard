@@ -27,7 +27,7 @@ def formatSequenceCluster(cluster: str)-> pd.DataFrame:
 def formatSequenceCluster(cluster: int, id_str: str)-> pd.DataFrame:
     df = concatMultipleFiles(['../../data/sequences.csv', '../../data/alerts.csv', '../../data/clusters.csv'])
 
-    df = df[df['clusters'] == 0]
+    df = df[df['clusters'] == cluster]
     df = df[['timestamp', 'machine', 'Event','event', 'labels', 'Context']]
     df['timestamp'] = pd.DatetimeIndex(pd.to_datetime(df['timestamp'], unit='s')).strftime(format_time)
     df['labels'] = pd.to_numeric(df['labels'])

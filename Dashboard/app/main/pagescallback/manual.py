@@ -2,12 +2,14 @@ import dash
 from dash import html, dash_table, dcc, callback, Output, Input
 import pandas as pd
 import Dashboard.app.main.recources.loaddata as load
-id_str = "_sa"
-cid_str = "_cisa"
+import Dashboard.app.main.recources.style as style
+id_str = "_ma"
 df = load.formatSequenceCluster(0, id_str)
 set_cluster = load.possible_clusters()
+
+
 @callback(
-    Output("semi-automatic", "data"),
+    Output('manual-analysis', "data"),
     Input("filter_dropdown"+id_str, "value")
 )
 def display_table(state):
@@ -18,4 +20,3 @@ def display_table(state):
         return dff.to_dict("records")
     else:
         return df.to_dict("records")
-

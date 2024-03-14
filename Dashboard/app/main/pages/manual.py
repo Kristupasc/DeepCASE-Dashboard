@@ -3,11 +3,9 @@ from dash import html, dash_table, dcc, callback, Output, Input
 import pandas as pd
 import Dashboard.app.main.recources.loaddata as load
 import Dashboard.app.main.recources.style as style
-
+from Dashboard.app.main.pagescallback.manual import *
 dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", title="Manual Analysis", order=1)
-id_str = "_ma"
-df = load.formatSequenceCluster(0, id_str)
-set_cluster = load.possible_clusters()
+
 layout = html.Div([
     html.H1('Manual Analysis'),
     dcc.Dropdown(
@@ -54,15 +52,3 @@ layout = html.Div([
 
 ], style=style.content_style)
 
-@callback(
-    Output('manual-analysis', "data"),
-    Input("filter_dropdown"+id_str, "value")
-)
-def display_table(state):
-    global df
-    if isinstance(state, int):
-        dff = load.formatSequenceCluster(state, id_str)
-        df = dff
-        return dff.to_dict("records")
-    else:
-        return df.to_dict("records")

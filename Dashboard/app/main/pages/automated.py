@@ -4,11 +4,8 @@ import pandas as pd
 import Dashboard.app.main.recources.loaddata as load
 import Dashboard.app.main.recources.style as style
 dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", title="Semi-automatic", order=2)
-# from Dashboard.app.main.pagescallback.automated import *
-id_str = "_sa"
-cid_str = "_cisa"
-df = load.formatSequenceCluster(0, id_str)
-set_cluster = load.possible_clusters()
+from Dashboard.app.main.pagescallback.automated import *
+
 
 
 
@@ -57,15 +54,3 @@ layout = html.Div([
         page_size=10)
 
 ], style=style.content_style)
-@callback(
-    Output("semi-automatic", "data"),
-    Input("filter_dropdown"+id_str, "value")
-)
-def display_table(state):
-    global df
-    if isinstance(state, int):
-        dff = load.formatSequenceCluster(state, id_str)
-        df = dff
-        return dff.to_dict("records")
-    else:
-        return df.to_dict("records")
