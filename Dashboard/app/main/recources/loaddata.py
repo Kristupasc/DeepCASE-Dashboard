@@ -1,3 +1,5 @@
+from typing import Dict, Any
+
 import pandas as pd
 format_time = "%H:%M:%S.%f, %d %b %Y" # For second %s %ssss
 def read_data(filepath):
@@ -35,11 +37,10 @@ def formatSequenceCluster(cluster: int, id_str: str)-> pd.DataFrame:
     df['event'] = pd.Series(df['event'], dtype="string")
     df['Context'] = pd.Series(df['Context'], dtype="string")
     df['timestamp'] = pd.Series(df['timestamp'], dtype="string")
-    dict_id = dict()
+    dict_id: dict[str, str] = dict()
     for i in df.columns:
         dict_id[i] = i + id_str
-    df.rename(columns =dict_id)
-    print(df)
+    df = df.rename(columns =dict_id)
     return df
 
 def possible_clusters()-> set():
