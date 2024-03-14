@@ -6,20 +6,20 @@ import Dashboard.app.main.recources.style as style
 
 dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", title="Manual Analysis", order=1)
 
-df = load.formatSequence()
+df = load.formatSequenceCluster(0)
 
 layout = html.Div([
     html.H1('Manual Analysis'),
     dash_table.DataTable(
         id='manual-analysis',
-        columns = [
-            {'name': 'Date', 'id':'timestamp', 'type': 'text'},
-            {'name': 'Source', 'id':'machine', 'type': 'text'},
-            {'name': 'Event', 'id':'Event', 'type': 'numeric', 'hideable': True},
-            {'name': 'Event_text', 'id':'event', 'type': 'text', 'hideable': True},
-            {'name': 'Risk', 'id':'label', 'type': 'numeric', 'editable': True},
-            {'name': 'Context', 'id':'Context', 'type': 'text'}
-            ],
+        columns=[
+            {'name': 'Date', 'id': 'timestamp', 'type': 'text'},
+            {'name': 'Source', 'id': 'machine', 'type': 'text'},
+            {'name': 'Event', 'id': 'Event', 'type': 'numeric', 'hideable': True},
+            {'name': 'Event_text', 'id': 'event', 'type': 'text', 'hideable': True},
+            {'name': 'Risk', 'id': 'labels', 'type': 'numeric', 'editable': True},
+            {'name': 'Context', 'id': 'Context', 'type': 'text'}
+        ],
         data=df.to_dict('records'),
         filter_action='native',
         style_data={
@@ -27,12 +27,22 @@ layout = html.Div([
             'overflow': 'hidden',
             'textOverflow': 'ellipsis',
         },
-        page_size = 10)
+        page_size=10),
     # https://dash.plotly.com/datatable/filtering
-
+    # dash_table.DataTable(
+    #     id='Context information',
+    #     columns=[
+    #         {'name': 'Event', 'id': 'Event_ci', 'type': 'numeric', 'hideable': True},
+    #         {'name': 'Event_text', 'id': 'event_ci', 'type': 'text', 'hideable': True},
+    #         {'name': 'Confident', 'id': 'Context_ci', 'type': 'text'}
+    #     ],
+    #     data=df.to_dict('records'),
+    #     filter_action='native',
+    #     style_data={
+    #         'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
+    #         'overflow': 'hidden',
+    #         'textOverflow': 'ellipsis',
+    #     },
+    #     page_size=10)
 
 ], style=style.content_style)
-
-
-
-
