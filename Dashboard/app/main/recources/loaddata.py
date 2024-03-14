@@ -22,7 +22,7 @@ def formatSequence()-> pd.DataFrame:
     return df
 def formatSequenceCluster(cluster: str)-> pd.DataFrame:
     pass #TODO: some mapping
-def formatSequenceCluster(cluster: int)-> pd.DataFrame:
+def formatSequenceCluster(cluster: int, id_str: str)-> pd.DataFrame:
     df = concatMultipleFiles(['../../data/sequences.csv', '../../data/alerts.csv', '../../data/clusters.csv'])
 
     df = df[df['clusters'] == 0]
@@ -35,4 +35,15 @@ def formatSequenceCluster(cluster: int)-> pd.DataFrame:
     df['event'] = pd.Series(df['event'], dtype="string")
     df['Context'] = pd.Series(df['Context'], dtype="string")
     df['timestamp'] = pd.Series(df['timestamp'], dtype="string")
+    dict_id = dict()
+    for i in df.columns:
+        dict_id[i] = i + id_str
+    df.rename(columns =dict_id)
+    print(df)
     return df
+
+def possible_clusters()-> set():
+    df = concatMultipleFiles([ '../../data/clusters.csv'])
+    df = df[['clusters']]
+    df['clusters'] = pd.to_numeric(df['clusters'])
+    return set(df['clusters'].values)
