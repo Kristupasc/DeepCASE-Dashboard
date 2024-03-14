@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 # DeepCASE Imports
 from Dashboard.processing.processor import Processor
-from Dashboard.data.dao.dao_db import DAO_db
+from Dashboard.data.dao.dao import DAO
+
 
 class ProcessorAccessObject(object):
     def __init__(self):
@@ -21,14 +22,13 @@ class ProcessorAccessObject(object):
         self.labels_train = np.zeros(0)
         self.labels_test = np.zeros(0)
 
-        #initialise dao
-        self.dao = DAO_db()
+        # initialise dao
+        self.dao = DAO()
 
     def create_sequences(self, path):
-        self.context, self.events, self.labels, self.mapping = self.processor.sequence_data(path)
+        self.context, self.events, self.labels, mapping = self.processor.sequence_data(path)
         # CALL DAO
-        self.dao.save_sequencing_results( self.context, self.events, self.labels, self.mapping)
-
+        self.dao.save_sequencing_results(self.context, self.events, self.labels, mapping)
 
         # print(pd.DataFrame(self.context.cpu().numpy()))
         # print(pd.DataFrame(self.labels.cpu().numpy()))
@@ -56,7 +56,6 @@ class ProcessorAccessObject(object):
         clusters = self.processor.clustering(self.context_train, self.events_train)
         # DAOOOOOOOOO clusters
         confidence, attention = self.processor.get_attention(self.context_train, self.events_train)
-
 
         self.dao.save_clustering_results(clusters, confidence, attention)
         return
@@ -86,12 +85,8 @@ class ProcessorAccessObject(object):
         prediction = self.processor.predict(self.context_test, self.events_test)
         print("prediction", prediction, type(prediction), len(prediction))
 
-
-
         confidence, attention = self.processor.get_attention(self.context_test, self.events_test)
         return
-
-
 
 
 if __name__ == '__main__':

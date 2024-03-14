@@ -1,9 +1,6 @@
-from dao import DAO
-
-
-class DAO_csv(DAO):
+class csv_file_manager(object):
     def __init__(self):
-        super(DAO_csv, self).__init__()
+        super(csv_file_manager, self).__init__()
 
     def save_sequencing_results(self, context, events, labels, mapping):
         # write the sequences to a .csv file
