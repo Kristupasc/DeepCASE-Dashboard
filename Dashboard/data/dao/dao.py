@@ -7,7 +7,12 @@ class DAO(object):
     def __init__(self):
         self.data_object = Database()
 
-    def save_sequencing_results(self, context, events, labels, mapping):
+        # Reset the database
+        self.data_object.drop_database()
+        self.data_object.create_tables()
+
+
+    def save_sequencing_results(self, context, events, labels, mapping, input_file_df):
         """
         Saves context, events, labels, mapping into data object.
         Parameters
@@ -24,6 +29,8 @@ class DAO(object):
 
         mapping : dict()
             Mapping from new event_id to original name.
+        input_file_df : pandas.DataFrame
+        Initial input file
         """
 
         if context.is_cuda:
@@ -47,10 +54,13 @@ class DAO(object):
         joined_sequence_df.rename(
             columns={'0mapping_value': 'mapping_value', '0risk_label': 'risk_label', 'index': 'id_sequence'},
             inplace=True)
+        input_file_df.reset_index(inplace=True)
+        input_file_df.rename(columns={'index': 'id_event'}, inplace=True)
 
         self.data_object.store_sequences(sequence_df=joined_sequence_df)
         self.data_object.store_context(context_df=melted_context_df)
         self.data_object.store_mapping(mapping=mapping)
+        self.data_object.store_input_file(input_file_df)
         return
 
     def save_clustering_results(self, clusters, confidence, attention):
@@ -71,10 +81,9 @@ class DAO(object):
         return
 
     def save_prediction_results(self, prediction):
-        # TODO: Placeholder
+        # TODO: Placeholder, add functionality later
         if prediction.is_cuda:
             prediction = prediction.cpu()
         prediction = pd.DataFrame(prediction)
         self.data_object.store_risk_labels(prediction)
-
         return

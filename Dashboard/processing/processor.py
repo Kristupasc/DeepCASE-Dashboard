@@ -54,23 +54,6 @@ class Processor(object):
         return context, events, labels, mapping
 
     ########################################################################
-    #                            Splitting data                            #
-    ########################################################################
-
-    def split_data(self, context, events, labels):
-        # Split into train and test sets (20:80) by time - assuming events are ordered chronologically
-        events_train = events[:events.shape[0] // 5]
-        events_test = events[events.shape[0] // 5:]
-
-        context_train = context[:events.shape[0] // 5]
-        context_test = context[events.shape[0] // 5:]
-
-        labels_train = labels[:events.shape[0] // 5]
-        labels_test = labels[events.shape[0] // 5:]
-
-        return events_train, events_test, context_train, context_test, labels_train, labels_test
-
-    ########################################################################
     #                         Using ContextBuilder                         #
     ########################################################################
 

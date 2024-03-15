@@ -13,30 +13,43 @@ class Database(object):
     def __init__(self):
         self.conn = sqlite3.connect(file_path)
         self.cur = self.conn.cursor()
-        # create all tables
+        self.create_tables()
+        return
+
+    def create_tables(self):
         self.cur.execute('''CREATE TABLE IF NOT EXISTS events
-                        (id_event INTEGER PRIMARY KEY, timestamp REAL, machine TEXT, event TEXT, label INT)''')
+                                (id_event INTEGER PRIMARY KEY, timestamp REAL, machine TEXT, event TEXT, label INT)''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS mapping
-                       (id INTEGER PRIMARY KEY, name TEXT)''')
+                               (id INTEGER PRIMARY KEY, name TEXT)''')
 
         self.cur.execute('''CREATE TABLE IF NOT EXISTS clusters
-                       (id_cluster INTEGER PRIMARY KEY, score INT, risk label TEXT)''')
+                               (id_cluster INTEGER PRIMARY KEY, score INT, risk label TEXT)''')
 
         self.cur.execute('''CREATE TABLE IF NOT EXISTS sequences
-                       (id_sequence INTEGER PRIMARY KEY, id_cluster INTEGER, mapping_value INT, risk_label TEXT,
-                       FOREIGN KEY (id_cluster) REFERENCES clusters(id_cluster),
-                       FOREIGN KEY (id_sequence) REFERENCES events(id_event),
-                       FOREIGN KEY (mapping_value) REFERENCES mapping(id)
-                       )''')
+                               (id_sequence INTEGER PRIMARY KEY, id_cluster INTEGER, mapping_value INT, risk_label TEXT,
+                               FOREIGN KEY (id_cluster) REFERENCES clusters(id_cluster),
+                               FOREIGN KEY (id_sequence) REFERENCES events(id_event),
+                               FOREIGN KEY (mapping_value) REFERENCES mapping(id)
+                               )''')
 
         self.cur.execute('''CREATE TABLE IF NOT EXISTS context_events
-                       (id_sequence INTEGER, event_position INTEGER, attention REAL, mapping_value INT, 
-                       PRIMARY KEY(event_position, id_sequence),
-                       FOREIGN KEY (id_sequence) REFERENCES sequences(id_sequence),
-                       FOREIGN KEY (mapping_value) REFERENCES mapping(id)
-                       )''')
+                               (id_sequence INTEGER, event_position INTEGER, attention REAL, mapping_value INT, 
+                               PRIMARY KEY(event_position, id_sequence),
+                               FOREIGN KEY (id_sequence) REFERENCES sequences(id_sequence),
+                               FOREIGN KEY (mapping_value) REFERENCES mapping(id)
+                               )''')
 
         self.conn.commit()
+        return
+
+    def store_input_file(self, input_file_df):
+        input_file_df.to_sql('events', self.conn, if_exists='replace', index=False, dtype={
+            'id_event': 'INTEGER',
+            'timestamp': 'REAL',
+            'machine': 'TEXT',
+            'event': 'TEXT',
+            'label': 'INT'
+        })
         return
 
     def drop_database(self):
@@ -50,6 +63,9 @@ class Database(object):
         self.conn.commit()
         return
 
+    ########################################################################
+    #                         Data insertion                               #
+    ########################################################################
     def store_file(self, file_df: pd.DataFrame):
         # Old method
         file_df.reset_index(inplace=True)
@@ -66,9 +82,6 @@ class Database(object):
     def store_mapping(self, mapping):
         sequences_old_df = pd.read_sql_query('''SELECT * FROM sequences''', self.conn)
         context_events_old_df = pd.read_sql_query('''SELECT * FROM context_events''', self.conn)
-        print(sequences_old_df)
-        print(context_events_old_df)
-        print("--------------------------------")
         # Iterate through dict and upload to mapping table
         for key, value in mapping.items():
             self.cur.execute("INSERT OR REPLACE INTO mapping (id, name) VALUES (?, ?)", (key, value))
@@ -97,13 +110,16 @@ class Database(object):
         return
 
     def store_attention(self, attention_df: pd.DataFrame):
-
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS temp_att
+                                      (id_sequence INTEGER, event_position INTEGER, attention REAL, 
+                                      PRIMARY KEY(event_position, id_sequence),
+                                      FOREIGN KEY (id_sequence) REFERENCES sequences(id_sequence)
+                                      )''')
+        attention_df.to_sql('temp_att', con=self.conn, if_exists='replace', index=False)
         attention_old_df = pd.read_sql_query('''SELECT * FROM context_events''', self.conn)
-        print(attention_old_df)
         # Append updated attention column to the old attention dataframe
         merged_df = attention_old_df.merge(attention_df, on=['id_sequence', 'event_position'], how='left',
                                            suffixes=('', '_updated'))
-        print(merged_df)
         # Ensure 'attention' and 'attention_updated' columns are of a numeric type
         cols_to_convert = ['attention', 'attention_updated']
         merged_df[cols_to_convert] = merged_df[cols_to_convert].apply(pd.to_numeric, errors='coerce')
@@ -111,10 +127,33 @@ class Database(object):
         # Filling null values in 'attention' column with values from 'attention_updated'
         merged_df['attention'] = merged_df['attention'].fillna(merged_df['attention_updated'])
         merged_df.drop(columns=['attention_updated'], inplace=True)
-        print(merged_df)
         merged_df.to_sql('context_events', con=self.conn, if_exists='replace', index=False)
         return
 
     def store_risk_labels(self, risk_label_df: pd.DataFrame):
         print(risk_label_df)
         return
+
+    ########################################################################
+    #                         Data aggregation                             #
+    ########################################################################
+    def get_input_table(self):
+        # columns: timestamp,machine,event,label
+        return pd.read_sql_query('''SELECT * FROM events''', self.conn)
+
+
+    def get_sequences(self):
+        # columns: id_sequence, id_cluster,  name,machine,timestamp, risk_label
+        #
+        result = pd.read_sql_query('''''', self.conn)
+        return result
+
+    def get_clusters(self):
+        # columns:
+        result = pd.read_sql_query('''''', self.conn)
+        return result
+
+    def get_context(self):
+        # columns:
+        result = pd.read_sql_query('''''', self.conn)
+        return result
