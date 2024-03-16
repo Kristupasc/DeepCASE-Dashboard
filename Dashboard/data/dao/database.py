@@ -13,7 +13,7 @@ class Database(object):
     def __init__(self):
         self.conn = sqlite3.connect(file_path)
         self.cur = self.conn.cursor()
-        self.create_tables()
+        # self.create_tables()
         return
 
     def create_tables(self):
@@ -50,6 +50,7 @@ class Database(object):
             'event': 'TEXT',
             'label': 'INT'
         })
+        self.conn.commit()
         return
 
     def drop_database(self):
@@ -72,11 +73,13 @@ class Database(object):
         file_df.rename(columns={'index': 'id_event'}, inplace=True)
         # TODO: Remove switch to append after testing is done
         file_df.to_sql('events', self.conn, if_exists='replace', index=False)
+        self.conn.commit()
         return
 
     def store_sequences(self, sequence_df: pd.DataFrame):
         # Upload to sequence table
         sequence_df.to_sql('sequences', con=self.conn, if_exists='append', index=False)
+        self.conn.commit()
         return
 
     def store_mapping(self, mapping):
@@ -91,6 +94,7 @@ class Database(object):
     def store_context(self, context_df: pd.DataFrame):
         # Upload to context events table
         context_df.to_sql('context_events', con=self.conn, if_exists='append', index=False)
+        self.conn.commit()
         return
 
     def store_clusters(self, clusters_df: pd.DataFrame):
@@ -106,7 +110,7 @@ class Database(object):
         merged_df['id_cluster'] = merged_df['id_cluster'].fillna(merged_df['id_cluster_updated'])
         merged_df.drop(columns=['id_cluster_updated'], inplace=True)
         merged_df.to_sql('sequences', con=self.conn, if_exists='replace', index=False)
-
+        self.conn.commit()
         return
 
     def store_attention(self, attention_df: pd.DataFrame):
@@ -128,6 +132,7 @@ class Database(object):
         merged_df['attention'] = merged_df['attention'].fillna(merged_df['attention_updated'])
         merged_df.drop(columns=['attention_updated'], inplace=True)
         merged_df.to_sql('context_events', con=self.conn, if_exists='replace', index=False)
+        self.conn.commit()
         return
 
     def store_risk_labels(self, risk_label_df: pd.DataFrame):
@@ -143,17 +148,34 @@ class Database(object):
 
 
     def get_sequences(self):
-        # columns: id_sequence, id_cluster,  name,machine,timestamp, risk_label
-        #
-        result = pd.read_sql_query('''''', self.conn)
+        # columns: main_event_name, timestamp, machine,  id_cluster, risk_label
+        result = pd.read_sql_query('''SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label 
+                                        FROM mapping, sequences, events 
+                                        WHERE sequences.mapping_value = mapping.id 
+                                        AND events.id_event = sequences.id_sequence''', self.conn)
+        return result
+
+    #TODO: create method to get only one sequence by id + same for context (?)
+
+    def get_context_by_sequence_id(self, sequence_id):
+        # columns:  event_position, event_name, attention
+        query = "SELECT context_events.event_position, mapping.name, context_events.attention " \
+                "FROM mapping, context_events " \
+                "WHERE context_events.mapping_value = mapping.id " \
+                "AND context_events.id_sequence = " + str(sequence_id)
+        result = pd.read_sql_query(query, self.conn)
         return result
 
     def get_clusters(self):
-        # columns:
-        result = pd.read_sql_query('''''', self.conn)
+        result = pd.read_sql_query('''SELECT * FROM clusters''', self.conn)
         return result
 
-    def get_context(self):
-        # columns:
-        result = pd.read_sql_query('''''', self.conn)
+    def get_sequences_per_cluster(self, cluster_id):
+
+        query = "SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
+                "FROM mapping, sequences, events " \
+                "WHERE sequences.mapping_value = mapping.id " \
+                "AND events.id_event = sequences.id_sequence " \
+                "AND sequences.id_cluster = " + str(cluster_id)
+        result = pd.read_sql_query(query, self.conn)
         return result

@@ -81,9 +81,21 @@ class DAO(object):
         return
 
     def save_prediction_results(self, prediction):
-        # TODO: Placeholder, add functionality later
-        if prediction.is_cuda:
-            prediction = prediction.cpu()
-        prediction = pd.DataFrame(prediction)
-        self.data_object.store_risk_labels(prediction)
+        # TODO: It's a placeholder, add functionality later
+
         return
+
+
+    def get_initial_table(self):
+        return self.data_object.get_input_table()
+    def get_sequence_result(self):
+        return self.data_object.get_sequences()
+
+    def get_context_per_sequence(self,  sequence_id):
+        return self.data_object.get_context_by_sequence_id(sequence_id)
+
+    def get_clusters_result(self):
+        return self.data_object.get_clusters()
+
+    def get_sequences_per_cluster(self, cluster_id):
+        return self.data_object.get_sequences_per_cluster(cluster_id)
