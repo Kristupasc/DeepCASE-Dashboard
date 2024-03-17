@@ -90,7 +90,9 @@ def display_click_data(clickData):
 def generate_scatter_plot(interval):
     traces = []
     # data = dummyData.df_clusters
+
     data = createDf.get_sequence_data_frame()
+    print(data)
     for cluster_name, cluster_group in data.groupby("Risk Label"):
         traces.append(
             go.Scatter(

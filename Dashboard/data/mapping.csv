@@ -88,4 +88,4 @@ Key,Value
 86,"SURICATA TLS invalid record type"
 87,"SURICATA TLS invalid record/traffic"
 88,"SURICATA UDPv6 invalid checksum"
-89,"-1337"
+89,-1337
