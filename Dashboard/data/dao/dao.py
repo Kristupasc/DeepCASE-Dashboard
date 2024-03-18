@@ -7,10 +7,13 @@ class DAO(object):
     def __init__(self):
         self.data_object = Database()
 
-        # Reset the database
+        # Reset the database for testing purpose
         self.data_object.drop_database()
         self.data_object.create_tables()
 
+    ########################################################################
+    #                             Saving data                              #
+    ########################################################################
 
     def save_sequencing_results(self, context, events, labels, mapping, input_file_df):
         """
@@ -85,6 +88,9 @@ class DAO(object):
 
         return
 
+    ########################################################################
+    #                             Retrieving data                          #
+    ########################################################################
 
     def get_initial_table(self):
         return self.data_object.get_input_table()

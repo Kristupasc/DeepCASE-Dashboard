@@ -94,11 +94,13 @@ class ProcessorAccessObject(object):
         confidence, attention = self.processor.get_attention(self.context, self.events)
         return
 
+    def run_DeepCASE(self):
+        self.create_sequences('alerts.csv')
+        # pao.train_context_builder()
+        # pao.create_interpreter_clusters()
+        # # pao.manual_mode()
+        # # pao.automatic_mode()
 
-if __name__ == '__main__':
-    pao = ProcessorAccessObject()
-    pao.create_sequences('alerts.csv')
-    pao.train_context_builder()
-    pao.create_interpreter_clusters()
-    # # pao.manual_mode()
-    # # pao.automatic_mode()
+# if __name__ == '__main__':
+#     pao = ProcessorAccessObject()
+#     poa.run_DeepCASE(pao)

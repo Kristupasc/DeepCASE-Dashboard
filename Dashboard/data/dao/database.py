@@ -13,7 +13,7 @@ class Database(object):
     def __init__(self):
         self.conn = sqlite3.connect(file_path)
         self.cur = self.conn.cursor()
-        # self.create_tables()
+        self.create_tables()
         return
 
     def create_tables(self):
