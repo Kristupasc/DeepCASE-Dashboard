@@ -55,4 +55,7 @@ layout = html.Div([
         },
         page_size=10)
 
-], style=style.content_style)
+],
+    # dcc.Store stores the intermediate value
+    dcc.Store(id='selected row'+ id_str),
+    style=style.content_style)

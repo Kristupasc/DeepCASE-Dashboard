@@ -11,10 +11,10 @@ df = load.formatSequenceCluster(0, id_str)
 set_cluster = load.possible_clusters()
 @callback(
     Output("semi-automatic", "data"),
-    Input("filter_dropdown"+id_str, "value")
+    Input("filter_dropdown"+id_str, "value") #TODO: global variable fix.
 )
 def display_table_cluster(state):
-    global df, cluster
+    global cluster
     if isinstance(state, int):
         cluster = state
         dff = load.formatSequenceCluster(state, id_str)
