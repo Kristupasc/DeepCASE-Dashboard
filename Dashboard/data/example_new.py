@@ -112,6 +112,7 @@ if __name__ == "__main__":
     #                             Manual mode                              #
     ########################################################################
 
+
     # Compute scores for each cluster based on individual labels per sequence
     scores = interpreter.score_clusters(
         scores   = labels_train, # Labels used to compute score (either as loaded by Preprocessor, or put your own labels here)
