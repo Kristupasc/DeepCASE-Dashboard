@@ -53,9 +53,9 @@ layout = html.Div([
             'overflow': 'hidden',
             'textOverflow': 'ellipsis',
         },
-        page_size=10)
+        page_size=10),
+dcc.Store(id='selected row'+ id_str)
 
 ],
     # dcc.Store stores the intermediate value
-    dcc.Store(id='selected row'+ id_str),
     style=style.content_style)
