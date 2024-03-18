@@ -7,15 +7,10 @@ from dash import html, dcc, callback
 from Dashboard.data import createDf
 import io
 from dash.dependencies import Input, Output, State
+import Dashboard.app.main.recources.style as style
 
-# TODO: create and transfer to style file
 
-# Define the main content style
-content_style = {
-    'margin-left': '25%',
-    'margin-right': '5%',
-    'padding': '20px 10px'
-}
+
 
 dash.register_page(__name__, path="/database", name="Database", title="Database", order=3)
 
@@ -53,7 +48,7 @@ layout = html.Div([
         dcc.Location(id='url', refresh=False),
         html.Div(id='output-data-upload')
     ]),
-], style=content_style)
+], style=style.content_style)
 
 
 # Called when a user uploads a new file
