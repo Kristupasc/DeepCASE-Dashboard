@@ -8,14 +8,14 @@ class DAO(object):
         self.data_object = Database()
 
         # Reset the database for testing purpose
-        self.data_object.drop_database()
-        self.data_object.create_tables()
+        # self.data_object.drop_database()
+        # self.data_object.create_tables()
 
     ########################################################################
     #                             Saving data                              #
     ########################################################################
 
-    def save_sequencing_results(self, context, events, labels, mapping, input_file_df):
+    def save_sequencing_results(self, context, events, labels, mapping):
         """
         Saves context, events, labels, mapping into data object.
         Parameters
@@ -57,14 +57,18 @@ class DAO(object):
         joined_sequence_df.rename(
             columns={'0mapping_value': 'mapping_value', '0risk_label': 'risk_label', 'index': 'id_sequence'},
             inplace=True)
-        input_file_df.reset_index(inplace=True)
-        input_file_df.rename(columns={'index': 'id_event'}, inplace=True)
+
 
         self.data_object.store_sequences(sequence_df=joined_sequence_df)
         self.data_object.store_context(context_df=melted_context_df)
         self.data_object.store_mapping(mapping=mapping)
-        self.data_object.store_input_file(input_file_df)
+
         return
+
+    def save_input(self, input_file_df):
+        input_file_df.reset_index(inplace=True)
+        input_file_df.rename(columns={'index': 'id_event'}, inplace=True)
+        self.data_object.store_input_file(input_file_df)
 
     def save_clustering_results(self, clusters, confidence, attention):
         clusters_df = pd.DataFrame(clusters, columns=['id_cluster'])

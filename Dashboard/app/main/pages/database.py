@@ -4,7 +4,7 @@ from datetime import datetime
 import dash
 import pandas as pd
 from dash import html, dcc, callback
-from Dashboard.data import createDf
+from Dashboard.data.upload import create_database
 import io
 from dash.dependencies import Input, Output, State
 import Dashboard.app.main.recources.style as style
@@ -13,27 +13,6 @@ import Dashboard.app.main.recources.style as style
 
 
 dash.register_page(__name__, path="/database", name="Database", title="Database", order=3)
-
-# layout = html.Div([
-#     html.H1('Database'),
-#     html.H2('All Sequences'),
-#             html.Div(
-#                 [
-#                     dash.dash_table.DataTable(
-#                         id='cluster-details',
-#                         columns=[
-#                             {"name": "Time", "id": "Time"},
-#                             {"name": "Source", "id": "Source"},
-#                             {"name": "Type", "id": "Type"},
-#                             {"name": "Weight", "id": "Weight"},
-#                             {"name": "Risk Label", "id": "Risk Label"}
-#                         ],                        data=dummyData.df_clusters.to_dict('records'),
-#                         style_table={'overflowY': 'auto'}
-#                     )
-#                 ],
-#                 className="table",
-#             )
-#         ], style=content_style)
 
 layout = html.Div([
     html.H1('Database'),
@@ -51,7 +30,7 @@ layout = html.Div([
 ], style=style.content_style)
 
 
-# Called when a user uploads a new file
+# Called when a user uploads a new file => starts DeepCASE
 @callback(Output('output-data-upload', 'children', allow_duplicate=True),
           Input('upload-data', 'contents'),
           State('upload-data', 'filename'),
@@ -61,14 +40,14 @@ layout = html.Div([
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
         children = [
-            createDf.parse_contents(c, n, d) for c, n, d in
+            create_database.parse_contents(c, n, d) for c, n, d in
             zip(list_of_contents, list_of_names, list_of_dates)]
         return children
 
 
-# Called when at the start
+# Called when at the start => retrieves the events table
 @callback(Output('output-data-upload', 'children'),
           Input('url', 'pathname'))
 def display_table(pathname):
-    table = createDf.displayDataFile()
+    table = create_database.displayDataFile()
     return table
