@@ -48,3 +48,6 @@ def possible_clusters()-> set():
     df = df[['clusters']]
     df['clusters'] = pd.to_numeric(df['clusters'])
     return set(df['clusters'].values)
+
+def formatContext(cluster: int, id_str: str) -> pd.DataFrame:
+    pass

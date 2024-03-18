@@ -30,6 +30,7 @@ layout = html.Div([
         ],
         data=df.to_dict('records'),
         filter_action='native',
+        row_selectable="single",
         style_data={
             'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
             'overflow': 'hidden',
@@ -46,6 +47,7 @@ layout = html.Div([
         ],
         data=df.to_dict('records'),
         filter_action='native',
+
         style_data={
             'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
             'overflow': 'hidden',
