@@ -56,11 +56,11 @@ class ProcessorAccessObject(object):
         """
         # clusters = self.processor.clustering(self.context_train, self.events_train)
         clusters = self.processor.clustering(self.context, self.events)
-        print(type(clusters),clusters.shape)
+        #print(type(clusters),clusters.shape)
         # DAOOOOOOOOO clusters
         # confidence, attention = self.processor.get_attention(self.context_train, self.events_train)
         confidence, attention = self.processor.get_attention(self.context, self.events)
-        print(type(attention),attention.get_shape())
+        #print(type(attention),attention.get_shape())
         self.dao.save_clustering_results(clusters, confidence, attention)
         return
 
