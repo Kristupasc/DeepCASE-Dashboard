@@ -7,7 +7,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(script_dir, 'deepcase.db')
 class Database(object):
     def __init__(self):
-        self.conn = sqlite3.connect(file_path)
+        self.conn = sqlite3.connect(file_path, check_same_thread=False)
         self.cur = self.conn.cursor()
         #self.create_tables()
         return
@@ -33,16 +33,7 @@ class Database(object):
                                )''')
         self.conn.commit()
         return
-    def store_input_file(self, input_file_df):
-        input_file_df.to_sql('events', self.conn, if_exists='replace', index=False, dtype={
-            'id_event': 'INTEGER',
-            'timestamp': 'REAL',
-            'machine': 'TEXT',
-            'event': 'TEXT',
-            'label': 'INT'
-        })
-        self.conn.commit()
-        return
+
 
     def drop_database(self):
         # Fetch the list of all tables in the database
@@ -57,12 +48,14 @@ class Database(object):
     ########################################################################
     #                         Data insertion                               #
     ########################################################################
-    def store_file(self, file_df: pd.DataFrame):
-        # Old method
-        file_df.reset_index(inplace=True)
-        file_df.rename(columns={'index': 'id_event'}, inplace=True)
-        # TODO: Remove switch to append after testing is done
-        file_df.to_sql('events', self.conn, if_exists='replace', index=False)
+    def store_input_file(self, input_file_df):
+        input_file_df.to_sql('events', self.conn, if_exists='replace', index=False, dtype={
+            'id_event': 'INTEGER',
+            'timestamp': 'REAL',
+            'machine': 'TEXT',
+            'event': 'TEXT',
+            'label': 'INT'
+        })
         self.conn.commit()
         return
 

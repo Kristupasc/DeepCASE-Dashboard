@@ -28,7 +28,7 @@ class ProcessorAccessObject(object):
     def create_sequences(self, path):
         self.context, self.events, self.labels, mapping = self.processor.sequence_data(path)
         input_file_df = pd.read_csv(path)
-        self.dao.save_sequencing_results(self.context, self.events, self.labels, mapping, input_file_df)
+        self.dao.save_sequencing_results(self.context, self.events, self.labels, mapping)
 
         # self.events_train = self.events[:self.events.shape[0] // 5]
         # self.events_test = self.events[self.events.shape[0] // 5:]
