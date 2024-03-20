@@ -4,7 +4,6 @@ import dash
 import pandas as pd
 from dash import html, dcc, callback, dash_table
 from dash.dependencies import Input, Output, State
-from Dashboard.data import dummyData, createDf
 import plotly.graph_objs as go
 import Dashboard.app.main.recources.style as style
 # create csv x2

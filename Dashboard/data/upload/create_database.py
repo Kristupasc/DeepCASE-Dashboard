@@ -5,8 +5,6 @@ import dash
 import pandas as pd
 from dash import html
 import io
-from Dashboard.data import dummyData
-from datetime import datetime
 from Dashboard.data.dao.dao import DAO
 
 global dao
@@ -16,6 +14,7 @@ dao = DAO()
 #fill in events table
 #call DeepCASE to process file
 
+#todo: concat files
 def parse_contents(contents, filename, date):
     global dao
     content_type, content_string = contents.split(',')
@@ -42,9 +41,6 @@ def parse_contents(contents, filename, date):
 # Returns dash table with all stored data
 def displayDataFile():
     global dao
-    # if not os.path.isfile("sequence_data.csv"):
-    #     create_empty_data()
-    # df = pd.read_csv("sequence_data.csv")
     df = dao.get_initial_table()
     return dash.dash_table.DataTable(
         # Return a table from data file

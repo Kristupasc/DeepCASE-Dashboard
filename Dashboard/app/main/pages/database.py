@@ -10,8 +10,6 @@ from dash.dependencies import Input, Output, State
 import Dashboard.app.main.recources.style as style
 
 
-
-
 dash.register_page(__name__, path="/database", name="Database", title="Database", order=3)
 
 layout = html.Div([

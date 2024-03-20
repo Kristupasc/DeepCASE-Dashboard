@@ -3,7 +3,6 @@ import dash
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 
-from Dashboard.data import dummyData
 from server import app, pao
 
 from dash import Dash, html, dcc

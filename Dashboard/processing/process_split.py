@@ -96,8 +96,8 @@ class ProcessorAccessObject(object):
         self.create_sequences('alerts.csv')
         self.train_context_builder()
         self.create_interpreter_clusters()
-        self.manual_mode()
-        self.automatic_mode()
+        # self.manual_mode()
+        # self.automatic_mode()
 
 if __name__ == '__main__':
     pao = ProcessorAccessObject()

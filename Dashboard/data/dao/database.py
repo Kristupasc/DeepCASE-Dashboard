@@ -11,7 +11,7 @@ file_path = os.path.join(script_dir, 'deepcase.db')
 
 class Database(object):
     def __init__(self):
-        self.conn = sqlite3.connect(file_path)
+        self.conn = sqlite3.connect(file_path, check_same_thread=False)
         self.cur = self.conn.cursor()
         # self.create_tables()
         return
