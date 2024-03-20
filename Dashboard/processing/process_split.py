@@ -27,9 +27,8 @@ class ProcessorAccessObject(object):
 
     def create_sequences(self, path):
         self.context, self.events, self.labels, mapping = self.processor.sequence_data(path)
-        # CALL DAO
-        # events_df = pd.read_csv(path)
-        self.dao.save_sequencing_results(self.context, self.events, self.labels, mapping)
+        input_file_df = pd.read_csv(path)
+        self.dao.save_sequencing_results(self.context, self.events, self.labels, mapping, input_file_df)
 
         # self.events_train = self.events[:self.events.shape[0] // 5]
         # self.events_test = self.events[self.events.shape[0] // 5:]
@@ -96,8 +95,8 @@ class ProcessorAccessObject(object):
         self.create_sequences('alerts.csv')
         self.train_context_builder()
         self.create_interpreter_clusters()
-        # self.manual_mode()
-        # self.automatic_mode()
+        # # pao.manual_mode()
+        # # pao.automatic_mode()
 
 if __name__ == '__main__':
     pao = ProcessorAccessObject()
