@@ -101,8 +101,12 @@ class Database(object):
 
     def store_clusters(self, clusters_df: pd.DataFrame):
         clusters_old_df = pd.read_sql_query('''SELECT * FROM sequences''', self.conn)
+
+        print(clusters_df)
+        print(clusters_old_df)
         # Append updated attention column to the old attention dataframe
         merged_df = clusters_old_df.merge(clusters_df, on='id_sequence', how='left', suffixes=('', '_updated'))
+
 
         # Ensure 'attention' and 'attention_updated' columns are of a numeric type
         cols_to_convert = ['id_cluster', 'id_cluster_updated']
