@@ -10,10 +10,6 @@ from Dashboard.data.dao.dao import DAO
 global dao
 dao = DAO()
 
-#get csv file from dashboard
-#fill in events table
-#call DeepCASE to process file
-
 #todo: concat files
 def parse_contents(contents, filename, date):
     global dao
@@ -34,7 +30,9 @@ def parse_contents(contents, filename, date):
         ])
 
     return html.Div([
-        html.H5(filename),
+        html.H5('File Uploaded Successfully: ' + filename),
+        html.Button('Start Security Analysis'),
+        html.Hr(),
         displayDataFile()
     ])
 

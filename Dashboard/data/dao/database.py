@@ -49,7 +49,7 @@ class Database(object):
     #                         Data insertion                               #
     ########################################################################
     def store_input_file(self, input_file_df):
-        input_file_df.to_sql('events', self.conn, if_exists='replace', index=False, dtype={
+        input_file_df.to_sql('events', self.conn, if_exists='append', index=False, dtype={
             'id_event': 'INTEGER',
             'timestamp': 'REAL',
             'machine': 'TEXT',
@@ -127,9 +127,6 @@ class Database(object):
 
 
     def get_sequences(self):
-        # columns: id_sequence, id_cluster,  name,machine,timestamp, risk_label
-        #
-        result = pd.read_sql_query('''''', self.conn)
         # columns: main_event_name, timestamp, machine,  id_cluster, risk_label
         result = pd.read_sql_query('''SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label 
                                         FROM mapping, sequences, events 
@@ -149,14 +146,9 @@ class Database(object):
         return result
 
     def get_clusters(self):
-        # columns:
-        result = pd.read_sql_query('''''', self.conn)
         result = pd.read_sql_query('''SELECT * FROM clusters''', self.conn)
         return result
 
-    def get_context(self):
-        # columns:
-        result = pd.read_sql_query('''''', self.conn)
     def get_sequences_per_cluster(self, cluster_id):
 
         query = "SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
