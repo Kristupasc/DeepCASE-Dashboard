@@ -18,7 +18,7 @@ class Database(object):
         self.cur.execute('''CREATE TABLE IF NOT EXISTS mapping
                                (id INTEGER PRIMARY KEY, name TEXT)''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS clusters
-                               (id_cluster INTEGER PRIMARY KEY, score INT, risk label TEXT)''')
+                               (id_cluster INTEGER PRIMARY KEY, name_cluster TEXT, score INT, risk label TEXT)''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS sequences
                                (id_sequence INTEGER PRIMARY KEY, id_cluster INTEGER, mapping_value INT, risk_label TEXT,
                                FOREIGN KEY (id_cluster) REFERENCES clusters(id_cluster),
