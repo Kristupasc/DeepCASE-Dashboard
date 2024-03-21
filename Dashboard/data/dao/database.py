@@ -158,7 +158,7 @@ class Database(object):
 
     def get_sequences_per_cluster(self, cluster_id):
         print(float(cluster_id))
-        query = "SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
+        query = "SELECT sequences.id_sequence, mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
                 "FROM mapping, sequences, events " \
                 "WHERE sequences.mapping_value = mapping.id " \
                 "AND events.id_event = sequences.id_sequence " \
