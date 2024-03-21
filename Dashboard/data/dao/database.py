@@ -134,7 +134,14 @@ class Database(object):
                                         AND events.id_event = sequences.id_sequence''', self.conn)
         return result
 
-    #TODO: create method to get only one sequence by id + same for context (?)
+    #TODO: create method to get only one sequence by id
+    def get_sequence_by_id(self, sequence_id):
+        query = "SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
+                "FROM mapping, sequences, events " \
+                "WHERE sequences.mapping_value = mapping.id " \
+                "AND events.id_event = " + str(sequence_id)
+        result = pd.read_sql_query(query, self.conn)
+        return result
 
     def get_context_by_sequence_id(self, sequence_id):
         # columns:  event_position, event_name, attention
@@ -150,11 +157,12 @@ class Database(object):
         return result
 
     def get_sequences_per_cluster(self, cluster_id):
-
+        print(float(cluster_id))
         query = "SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
                 "FROM mapping, sequences, events " \
                 "WHERE sequences.mapping_value = mapping.id " \
                 "AND events.id_event = sequences.id_sequence " \
-                "AND sequences.id_cluster = " + str(cluster_id)
+                "AND sequences.id_cluster = " + str(float(cluster_id))
+        print(query)
         result = pd.read_sql_query(query, self.conn)
         return result

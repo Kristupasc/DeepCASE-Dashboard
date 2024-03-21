@@ -64,19 +64,20 @@ class ProcessorAccessObject(object):
                     * -2: Label not in training
                     * -3: Closest cluster > epsilon
         """
-        # prediction = self.processor.predict(self.context_test, self.events_test)
         prediction = self.processor.predict(self.context, self.events)
-
-        # confidence, attention = self.processor.get_attention(self.context_test, self.events_test)
+        prediction_df = pd.DataFrame(prediction, columns=['prediction'])
+        print(prediction_df)
         confidence, attention = self.processor.get_attention(self.context, self.events)
         return
 
+#ToDo: add status flag as input parameter [waiting for file, processing, ready for analysis]
     def run_DeepCASE(self):
         self.create_sequences('alerts.csv')
         self.train_context_builder()
         self.create_interpreter_clusters()
         self.manual_mode()
-        #self.automatic_mode()
+        self.automatic_mode()
+        #return status_flag
 
 if __name__ == '__main__':
     pao = ProcessorAccessObject()
