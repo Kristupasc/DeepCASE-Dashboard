@@ -83,3 +83,6 @@ class DAO(object):
 
     def get_sequences_per_cluster(self, cluster_id):
         return self.data_object.get_sequences_per_cluster(cluster_id)
+
+    def get_mapping(self):
+        return self.data_object.get_mapping()

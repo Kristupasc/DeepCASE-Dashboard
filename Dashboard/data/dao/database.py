@@ -166,3 +166,10 @@ class Database(object):
         print(query)
         result = pd.read_sql_query(query, self.conn)
         return result
+
+
+    def get_mapping(self):
+        query = "SELECT  mapping.name, mapping.id " \
+                "FROM mapping "
+        result = pd.read_sql_query(query, self.conn)
+        return result
