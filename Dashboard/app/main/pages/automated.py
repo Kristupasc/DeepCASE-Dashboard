@@ -1,9 +1,10 @@
 import dash
 from dash import html, dash_table, dcc, callback, Output, Input
 import pandas as pd
+import Dashboard.app.main.recources.loaddata as load
 import Dashboard.app.main.recources.style as style
 dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", title="Semi-automatic", order=2)
-
+from Dashboard.app.main.pagescallback.automated import *
 ########################################################################
 #   Semi-automatic objects page(Makes use of the callback addition)    #
 ########################################################################
@@ -24,7 +25,7 @@ layout = html.Div([
         columns=[
             {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
             {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
-            {'name': 'Event', 'id': 'id'+id_str, 'type': 'numeric', 'hideable': True},
+            {'name': 'Event', 'id': 'id_cluster'+id_str, 'type': 'numeric', 'hideable': True},
             {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
             {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric', 'editable': True},
         ],
