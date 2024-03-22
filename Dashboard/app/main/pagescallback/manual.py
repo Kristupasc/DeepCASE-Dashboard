@@ -117,3 +117,4 @@ def get_name_cluster(data):
         for z in k:
             if z[0] == data:
                 return z[1]
+    return "Cluster not selected"
