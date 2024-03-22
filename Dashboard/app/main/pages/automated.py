@@ -35,7 +35,7 @@ layout = html.Div([
             {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
             {'name': 'Event', 'id': 'id_cluster'+id_str, 'type': 'numeric', 'hideable': True},
             {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
-            {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric', 'editable': True},
+            {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric', 'editable': False},
         ],
         data=df.to_dict('records'),
         filter_action='native',

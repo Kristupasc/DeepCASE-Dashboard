@@ -10,6 +10,7 @@ import pandas as pd
 import Dashboard.app.main.recources.loaddata as load
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.manual import *
+from Dashboard.app.main.pagescallback.manual1 import *
 ########################################################################
 #   Manual objects page(Makes use of the callback addition)    #
 ########################################################################
