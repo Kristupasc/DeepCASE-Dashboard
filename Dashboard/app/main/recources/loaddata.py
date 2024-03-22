@@ -56,11 +56,16 @@ def get_event_id(event_text):
     except:
         return event_text
 
-def get_event_name(event_id):
-    dao = DAO()
-    df = dao.get_mapping()
-    # look if it exists, it otherwise produces an error, catch it and return the same id.
-    try:
-        return df[df["id"] == event_id].iloc[0].at["name"]
-    except:
-        return event_id
+# def get_event_name(event_id):
+#     dao = DAO()
+#     df = dao.get_mapping()
+#     # look if it exists, it otherwise produces an error, catch it and return the same id.
+#     try:
+#         return df[df["id"] == event_id].iloc[0].at["name"]
+#     except:
+#         return event_id
+
+# def update_clustername(id, name):
+#     dao = DAO()
+#     dao.set_clustername(id, name)
+# update_clustername("0", "oi")

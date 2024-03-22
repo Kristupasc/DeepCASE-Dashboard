@@ -11,6 +11,12 @@ from Dashboard.app.main.pagescallback.automated import *
 
 layout = html.Div([
     html.H1('Semi-automatic'),
+    # A signal to update the dropdown menu regularly
+    dcc.Interval(
+        id='interval' + id_str,
+        interval=60 * 1000,  # in milliseconds
+        n_intervals=0
+    ),
     # drop down menu to select cluster
     dcc.Dropdown(
             id="filter_dropdown"+ id_str,
@@ -19,6 +25,7 @@ layout = html.Div([
             multi=False,
             value=list([i[0] for i in set_cluster])
         ),
+
     # data table to display the cluster
     dash_table.DataTable(
         id='semi-automatic',

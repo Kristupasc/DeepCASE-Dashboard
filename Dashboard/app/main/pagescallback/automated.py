@@ -94,3 +94,16 @@ def display_context(row, cluster):
         df = load.formatContext(cluster, row, cid_str)
         return df.to_dict("records")
     raise PreventUpdate
+
+@callback(
+    Output("filter_dropdown"+ id_str, 'options'),
+    Input('interval'+ id_str, 'n_intervals')
+)
+def update_options_dropdown(n):
+    return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
+@callback(
+    Output("filter_dropdown"+ id_str, 'value'),
+    Input('interval'+ id_str, 'n_intervals')
+)
+def update_options_dropdown(n):
+    return list([i[0] for i in load.possible_clusters()])
