@@ -33,7 +33,6 @@ def store_selected_cluster(state):
 
     """
     if isinstance(state, int):
-        #TODO check for valid cluster.
         return state
     raise PreventUpdate
 @callback(

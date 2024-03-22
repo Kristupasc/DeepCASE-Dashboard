@@ -14,10 +14,10 @@ layout = html.Div([
     # drop down menu to select cluster
     dcc.Dropdown(
             id="filter_dropdown"+ id_str,
-            options=[{"label": st, "value": st} for st in set_cluster],
+            options=[{"label": i[1], "value": i[0]} for i in set_cluster],
             placeholder="-Select a Cluster-",
             multi=False,
-            value=list(set_cluster)
+            value=list([i[0] for i in set_cluster])
         ),
     # data table to display the cluster
     dash_table.DataTable(

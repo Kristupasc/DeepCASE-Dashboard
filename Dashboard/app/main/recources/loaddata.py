@@ -24,12 +24,16 @@ def formatSequenceCluster(cluster: int, id_str: str)-> pd.DataFrame:
     df = df.rename(columns =dict_id)
     return df
 
-def possible_clusters()-> set():
+def possible_clusters()-> [tuple]:
     dao = DAO()
-    df = dao.get_sequence_result()
-    df = df[['id_cluster']]
+    df = dao.get_clusters_result()
+    df = df[['id_cluster', 'name_cluster']]
+    df['id_cluster'] = pd.Series(df['id_cluster'], dtype="string")
+    df['name_cluster'] = pd.Series(df['name_cluster'], dtype="string")
+    df['name_cluster'].fillna(df['id_cluster'], inplace=True)
     df['id_cluster'] = pd.to_numeric(df['id_cluster'])
-    return set(df['id_cluster'].values)
+    df = list(df.itertuples(index=False, name=None))
+    return df
 
 def formatContext(cluster: int, index: int,id_str: str) -> pd.DataFrame:
     dao = DAO()
