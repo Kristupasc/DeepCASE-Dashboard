@@ -11,6 +11,7 @@ from Dashboard.app.main.pagescallback.automated import *
 
 layout = html.Div([
     html.H1('Semi-automatic'),
+    html.H2('cluster name unknown', id='cluster name' + id_str),
     # A signal to update the dropdown menu regularly
     dcc.Interval(
         id='interval' + id_str,
@@ -45,6 +46,7 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
+    html.H2('Context of the selected event', id='sequence name' + cid_str),
     # Table to show the context of a sequence
     dash_table.DataTable(
         id='Context information'+cid_str,

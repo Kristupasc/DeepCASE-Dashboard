@@ -107,3 +107,13 @@ def update_options_dropdown(n):
 )
 def update_options_dropdown(n):
     return list([i[0] for i in load.possible_clusters()])
+@callback(
+    Output('cluster name' + id_str, 'children'),
+    Input('selected cluster' + id_str,"data")
+)
+def get_name_cluster(data):
+    if isinstance(data, int):
+        k =  load.possible_clusters()
+        for z in k:
+            if z[0] == data:
+                return z[1]
