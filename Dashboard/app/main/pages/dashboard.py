@@ -16,7 +16,7 @@ from dash import html, dash_table, dcc, callback, Output, Input
 import pandas as pd
 import Dashboard.app.main.recources.loaddata as load
 import Dashboard.app.main.recources.style as style
-from Dashboard.app.main.pagescallback.automated import *
+from Dashboard.app.main.pagescallback.dashboard import *
 ########################################################################
 #   Dash objects page(Makes use of the callback addition)    #
 ########################################################################
