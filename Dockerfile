@@ -1,0 +1,15 @@
+FROM python:3.8-slim
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+# For debugging purposes and control group
+RUN ls -la && find .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 8050
+
+CMD ["python", "./Dashboard/app/main/app.py"]
