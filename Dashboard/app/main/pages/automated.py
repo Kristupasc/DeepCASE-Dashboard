@@ -51,7 +51,7 @@ layout = html.Div([
     dash_table.DataTable(
         id='Context information'+cid_str,
         columns=[
-            {'name': 'Position', 'id': 'event_position'+cid_str, 'type': 'numeric', 'hideable': True},
+            {'name': 'Position(top old, bottom newest)', 'id': 'event_position'+cid_str, 'type': 'numeric', 'hideable': True},
             {'name': 'event', 'id': 'event'+cid_str, 'type': 'text', 'hideable': True},
             {'name': 'Event_name', 'id': 'name'+cid_str, 'type': 'text', 'hideable': True},
             {'name': 'Attention', 'id': 'attention'+cid_str, 'type': 'text'}
