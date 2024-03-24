@@ -21,6 +21,7 @@ dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", ti
 layout = html.Div([
     html.H1('Manual'),
     html.H2('cluster name unknown', id='cluster name' + id_str),
+    html.Button('Chose next cluster', id='random' + id_str, n_clicks=0),
     # A signal to update the dropdown menu regularly
     dcc.Interval(
         id='interval' + id_str,
@@ -56,7 +57,29 @@ layout = html.Div([
         },
         page_size=10),
     ################## Editable risk values
-    dcc.Input(id='risk_label' + id_str, type='number', step=1),
+    html.Button('Chose next sequence', id='random' + qid_str, n_clicks=0),
+    html.H3(id='doneCluster' + qid_str),
+    html.H3("Event to be labeled."),
+    dash_table.DataTable( id='chosen sequence manual',
+        columns=[
+            {'name': 'Date', 'id': 'timestamp' + qid_str, 'type': 'text'},
+            {'name': 'Source', 'id': 'machine' + qid_str, 'type': 'text'},
+            {'name': 'Event', 'id': 'id_cluster' + qid_str, 'type': 'numeric', 'hideable': True},
+            {'name': 'Event_text', 'id': 'name' + qid_str, 'type': 'text', 'hideable': True},
+            {'name': 'Risk', 'id': 'risk_label' + qid_str, 'type': 'numeric', 'editable': False},
+        ],
+        data=(pd.DataFrame()).to_dict('records'),
+        filter_action='native',
+        row_selectable="single",
+        style_data={
+            'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
+            'overflow': 'hidden',
+            'textOverflow': 'ellipsis',
+        },
+        page_size=10),
+    dcc.Input(placeholder='risk label', id='risk_label' + qid_str, type='number', step=1),
+    html.Button('Submit change', id='submit-val' + qid_str, n_clicks=0),
+
 
 
     ################## Display context
@@ -70,7 +93,7 @@ layout = html.Div([
             {'name': 'Event_name', 'id': 'name' + cid_str, 'type': 'text', 'hideable': True},
             {'name': 'Attention', 'id': 'attention' + cid_str, 'type': 'text'}
         ],
-        data=df.to_dict('records'),
+        data=(pd.DataFrame()).to_dict('records'),
         filter_action='native',
 
         style_data={

@@ -11,7 +11,8 @@ import Dashboard.app.main.recources.loaddata as load
 ########################################################################
 #suffix for all the ids that might be the same.
 id_str = "_ma"
-cid_str = "_cima"
+cid_str = "_cma"
+qid_str = "-qma"
 cluster = 0
 df = load.formatSequenceCluster(0, id_str)
 set_cluster = load.possible_clusters()
@@ -122,11 +123,11 @@ def get_name_cluster(data):
 ########################################################################################
 # Editable callback extra functionality special for manual.
 ########################################################################################
-@callback(
-    Input('risk label'+id_str, "value"),
-    Input('selected row' + id_str,"data")
-)
-def set_risk_label(value, data):
-    if isinstance(value, int) and isinstance(data, int):
-        pass
-    #TODO: keep
+# @callback(
+#     Input('risk label'+id_str, "value"),
+#     Input('selected row' + id_str,"data")
+# )
+# def set_risk_label(value, data):
+#     if isinstance(value, int) and isinstance(data, int):
+#         pass
+#     #TODO: keep
