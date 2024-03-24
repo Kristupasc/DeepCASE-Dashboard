@@ -1,4 +1,5 @@
 import os
+import matplotlib.dates as mdates
 
 import dash
 import pandas as pd
@@ -6,6 +7,8 @@ from dash import html, dcc, callback, dash_table
 from dash.dependencies import Input, Output, State
 import plotly.graph_objs as go
 import Dashboard.app.main.recources.style as style
+from Dashboard.data.dao.dao import DAO
+
 # create csv x2
 # upload through database
 # make it cluster on dashboard
@@ -17,6 +20,39 @@ import pandas as pd
 import Dashboard.app.main.recources.loaddata as load
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.dashboard import *
+
+def choose_risk(weight):
+    # A weight can be between 0 and 100. The higher the weight, the higher the risk
+    if weight == 0:
+        return "Unlabeled"
+    elif weight < 1:
+        return "Info"
+    elif weight < 3:
+        return "Low"
+    elif weight < 5:
+        return "Medium"
+    elif weight < 7:
+        return "High"
+    elif weight < 9:
+        return "Suspicious"
+    else:
+        return "Attack"
+
+# Define color scheme
+colors = {
+    "background": "#FFFFFF",  # white background
+    "text": "#000000",  # black text for visibility
+    "Risk Label": {
+        "Info": "#45B6FE",  # blue
+        "Low": "#FFD700",  # gold
+        "Medium": "#FF8C00",  # darkorange
+        "High": "#FF4500",  # orangered
+        "Attack": "#DC143C",  # crimson
+        "Suspicious": "#800080",  # purple
+        "Unlabeled": "#808080"  # grey
+    }
+}
+
 ########################################################################
 #   Dash objects page(Makes use of the callback addition)    #
 ########################################################################
@@ -47,7 +83,7 @@ layout = html.Div([
             {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
             {'name': 'Event', 'id': 'id_cluster'+id_str, 'type': 'numeric', 'hideable': True},
             {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
-            {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric', 'editable': True},
+            {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric'},
         ],
         data=df.to_dict('records'),
         filter_action='native',
@@ -77,6 +113,18 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
+    html.Div(
+        [
+            html.H2("All Clusters", className="graph__title"),
+            dcc.Graph(id="scatter-plot"),
+            dcc.Interval(
+                id="scatter-update",
+                interval=int(5000),
+                n_intervals=0,
+            ),
+        ],
+        className="graph",
+    ),
     # Objects to store intermediate values, selected by the above table.
 dcc.Store(id='selected cluster'+ id_str),
 dcc.Store(id='selected row'+ id_str)
@@ -84,3 +132,56 @@ dcc.Store(id='selected row'+ id_str)
 ],
     # dcc.Store stores the intermediate value
     style=style.content_style)
+
+
+@callback(
+    Output("scatter-plot", "figure"),
+    [Input("filter_dropdown"+ id_str, "value")]
+)
+def generate_scatter_plot(selected_cluster):
+    print(selected_cluster)
+    traces = []
+    dao = DAO()
+    x = []
+    y = []
+    colors_graph = []
+    # check if selected_cluster is a list
+    if not isinstance(selected_cluster, list):
+        data = dao.get_sequences_per_cluster(selected_cluster)
+        for sequence in data.to_dict('records'):
+            timestamp = sequence["timestamp"]
+            # convert the unix timestamp to date
+            timestamp = pd.to_datetime(timestamp, unit='s')
+            risk_label = sequence["risk_label"]
+            x.append(timestamp)
+            y.append(risk_label)
+            colors_graph.append(colors["Risk Label"][choose_risk(int(risk_label))])
+    traces.append(
+        go.Scatter(
+            x=x,
+            y=y,
+            mode='markers',
+            opacity=0.7,
+            marker={
+                'size': 15,
+                'line': {'width': 0.5, 'color': 'white'},
+                'color': colors_graph,
+            },
+            name="Sda"
+        )
+    )
+
+    return {
+        "data": traces,
+        "layout": go.Layout(
+            xaxis={"title": "Timeline"},
+            yaxis={"title": "Security score"},
+            margin={"l": 40, "b": 40, "t": 10, "r": 10},
+            legend={"x": 0, "y": 1},
+            hovermode="closest",
+            transition={"duration": 500},
+            plot_bgcolor=colors["background"],
+            paper_bgcolor=colors["background"],
+            font={"color": colors["text"]},
+        ),
+    }
