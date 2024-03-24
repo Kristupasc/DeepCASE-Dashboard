@@ -7,11 +7,11 @@ from dash.exceptions import PreventUpdate
 
 import Dashboard.app.main.recources.loaddata as load
 ########################################################################
-#   Semi-automatic callback (All ids need to match 100%)               #
+#   Manual callback (All ids need to match 100%)               #
 ########################################################################
 #suffix for all the ids that might be the same.
-id_str = "_sa"
-cid_str = "_cisa"
+id_str = "_ma"
+cid_str = "_cima"
 cluster = 0
 df = load.formatSequenceCluster(0, id_str)
 set_cluster = load.possible_clusters()
@@ -36,7 +36,7 @@ def store_selected_cluster(state):
         return state
     raise PreventUpdate
 @callback(
-    Output("semi-automatic", "data"),
+    Output("manual", "data"),
     Input('selected cluster' + id_str, "data")
 )
 def update_table_cluster(state):
@@ -59,7 +59,7 @@ def update_table_cluster(state):
 
 @callback(
     Output('selected row' + id_str, "data"),
-    Input("semi-automatic", 'selected_rows')
+    Input("manual", 'selected_rows')
 )
 def store_context_row(state):
     """
