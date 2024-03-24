@@ -1,7 +1,7 @@
 from io import StringIO
 
 import dash
-from dash import html, dash_table, dcc, callback, Output, Input
+from dash import html, dash_table, dcc, callback, Output, Input,ctx
 import pandas as pd
 from dash.exceptions import PreventUpdate
 
@@ -123,11 +123,26 @@ def get_name_cluster(data):
 ########################################################################################
 # Editable callback extra functionality special for manual.
 ########################################################################################
-# @callback(
-#     Input('risk label'+id_str, "value"),
-#     Input('selected row' + id_str,"data")
-# )
-# def set_risk_label(value, data):
-#     if isinstance(value, int) and isinstance(data, int):
-#         pass
-#     #TODO: keep
+@callback(
+    Output("successful"+qid_str, "children"),
+    Input('risk_label'+qid_str, "value"),
+    Input('selected row' + id_str,"data"),
+    Input('selected cluster' + id_str, "data"),
+    Input('submit' + qid_str, "n_clicks")
+)
+def set_risk_label(value, row, cluster, n_clicks):
+    if 'submit' + qid_str == ctx.triggered_id:
+        if isinstance(row, int) and isinstance(cluster, int) and isinstance(value, int):
+            if load.set_riskvalue(cluster_id=cluster,row =row , risk_value=value):
+                return "Successful, saved."
+    return "Nothing saved"
+
+@callback(
+    Output("chosen sequence manual", "data"),
+    Input('selected row' + id_str,"data"),
+    Input('selected cluster' + id_str, "data"),
+)
+def display_judged_sequence( row, cluster):
+    if isinstance(row, int) and isinstance(cluster, int):
+      return load.selectEventFormatted(cluster, row, qid_str).to_dict('records')
+    return pd.DataFrame().to_dict('records')

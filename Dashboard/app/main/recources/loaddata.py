@@ -46,6 +46,23 @@ def formatContext(cluster: int, index: int,id_str: str) -> pd.DataFrame:
         dict_id[i] = i + id_str
     df = df.rename(columns =dict_id)
     return df
+def selectEventFormatted(cluster: int,index: int,id_str: str) -> pd.DataFrame:
+    dao = DAO()
+    df = dao.get_sequences_per_cluster(cluster).reindex()
+    df = df.loc[[index]]
+    df = df[['machine', 'timestamp',  'name','id_cluster', 'risk_label']]
+    df['timestamp'] = pd.DatetimeIndex(pd.to_datetime(df['timestamp'], unit='s')).strftime(format_time)
+
+    df['risk_label'] = pd.to_numeric(df['risk_label'])
+    df['machine'] = pd.Series(df['machine'], dtype="string")
+    df['name'] = pd.Series(df['name'], dtype="string")
+    df['timestamp'] = pd.Series(df['timestamp'], dtype="string")
+    df['id_cluster'] = pd.Series(df['id_cluster'], dtype="string")
+    dict_id: dict[str, str] = dict()
+    for i in df.columns:
+        dict_id[i] = i + id_str
+    df = df.rename(columns =dict_id)
+    return df
 
 def get_event_id(event_text):
     dao = DAO()
@@ -56,16 +73,9 @@ def get_event_id(event_text):
     except:
         return event_text
 
-# def get_event_name(event_id):
-#     dao = DAO()
-#     df = dao.get_mapping()
-#     # look if it exists, it otherwise produces an error, catch it and return the same id.
-#     try:
-#         return df[df["id"] == event_id].iloc[0].at["name"]
-#     except:
-#         return event_id
+def set_riskvalue(cluster_id, row,  risk_value):
+    dao = DAO()
+    df = dao.get_sequences_per_cluster(cluster_id)
+    event_id =df.iloc[row].at["id_sequence"]
+    return dao.set_riskvalue(event_id, risk_value)
 
-# def update_clustername(id, name):
-#     dao = DAO()
-#     dao.set_clustername(id, name)
-# update_clustername("0", "oi")
