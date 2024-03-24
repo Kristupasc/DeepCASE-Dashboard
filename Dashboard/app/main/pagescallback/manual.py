@@ -118,3 +118,15 @@ def get_name_cluster(data):
             if z[0] == data:
                 return z[1]
     return "Cluster not selected"
+
+########################################################################################
+# Editable callback extra functionality special for manual.
+########################################################################################
+@callback(
+    Input('risk label'+id_str, "value"),
+    Input('selected row' + id_str,"data")
+)
+def set_risk_label(value, data):
+    if isinstance(value, int) and isinstance(data, int):
+        pass
+    #TODO: keep

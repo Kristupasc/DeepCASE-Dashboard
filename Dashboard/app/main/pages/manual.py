@@ -55,6 +55,11 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
+    ################## Editable risk values
+    dcc.Input(id='risk_label' + id_str, type='number', step=1),
+
+
+    ################## Display context
     html.H2('Context of the selected event', id='sequence name' + cid_str),
     # Table to show the context of a sequence
     dash_table.DataTable(
