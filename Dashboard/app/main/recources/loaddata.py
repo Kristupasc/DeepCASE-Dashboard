@@ -11,7 +11,7 @@ def formatSequenceCluster(cluster: int, id_str: str) -> pd.DataFrame:
     Format the sequence cluster DataFrame.
 
     :param cluster: the cluster ID
-    :param id_str: ID string
+    :param id_str: ID string to unique identify the table
     :return: formatted DataFrame
     """
     dao = DAO()
@@ -55,7 +55,7 @@ def formatContext(cluster: int, index: int, id_str: str) -> pd.DataFrame:
 
     :param cluster: the cluster ID
     :param index: index
-    :param id_str: ID string
+    :param id_str: ID string to uniquely identify the table
     :return: formatted DataFrame
     """
     dao = DAO()
@@ -76,7 +76,7 @@ def selectEventFormatted(cluster: int, index: int, id_str: str) -> pd.DataFrame:
 
     :param cluster: the cluster ID
     :param index: index
-    :param id_str: ID string
+    :param id_str: ID string to uniquely identify the table.
     :return: formatted DataFrame
     """
     dao = DAO()
