@@ -105,7 +105,7 @@ def update_options_dropdown(n):
     Output("filter_dropdown"+ id_str, 'value'),
     Input('interval'+ id_str, 'n_intervals')
 )
-def update_options_dropdown(n):
+def update_values_dropdown(n):
     return list([i[0] for i in load.possible_clusters()])
 @callback(
     Output('cluster name' + id_str, 'children'),
