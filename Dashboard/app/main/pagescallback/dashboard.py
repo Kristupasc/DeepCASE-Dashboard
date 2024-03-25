@@ -4,8 +4,11 @@ import dash
 from dash import html, dash_table, dcc, callback, Output, Input
 import pandas as pd
 from dash.exceptions import PreventUpdate
-
+import plotly.graph_objs as go
 import Dashboard.app.main.recources.loaddata as load
+from Dashboard.app.main.recources.label_tools import choose_risk, get_colors
+from Dashboard.data.dao.dao import DAO
+
 ########################################################################
 #   Dashboard callback (All ids need to match 100%)               #
 ########################################################################
@@ -117,3 +120,57 @@ def get_name_cluster(data):
         for z in k:
             if z[0] == data:
                 return z[1]
+    return "Cluster not selected"
+
+@callback(
+    Output("scatter-plot", "figure"),
+    [Input("filter_dropdown"+ id_str, "value")]
+)
+def generate_scatter_plot(selected_cluster):
+    print(selected_cluster)
+    traces = []
+    dao = DAO()
+    x = []
+    y = []
+    colors_graph = []
+    colors = get_colors()
+    # check if selected_cluster is a list
+    if not isinstance(selected_cluster, list):
+        data = dao.get_sequences_per_cluster(selected_cluster)
+        for sequence in data.to_dict('records'):
+            timestamp = sequence["timestamp"]
+            # convert the unix timestamp to date
+            timestamp = pd.to_datetime(timestamp, unit='s')
+            risk_label = sequence["risk_label"]
+            x.append(timestamp)
+            y.append(risk_label)
+            colors_graph.append(colors["Risk Label"][choose_risk(int(risk_label))])
+    traces.append(
+        go.Scatter(
+            x=x,
+            y=y,
+            mode='markers',
+            opacity=0.7,
+            marker={
+                'size': 15,
+                'line': {'width': 0.5, 'color': 'white'},
+                'color': colors_graph,
+            },
+            name="Sda"
+        )
+    )
+
+    return {
+        "data": traces,
+        "layout": go.Layout(
+            xaxis={"title": "Timeline"},
+            yaxis={"title": "Security score"},
+            margin={"l": 40, "b": 40, "t": 10, "r": 10},
+            legend={"x": 0, "y": 1},
+            hovermode="closest",
+            transition={"duration": 500},
+            plot_bgcolor=colors["background"],
+            paper_bgcolor=colors["background"],
+            font={"color": colors["text"]},
+        ),
+    }
