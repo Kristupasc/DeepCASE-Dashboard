@@ -5,7 +5,6 @@ import Dashboard.app.main.recources.style as style
 from dash import html, dash_table, dcc, callback, Output, Input
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.manual import *
-from Dashboard.app.main.pagescallback.manual1 import *
 
 import dash
 
