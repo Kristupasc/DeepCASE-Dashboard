@@ -45,7 +45,7 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
-    html.H2('Context of the selected event', id='sequence name' + cid_str),
+    html.H2('Context of the selected sequence', id='sequence name' + cid_str),
     # Table to show the context of a sequence
     dash_table.DataTable(
         id='Context information'+cid_str,
@@ -66,7 +66,7 @@ layout = html.Div([
         page_size=10),
     html.Div(
         [
-            html.H2("All Clusters", className="graph__title"),
+            html.H2("All Sequences in Cluster", className="graph__title"),
             dcc.Graph(id="scatter-plot"),
             dcc.Interval(
                 id="scatter-update",
