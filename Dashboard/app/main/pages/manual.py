@@ -4,7 +4,15 @@ import pandas as pd
 import Dashboard.app.main.recources.loaddata as load
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.manual import *
-dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", title="Manual Analysis", order=1)
+
+dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", title="Manual Analysis")
+
+manual_wrapper_style = {
+    "background-color": "#E1E7FF",
+    "height": "100%",
+    "width": "100%",
+    "margin": 20
+}
 
 layout = html.Div([
     html.H1('Manual Analysis'),
@@ -49,6 +57,4 @@ layout = html.Div([
     #         'textOverflow': 'ellipsis',
     #     },
     #     page_size=10)
-
 ], style=style.content_style)
-

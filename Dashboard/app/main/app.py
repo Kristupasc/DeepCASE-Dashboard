@@ -2,11 +2,10 @@ import os
 import dash
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
-
 from Dashboard.data import dummyData
 from server import app
-
 from dash import Dash, html, dcc
+import Dashboard.app.main.recources.style as style
 
 GRAPH_INTERVAL = os.environ.get("GRAPH_INTERVAL", 5000)
 
@@ -17,60 +16,7 @@ wrapper_style = {
     'font_family': 'Calibri'
 }
 
-# Define the sidebar style
-sidebar_style = {
-    'position': 'fixed',
-    'top': 0,
-    'left': 0,
-    'bottom': 0,
-    'width': '20%',
-    'background-color': '#f8f9fa',
-    'font-family': 'Calibri'
-}
-
-sidebar_button_style_active = {
-    'width': '80%',
-    'height': 50,
-    'margin': 'auto',
-    'border-radius': 8,
-    'background-color': '#009999',
-    'margin-bottom': 20,
-    'color': '#FFFFFF',
-}
-
-sidebar_button_style_inactive = {
-    'width': '80%',
-    'height': 50,
-    'margin': 'auto',
-    'border-radius': 8,
-    'background-color': '#FFFFFF',
-    'margin-bottom': 20,
-    'color': '#9197B3',
-}
-
-sidebar_button_img_style = {
-    'height': 18,
-    'float': 'left',
-    'margin-left': 16,
-    'margin-right': 20,
-    'margin-top': 16,
-}
-
-sidebar_button_text_style = {
-    'float': 'left',
-    'font-size': 18,
-    'padding-top': 14
-}
-
-sidebar_button_arrow_style = {
-    'float': 'right',
-    'height': 18,
-    'margin-right': 10,
-    'margin-top': 16,
-}
-
 #Define sidebar
-
 def sidebar(active_index):
     active = [False, False, False, False]
     active[active_index] = True
@@ -81,11 +27,11 @@ def sidebar(active_index):
             html.Div([
                 sidebar_button("dashboard", "Dashboard", active[0]),
                 sidebar_button("manual-analysis", "Manual Analysis", active[1]),
-                sidebar_button("ai-analysis", "AI Analysis", active[2]),
+                sidebar_button("semi-automatic", "AI Analysis", active[2]),
                 sidebar_button("database", "Database", active[3]),
             ])
         ],
-        style=sidebar_style
+        style=style.sidebar_style
     )
 
     return sidebar
@@ -100,22 +46,22 @@ def sidebar_button(link, text, active):
 
     return dcc.Link(
             html.Div([
-                html.Img(src= img_path, style=sidebar_button_img_style),
-                html.Div([text], style=sidebar_button_text_style),
-                html.Img(src=arrow, style=sidebar_button_arrow_style),
+                html.Img(src= img_path, style=style.sidebar_button_img_style),
+                html.Div([text], style=style.sidebar_button_text_style),
+                html.Img(src=arrow, style=style.sidebar_button_arrow_style),
             ],
-                style=sidebar_button_style_active if active else sidebar_button_style_inactive
+                style=style.sidebar_button_style_active if active else style.sidebar_button_style_inactive
             ),
             href=link)
 
 
 #Define space for the content of the pages
-content = html.Div(dash.page_container, id='page-content')
+content = html.Div(dash.page_container, id='page-content', style={"float": "left"})
 
 #App layout
 app.layout = html.Div([
     dcc.Location(id='url'),
-    sidebar(1),
+    sidebar(0),
     content
     ],
     style=wrapper_style)
