@@ -1,7 +1,7 @@
 from io import StringIO
 
 import dash
-from dash import html, dash_table, dcc, callback, Output, Input
+from dash import html, dash_table, dcc, callback, Output, Input,ctx
 import pandas as pd
 from dash.exceptions import PreventUpdate
 
@@ -95,17 +95,22 @@ def display_context(row, cluster):
         return df.to_dict("records")
     raise PreventUpdate
 
+
 @callback(
     Output("filter_dropdown"+ id_str, 'options'),
-    Input('interval'+ id_str, 'n_intervals')
+    Input('change cluster name', 'n_clicks')
 )
 def update_options_dropdown(n):
+    if 'change cluster name'== ctx.triggered_id:
+        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
 @callback(
     Output("filter_dropdown"+ id_str, 'value'),
-    Input('interval'+ id_str, 'n_intervals')
+    Input('change cluster name', 'n_clicks')
 )
 def update_values_dropdown(n):
+    if 'change cluster name' == ctx.triggered_id:
+        return list([i[0] for i in load.possible_clusters()])
     return list([i[0] for i in load.possible_clusters()])
 @callback(
     Output('cluster name' + id_str, 'children'),

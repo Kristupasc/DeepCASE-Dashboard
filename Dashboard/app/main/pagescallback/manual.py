@@ -63,18 +63,18 @@ def display_context(row, cluster):
 
 @callback(
     Output("filter_dropdown"+ id_str, 'options'),
-    Input('change cluster name'+id_str, 'n_clicks')
+    Input('change cluster name', 'n_clicks')
 )
 def update_options_dropdown(n):
-    if 'change cluster name' + id_str == ctx.triggered_id:
+    if 'change cluster name'== ctx.triggered_id:
         return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
 @callback(
     Output("filter_dropdown"+ id_str, 'value'),
-    Input('change cluster name'+id_str, 'n_clicks')
+    Input('change cluster name', 'n_clicks')
 )
 def update_values_dropdown(n):
-    if 'change cluster name'+id_str == ctx.triggered_id:
+    if 'change cluster name' == ctx.triggered_id:
         return list([i[0] for i in load.possible_clusters()])
     return list([i[0] for i in load.possible_clusters()])
 @callback(
@@ -96,11 +96,11 @@ def get_name_cluster(data):
 @callback(
     Output("set label cluster"+id_str, 'children'),
     Input('selected cluster' + id_str, "data"),
-    Input('change cluster name'+id_str, 'n_clicks'),
+    Input('change cluster name', 'n_clicks'),
     State('cluster name'+id_str, 'value')
 )
 def set_cluster_name(cluster_id, n_clicks, value):
-    if 'change cluster name'+id_str == ctx.triggered_id:
+    if 'change cluster name'== ctx.triggered_id:
         if isinstance(cluster_id, int) and isinstance(value, str):
             if load.set_cluster_name(cluster_id, value):
                 return "Successful changed"
