@@ -15,6 +15,7 @@ from Dashboard.data.dao.dao import DAO
 #suffix for all the ids that might be the same.
 id_str = "_da"
 cid_str = "_cida"
+#Setting variables
 cluster = 0
 df = load.formatSequenceCluster(0, id_str)
 set_cluster = load.possible_clusters()
@@ -24,17 +25,11 @@ set_cluster = load.possible_clusters()
 )
 def store_selected_cluster(state):
     """
-    This methode stores the variable of the dropdown menu.
-    Parameters
-    ----------
-    state: The variable that contains the value.
+      Store the selected cluster.
 
-    Returns
-    -------
-    Return: either PreventUpdate signal
-    or the state to store.
-
-    """
+      :param state: the selected value from the filter dropdown
+      :return: the selected cluster if it's an integer
+      """
     if isinstance(state, int):
         return state
     raise PreventUpdate
@@ -44,16 +39,10 @@ def store_selected_cluster(state):
 )
 def update_table_cluster(state):
     """
-    This methode returns a data frame for the cluster table
-    Parameters
-    ----------
-    state is the value that is stored from the selected
-    state.
+    Update the dashboard table based on the selected cluster.
 
-    Returns
-    -------
-    The dataframe necessary for the cluster.
-
+    :param state: the selected cluster
+    :return: the updated table data if the cluster is an integer
     """
     if isinstance(state, int):
         dff = load.formatSequenceCluster(state, id_str)
@@ -66,15 +55,10 @@ def update_table_cluster(state):
 )
 def store_context_row(state):
     """
-    This methode stores the selected row.
-    Parameters
-    ----------
-    :parameter: state which row is selected.
+    Store the selected row for context.
 
-    Returns
-    -------
-    The value that needs to be stored.
-
+    :param state: the selected rows from the dashboard
+    :return: the selected row if it's an integer
     """
     if state is not None:
         if len(state)>0:
@@ -82,46 +66,64 @@ def store_context_row(state):
                 return state[0]
     raise PreventUpdate
 @callback(
-    Output('Context information'+cid_str, "data"),
+    Output('Context information' + cid_str, "data"),
     Input('selected row' + id_str, "data"),
-    Input('selected cluster' + id_str,"data")
+    Input('selected cluster' + id_str, "data")
 )
 def display_context(row, cluster):
     """
-    This makes the context visible
-    :param row: the row that is selected
-    :param cluster: the cluster that is selected
-    :return: the context frame.
+    Display the context information based on the selected row and cluster.
+
+    :param row: the selected row
+    :param cluster: the selected cluster
+    :return: the context frame as a dictionary of records
     """
     if isinstance(row, int) and isinstance(cluster, int):
         df = load.formatContext(cluster, row, cid_str)
         return df.to_dict("records")
     raise PreventUpdate
 
-
 @callback(
-    Output("filter_dropdown"+ id_str, 'options'),
+    Output("filter_dropdown" + id_str, 'options'),
     Input('change cluster name', 'n_clicks')
 )
 def update_options_dropdown(n):
-    if 'change cluster name'== ctx.triggered_id:
+    """
+    Update the options in the dropdown based on the change cluster name button click.
+
+    :param n: the number of clicks on the change cluster name button
+    :return: a list of options for the dropdown based on possible clusters with labels and values
+    """
+    if 'change cluster name' == ctx.triggered_id:
         return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
 @callback(
-    Output("filter_dropdown"+ id_str, 'value'),
+    Output("filter_dropdown" + id_str, 'value'),
     Input('change cluster name', 'n_clicks')
 )
 def update_values_dropdown(n):
+    """
+    Update the values in the dropdown based on the change cluster name button click.
+
+    :param n: the number of clicks on the change cluster name button
+    :return: a list of values for the dropdown based on possible clusters
+    """
     if 'change cluster name' == ctx.triggered_id:
         return list([i[0] for i in load.possible_clusters()])
     return list([i[0] for i in load.possible_clusters()])
 @callback(
     Output('cluster name' + id_str, 'children'),
-    Input('selected cluster' + id_str,"data")
+    Input('selected cluster' + id_str, "data")
 )
 def get_name_cluster(data):
+    """
+    Get the name of the selected cluster based on the cluster ID.
+
+    :param data: the selected cluster ID
+    :return: the name of the selected cluster or a default message if no cluster is selected
+    """
     if isinstance(data, int):
-        k =  load.possible_clusters()
+        k = load.possible_clusters()
         for z in k:
             if z[0] == data:
                 return z[1]
@@ -129,9 +131,15 @@ def get_name_cluster(data):
 
 @callback(
     Output("scatter-plot", "figure"),
-    [Input("filter_dropdown"+ id_str, "value")]
+    [Input("filter_dropdown" + id_str, "value")]
 )
 def generate_scatter_plot(selected_cluster):
+    """
+    Generate a scatter plot based on the selected cluster.
+
+    :param selected_cluster: the value selected in the filter dropdown
+    :return: a dictionary containing the data and layout for the scatter plot
+    """
     # print(selected_cluster)
     traces = []
     dao = DAO()
