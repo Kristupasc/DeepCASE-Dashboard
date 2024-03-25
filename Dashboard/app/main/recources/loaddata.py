@@ -1,3 +1,4 @@
+import random
 from typing import Dict, Any
 from Dashboard.data.dao.dao import *
 import pandas as pd
@@ -87,3 +88,17 @@ def set_cluster_name(cluster_id, cluster_name):
         return True
     except:
         return False
+
+def get_random_cluster():
+    doa = DAO()
+    df = doa.get_clusters_result()
+    rows = df.shape[0]
+    rand =  random.randrange(0, rows, 1)
+    return df.iloc[rand].at["id_cluster"]
+
+def get_random_sequence(cluster_id):
+    doa = DAO()
+    df = doa.get_sequences_per_cluster(cluster_id)
+    rows = df.shape[0]
+    rand =  random.randrange(0, rows, 1)
+    return rand

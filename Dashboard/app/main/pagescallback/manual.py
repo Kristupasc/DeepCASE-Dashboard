@@ -23,7 +23,7 @@ set_cluster = load.possible_clusters()
 )
 def store_selected_cluster(state, click):
     if 'random' + id_str == ctx.triggered_id:
-        return 0
+        return load.get_random_cluster()
     if isinstance(state, int):
         return state
     raise PreventUpdate
@@ -40,11 +40,12 @@ def update_table_cluster(state):
 @callback(
     Output('selected row' + id_str, "data"),
     Input("manual", 'selected_rows'),
-    Input('random' + qid_str, "n_clicks")
+    Input('random' + qid_str, "n_clicks"),
+    Input("selected cluster"+id_str, "data")
 )
-def store_context_row(state, click):
+def store_context_row(state, click, cluster_id):
     if 'random' + qid_str == ctx.triggered_id:
-        return 0
+        return load.get_random_sequence(cluster_id)
     if state is not None:
         if len(state)>0:
             if isinstance(state[0], int):
