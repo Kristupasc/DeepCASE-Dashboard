@@ -87,7 +87,7 @@ layout = html.Div([
 
 
     ################## Display context
-    html.H2('Context of the selected event', id='sequence name' + cid_str),
+    html.H2('Context of the selected sequence', id='sequence name' + cid_str),
     # Table to show the context of a sequence
     dash_table.DataTable(
         id='Context information' + cid_str,
