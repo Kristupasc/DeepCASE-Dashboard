@@ -26,12 +26,6 @@ layout = html.Div([
     html.P(id="set label cluster"+id_str),
     # Get new cluster
     html.Button('Chose next cluster', id='random' + id_str, n_clicks=0),
-    # A signal to update the dropdown menu regularly
-    dcc.Interval(
-        id='interval' + id_str,
-        interval=60 * 1000,  # in milliseconds
-        n_intervals=0
-    ),
     # drop down menu to select cluster
     dcc.Dropdown(
         id="filter_dropdown" + id_str,
