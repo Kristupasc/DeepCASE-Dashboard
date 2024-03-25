@@ -18,9 +18,12 @@ df = load.formatSequenceCluster(0, id_str)
 set_cluster = load.possible_clusters()
 @callback(
     Output('selected cluster' + id_str, "data"),
-    Input("filter_dropdown"+id_str, "value")
+    Input("filter_dropdown"+id_str, "value"),
+    Input('random' + id_str, "n_clicks")
 )
-def store_selected_cluster(state):
+def store_selected_cluster(state, click):
+    if 'random' + id_str == ctx.triggered_id:
+        return 0
     if isinstance(state, int):
         return state
     raise PreventUpdate
@@ -36,9 +39,12 @@ def update_table_cluster(state):
 
 @callback(
     Output('selected row' + id_str, "data"),
-    Input("manual", 'selected_rows')
+    Input("manual", 'selected_rows'),
+    Input('random' + qid_str, "n_clicks")
 )
-def store_context_row(state):
+def store_context_row(state, click):
+    if 'random' + qid_str == ctx.triggered_id:
+        return 0
     if state is not None:
         if len(state)>0:
             if isinstance(state[0], int):
