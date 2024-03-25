@@ -1,57 +1,8 @@
-import os
-import matplotlib.dates as mdates
-
-import dash
-import pandas as pd
-from dash import html, dcc, callback, dash_table
-from dash.dependencies import Input, Output, State
-import plotly.graph_objs as go
-import Dashboard.app.main.recources.style as style
-from Dashboard.data.dao.dao import DAO
-
-# create csv x2
-# upload through database
-# make it cluster on dashboard
-
-dash.register_page(__name__, path="/", name="Dashboard", title="Dashboard", order=0)
-import dash
-from dash import html, dash_table, dcc, callback, Output, Input
-import pandas as pd
-import Dashboard.app.main.recources.loaddata as load
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.dashboard import *
 
-def choose_risk(weight):
-    # A weight can be between 0 and 100. The higher the weight, the higher the risk
-    if weight == 0:
-        return "Unlabeled"
-    elif weight < 1:
-        return "Info"
-    elif weight < 3:
-        return "Low"
-    elif weight < 5:
-        return "Medium"
-    elif weight < 7:
-        return "High"
-    elif weight < 9:
-        return "Suspicious"
-    else:
-        return "Attack"
 
-# Define color scheme
-colors = {
-    "background": "#FFFFFF",  # white background
-    "text": "#000000",  # black text for visibility
-    "Risk Label": {
-        "Info": "#45B6FE",  # blue
-        "Low": "#FFD700",  # gold
-        "Medium": "#FF8C00",  # darkorange
-        "High": "#FF4500",  # orangered
-        "Attack": "#DC143C",  # crimson
-        "Suspicious": "#800080",  # purple
-        "Unlabeled": "#808080"  # grey
-    }
-}
+dash.register_page(__name__, path="/", name="Dashboard", title="Dashboard", order=0)
 
 ########################################################################
 #   Dash objects page(Makes use of the callback addition)    #
@@ -94,7 +45,7 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
-    html.H2('Context of the selected event', id='sequence name' + cid_str),
+    html.H2('Context of the selected sequence', id='sequence name' + cid_str),
     # Table to show the context of a sequence
     dash_table.DataTable(
         id='Context information'+cid_str,
@@ -115,7 +66,7 @@ layout = html.Div([
         page_size=10),
     html.Div(
         [
-            html.H2("All Clusters", className="graph__title"),
+            html.H2("All Sequences in Cluster", className="graph__title"),
             dcc.Graph(id="scatter-plot"),
             dcc.Interval(
                 id="scatter-update",
@@ -132,56 +83,3 @@ dcc.Store(id='selected row'+ id_str)
 ],
     # dcc.Store stores the intermediate value
     style=style.content_style)
-
-
-@callback(
-    Output("scatter-plot", "figure"),
-    [Input("filter_dropdown"+ id_str, "value")]
-)
-def generate_scatter_plot(selected_cluster):
-    print(selected_cluster)
-    traces = []
-    dao = DAO()
-    x = []
-    y = []
-    colors_graph = []
-    # check if selected_cluster is a list
-    if not isinstance(selected_cluster, list):
-        data = dao.get_sequences_per_cluster(selected_cluster)
-        for sequence in data.to_dict('records'):
-            timestamp = sequence["timestamp"]
-            # convert the unix timestamp to date
-            timestamp = pd.to_datetime(timestamp, unit='s')
-            risk_label = sequence["risk_label"]
-            x.append(timestamp)
-            y.append(risk_label)
-            colors_graph.append(colors["Risk Label"][choose_risk(int(risk_label))])
-    traces.append(
-        go.Scatter(
-            x=x,
-            y=y,
-            mode='markers',
-            opacity=0.7,
-            marker={
-                'size': 15,
-                'line': {'width': 0.5, 'color': 'white'},
-                'color': colors_graph,
-            },
-            name="Sda"
-        )
-    )
-
-    return {
-        "data": traces,
-        "layout": go.Layout(
-            xaxis={"title": "Timeline"},
-            yaxis={"title": "Security score"},
-            margin={"l": 40, "b": 40, "t": 10, "r": 10},
-            legend={"x": 0, "y": 1},
-            hovermode="closest",
-            transition={"duration": 500},
-            plot_bgcolor=colors["background"],
-            paper_bgcolor=colors["background"],
-            font={"color": colors["text"]},
-        ),
-    }
