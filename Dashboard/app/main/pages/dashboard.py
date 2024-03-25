@@ -11,12 +11,6 @@ dash.register_page(__name__, path="/", name="Dashboard", title="Dashboard", orde
 layout = html.Div([
     html.H1('Dash'),
     html.H2('cluster name unknown', id='cluster name' + id_str),
-    # A signal to update the dropdown menu regularly
-    dcc.Interval(
-        id='interval' + id_str,
-        interval=60 * 1000,  # in milliseconds
-        n_intervals=0
-    ),
     # drop down menu to select cluster
     dcc.Dropdown(
             id="filter_dropdown"+ id_str,

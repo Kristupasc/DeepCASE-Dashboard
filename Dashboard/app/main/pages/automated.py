@@ -12,12 +12,6 @@ from Dashboard.app.main.pagescallback.automated import *
 layout = html.Div([
     html.H1('Semi-automatic'),
     html.H2('cluster name unknown', id='cluster name' + id_str),
-    # A signal to update the dropdown menu regularly
-    dcc.Interval(
-        id='interval' + id_str,
-        interval=60 * 1000,  # in milliseconds
-        n_intervals=0
-    ),
     # drop down menu to select cluster
     dcc.Dropdown(
             id="filter_dropdown"+ id_str,
