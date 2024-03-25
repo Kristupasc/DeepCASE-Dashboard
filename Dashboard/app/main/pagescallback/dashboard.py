@@ -127,7 +127,7 @@ def get_name_cluster(data):
     [Input("filter_dropdown"+ id_str, "value")]
 )
 def generate_scatter_plot(selected_cluster):
-    print(selected_cluster)
+    # print(selected_cluster)
     traces = []
     dao = DAO()
     x = []
