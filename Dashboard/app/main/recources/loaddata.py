@@ -3,20 +3,17 @@ from Dashboard.data.dao.dao import *
 import pandas as pd
 
 format_time = "%H:%M:%S.%f, %d %b %Y" # For second %s %ssss
-def get_cluster_id(cluster: str):
-    dao = DAO()
-    # df = dao.get_cluster_id(cluster)
-    pass
 def formatSequenceCluster(cluster: int, id_str: str)-> pd.DataFrame:
     dao = DAO()
     df = dao.get_sequences_per_cluster(cluster_id=cluster)
     df = df[df['id_cluster'] == cluster]
-    df = df[['machine', 'timestamp',  'name','id_cluster', 'risk_label']]
+    df = df[['machine', 'timestamp',  'name', 'risk_label']]
     df['timestamp'] = pd.DatetimeIndex(pd.to_datetime(df['timestamp'], unit='s')).strftime(format_time)
     df['risk_label'] = pd.to_numeric(df['risk_label'])
     df['machine'] = pd.Series(df['machine'], dtype="string")
     df['name'] = pd.Series(df['name'], dtype="string")
     df['timestamp'] = pd.Series(df['timestamp'], dtype="string")
+    df["id_cluster"] = df["name"].apply(get_event_id)
     df['id_cluster'] = pd.Series(df['id_cluster'], dtype="string")
     dict_id: dict[str, str] = dict()
     for i in df.columns:
@@ -57,6 +54,7 @@ def selectEventFormatted(cluster: int,index: int,id_str: str) -> pd.DataFrame:
     df['machine'] = pd.Series(df['machine'], dtype="string")
     df['name'] = pd.Series(df['name'], dtype="string")
     df['timestamp'] = pd.Series(df['timestamp'], dtype="string")
+    df["id_cluster"] = df["name"].apply(get_event_id)
     df['id_cluster'] = pd.Series(df['id_cluster'], dtype="string")
     dict_id: dict[str, str] = dict()
     for i in df.columns:
@@ -77,5 +75,15 @@ def set_riskvalue(cluster_id, row,  risk_value):
     dao = DAO()
     df = dao.get_sequences_per_cluster(cluster_id)
     event_id =df.iloc[row].at["id_sequence"]
-    return dao.set_riskvalue(event_id, risk_value)
-
+    try:
+        dao.set_riskvalue(event_id, risk_value)
+        return True
+    except:
+        return False
+def set_cluster_name(cluster_id, cluster_name):
+    dao = DAO()
+    try:
+        dao.set_clustername(cluster_id=cluster_id, cluster_name=cluster_name)
+        return True
+    except:
+        return False

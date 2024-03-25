@@ -20,7 +20,11 @@ dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", ti
 
 layout = html.Div([
     html.H1('Manual'),
-    html.H2('cluster name unknown', id='cluster name' + id_str),
+    # Change name of cluster and display
+    dcc.Textarea(id='cluster name'+id_str, value='Cluster name unknown'),
+    html.Button('Change cluster name', id='change cluster name'+id_str, n_clicks=0),
+    html.P(id="set label cluster"+id_str),
+    # Get new cluster
     html.Button('Chose next cluster', id='random' + id_str, n_clicks=0),
     # A signal to update the dropdown menu regularly
     dcc.Interval(
