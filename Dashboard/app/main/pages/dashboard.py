@@ -32,7 +32,7 @@ layout = html.Div([
         columns=[
             {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
             {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
-            {'name': 'Event', 'id': 'id_cluster'+id_str, 'type': 'numeric', 'hideable': True},
+            {'name': 'Event', 'id': 'id_event'+id_str, 'type': 'numeric', 'hideable': True},
             {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
             {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric'},
         ],

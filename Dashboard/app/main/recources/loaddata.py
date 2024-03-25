@@ -13,8 +13,8 @@ def formatSequenceCluster(cluster: int, id_str: str)-> pd.DataFrame:
     df['machine'] = pd.Series(df['machine'], dtype="string")
     df['name'] = pd.Series(df['name'], dtype="string")
     df['timestamp'] = pd.Series(df['timestamp'], dtype="string")
-    df["id_cluster"] = df["name"].apply(get_event_id)
-    df['id_cluster'] = pd.Series(df['id_cluster'], dtype="string")
+    df["id_event"] = df["name"].apply(get_event_id)
+    df['id_event'] = pd.Series(df['id_event'], dtype="string")
     dict_id: dict[str, str] = dict()
     for i in df.columns:
         dict_id[i] = i + id_str
@@ -54,8 +54,8 @@ def selectEventFormatted(cluster: int,index: int,id_str: str) -> pd.DataFrame:
     df['machine'] = pd.Series(df['machine'], dtype="string")
     df['name'] = pd.Series(df['name'], dtype="string")
     df['timestamp'] = pd.Series(df['timestamp'], dtype="string")
-    df["id_cluster"] = df["name"].apply(get_event_id)
-    df['id_cluster'] = pd.Series(df['id_cluster'], dtype="string")
+    df["id_event"] = df["name"].apply(get_event_id)
+    df['id_event'] = pd.Series(df['id_event'], dtype="string")
     dict_id: dict[str, str] = dict()
     for i in df.columns:
         dict_id[i] = i + id_str
