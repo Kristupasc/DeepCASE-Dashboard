@@ -14,7 +14,6 @@ with open('../static/User_Manual_Interface_Usage_Guide.md', 'r') as instruction_
     instruction_file.close()
 
 layout = html.Div([
-    html.H1('User Instruction'),
     dcc.Markdown(
         instructions
     )
