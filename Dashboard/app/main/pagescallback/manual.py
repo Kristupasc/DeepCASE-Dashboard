@@ -15,8 +15,8 @@ cid_str = "_cma"
 qid_str = "-qma"
 # Some initial values
 cluster = 0
-df = load.formatSequenceCluster(0, id_str)
-set_cluster = load.possible_clusters()
+# df = load.formatSequenceCluster(0, id_str)
+# set_cluster = load.possible_clusters()
 @callback(
     Output('selected cluster' + id_str, "data"),
     Input("filter_dropdown" + id_str, "value"),

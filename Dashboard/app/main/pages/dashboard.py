@@ -14,10 +14,10 @@ layout = html.Div([
     # drop down menu to select cluster
     dcc.Dropdown(
             id="filter_dropdown"+ id_str,
-            options=[{"label": i[1], "value": i[0]} for i in set_cluster],
+            # options=[{"label": i[1], "value": i[0]} for i in set_cluster],
             placeholder="-Select a Cluster-",
             multi=False,
-            value=list([i[0] for i in set_cluster])
+            # value=list([i[0] for i in set_cluster])
         ),
 
     # data table to display the cluster
@@ -30,7 +30,7 @@ layout = html.Div([
             {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
             {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric'},
         ],
-        data=df.to_dict('records'),
+        # data=df.to_dict('records'),
         filter_action='native',
         row_selectable="single",
         style_data={
@@ -49,7 +49,7 @@ layout = html.Div([
             {'name': 'Event_name', 'id': 'name'+cid_str, 'type': 'text', 'hideable': True},
             {'name': 'Attention', 'id': 'attention'+cid_str, 'type': 'text'}
         ],
-        data=df.to_dict('records'),
+        # data=df.to_dict('records'),
         filter_action='native',
 
         style_data={
@@ -72,7 +72,9 @@ layout = html.Div([
     ),
     # Objects to store intermediate values, selected by the above table.
 dcc.Store(id='selected cluster'+ id_str),
-dcc.Store(id='selected row'+ id_str)
+dcc.Store(id='selected row'+ id_str),
+html.Button(id='hidden-button'+id_str, style = dict(display='none'))
+
 
 ],
     # dcc.Store stores the intermediate value

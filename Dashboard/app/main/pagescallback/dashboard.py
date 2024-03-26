@@ -17,8 +17,8 @@ id_str = "_da"
 cid_str = "_cida"
 #Setting variables
 cluster = 0
-df = load.formatSequenceCluster(0, id_str)
-set_cluster = load.possible_clusters()
+# df = load.formatSequenceCluster(0, id_str)
+# set_cluster = load.possible_clusters()
 @callback(
     Output('selected cluster' + id_str, "data"),
     Input("filter_dropdown"+id_str, "value")
@@ -85,30 +85,30 @@ def display_context(row, cluster):
 
 @callback(
     Output("filter_dropdown" + id_str, 'options'),
-    Input('change cluster name', 'n_clicks')
+    Input('hidden-button'+id_str, 'n_clicks')
 )
 def update_options_dropdown(n):
     """
-    Update the options in the dropdown based on the change cluster name button click.
+    Update the options in the dropdown based on the change hidden button click.
 
-    :param n: the number of clicks on the change cluster name button
+    :param n: the number of clicks on the hidden button it is there just to satisfy dash.
     :return: a list of options for the dropdown based on possible clusters with labels and values
     """
-    if 'change cluster name' == ctx.triggered_id:
+    if 'hidden-button'+id_str == ctx.triggered_id:
         return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
 @callback(
     Output("filter_dropdown" + id_str, 'value'),
-    Input('change cluster name', 'n_clicks')
+    Input('hidden-button'+id_str, 'n_clicks')
 )
 def update_values_dropdown(n):
     """
-    Update the values in the dropdown based on the change cluster name button click.
+    Update the values in the dropdown based on the change hidden button click.
 
-    :param n: the number of clicks on the change cluster name button
+    :param n: the number of clicks on the change hidden button
     :return: a list of values for the dropdown based on possible clusters
     """
-    if 'change cluster name' == ctx.triggered_id:
+    if 'hidden-button'+id_str == ctx.triggered_id:
         return list([i[0] for i in load.possible_clusters()])
     return list([i[0] for i in load.possible_clusters()])
 @callback(
