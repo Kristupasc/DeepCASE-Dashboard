@@ -12,6 +12,7 @@ class DAO(object):
         input_file_df.reset_index(inplace=True)
         input_file_df.rename(columns={'index': 'id_event'}, inplace=True)
         self.data_object.store_input_file(input_file_df)
+        print(input_file_df)
         return
     def save_sequencing_results(self, context, events, labels, mapping):
         """

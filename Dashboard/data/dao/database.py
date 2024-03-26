@@ -6,10 +6,16 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # Create a file path for "example.txt" in the script's directory
 file_path = os.path.join(script_dir, 'deepcase.db')
 class Database(object):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Database, cls).__new__(cls, *args, **kwargs)
+
+        return cls._instance
     def __init__(self):
         self.conn = sqlite3.connect(file_path, check_same_thread=False)
         self.cur = self.conn.cursor()
-        #self.create_tables()
         return
 
     def create_tables(self):
@@ -56,6 +62,8 @@ class Database(object):
             'event': 'TEXT',
             'label': 'INT'
         })
+        print("---- saved")
+        print(input_file_df)
         self.conn.commit()
         return
 
