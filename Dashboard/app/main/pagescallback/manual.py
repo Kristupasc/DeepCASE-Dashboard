@@ -171,7 +171,7 @@ def set_cluster_name(cluster_id, n_clicks, value):
 
 @callback(
     Output("successful" + qid_str, "children"),
-    Input('risk_label' + qid_str, "value"),
+    Input('chosen sequence manual', 'data'),
     Input('selected row' + id_str, "data"),
     Input('selected cluster' + id_str, "data"),
     Input('submit' + qid_str, "n_clicks")
@@ -180,17 +180,19 @@ def set_risk_label(value, row, cluster, n_clicks):
     """
     Set the risk label based on user input.
 
-    :param value: the risk label value
+    :param value: the risk label value given in dict.
     :param row: the selected row
     :param cluster: the selected cluster
     :param n_clicks: the number of clicks on the submit button
     :return: a message indicating the success of the operation
     """
-    if 'submit' + qid_str == ctx.triggered_id:
-        if isinstance(row, int) and isinstance(cluster, int) and isinstance(value, int):
-            if load.set_riskvalue(cluster_id=cluster, row=row, risk_value=value):
-                return "Successful, saved."
-    return "Nothing saved"
+    if len(value) != 0:
+        value = value[0]['risk_label' + qid_str]
+        if 'submit' + qid_str == ctx.triggered_id:
+            if isinstance(row, int) and isinstance(cluster, int) and isinstance(value, int):
+                if load.set_riskvalue(cluster_id=cluster, row=row, risk_value=value):
+                    return "Successful, saved."
+    return "Nothing saved, need to be int"
 
 @callback(
     Output("chosen sequence manual", "data"),

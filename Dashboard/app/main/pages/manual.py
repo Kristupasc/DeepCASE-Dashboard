@@ -73,7 +73,6 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
-    dcc.Input(placeholder='risk label', id='risk_label' + qid_str, type='number', step=1),
     html.Button('Submit change', id='submit' + qid_str, n_clicks=0),
     html.H3(id="successful"+qid_str),
 
