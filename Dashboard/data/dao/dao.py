@@ -87,3 +87,9 @@ class DAO(object):
 
     def get_mapping(self):
         return self.data_object.get_mapping()
+
+    def set_clustername(self, cluster_id, cluster_name):
+        self.data_object.set_clustername(cluster_id, cluster_name)
+
+    def set_riskvalue(self, event_id, risk_value):
+        return self.data_object.set_riskvalue(event_id, risk_value)

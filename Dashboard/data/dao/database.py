@@ -181,3 +181,15 @@ class Database(object):
                 "FROM mapping "
         result = pd.read_sql_query(query, self.conn)
         return result
+
+    def set_clustername(self, id_cluster: int, name_cluster: str):
+        query = "UPDATE clusters SET name_cluster = \"" + name_cluster + " \" WHERE id_cluster = " + str(id_cluster)
+        self.cur.execute(query)
+        self.conn.commit()
+        return
+
+    def set_riskvalue(self, event_id, risk_value):
+        query = "UPDATE sequences SET risk_label = " + str(risk_value) + " WHERE id_sequence = " + str(event_id)
+        self.cur.execute(query)
+        self.conn.commit()
+        return True
