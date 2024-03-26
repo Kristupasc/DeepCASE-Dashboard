@@ -53,6 +53,7 @@ def update_table_cluster(state):
     raise PreventUpdate
 @callback(
     Output('selected row' + id_str, "data"),
+    Output('manual','selected_rows'),
     Input("manual", 'selected_rows'),
     Input('random' + qid_str, "n_clicks"),
     Input("selected cluster" + id_str, "data")
@@ -64,14 +65,15 @@ def store_context_row(state, click, cluster_id):
     :param state: the selected rows in the manual component
     :param click: the number of clicks on the random button
     :param cluster_id: the selected cluster ID
-    :return: the stored context row or trigger a PreventUpdate exception
+    :return: the stored context row or trigger a PreventUpdate exception, As well the updated row selected.
     """
     if 'random' + qid_str == ctx.triggered_id:
-        return load.get_random_sequence(cluster_id)
+        state = load.get_random_sequence(cluster_id)
+        return state, [state]
     if state is not None:
         if len(state) > 0:
             if isinstance(state[0], int):
-                return state[0]
+                return state[0], state
     raise PreventUpdate
 @callback(
     Output('Context information' + cid_str, "data"),

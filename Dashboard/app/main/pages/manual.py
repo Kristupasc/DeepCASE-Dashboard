@@ -63,7 +63,7 @@ layout = html.Div([
             {'name': 'Source', 'id': 'machine' + qid_str, 'type': 'text'},
             {'name': 'Event', 'id': 'id_event' + qid_str, 'type': 'numeric', 'hideable': True},
             {'name': 'Event_text', 'id': 'name' + qid_str, 'type': 'text', 'hideable': True},
-            {'name': 'Risk', 'id': 'risk_label' + qid_str, 'type': 'numeric', 'editable': False},
+            {'name': 'Risk', 'id': 'risk_label' + qid_str, 'type': 'numeric', 'editable': True},
         ],
         data=(pd.DataFrame()).to_dict('records'),
         filter_action='native',
