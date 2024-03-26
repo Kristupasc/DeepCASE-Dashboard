@@ -14,10 +14,10 @@ layout = html.Div([
     # drop down menu to select cluster
     dcc.Dropdown(
             id="filter_dropdown"+ id_str,
-            # options=[{"label": i[1], "value": i[0]} for i in set_cluster],
+            options=update_options_dropdown(),
+            value=update_values_dropdown(),
             placeholder="-Select a Cluster-",
             multi=False,
-            # value=list([i[0] for i in set_cluster])
         ),
 
     # data table to display the cluster
@@ -73,8 +73,6 @@ layout = html.Div([
     # Objects to store intermediate values, selected by the above table.
 dcc.Store(id='selected cluster'+ id_str),
 dcc.Store(id='selected row'+ id_str),
-html.Button(id='hidden-button'+id_str, style = dict(display='none'))
-
 
 ],
     # dcc.Store stores the intermediate value

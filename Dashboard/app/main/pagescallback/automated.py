@@ -14,8 +14,6 @@ id_str = "_sa"
 cid_str = "_cisa"
 # Setting variables
 cluster = 0
-# df = load.formatSequenceCluster(0, id_str)
-# set_cluster = load.possible_clusters()
 @callback(
     Output('selected cluster' + id_str, "data"),
     Input("filter_dropdown"+id_str, "value")
@@ -81,33 +79,20 @@ def display_context(row, cluster):
     raise PreventUpdate
 
 
-@callback(
-    Output("filter_dropdown"+ id_str, 'options'),
-    Input('hidden-button'+id_str, 'n_clicks')
-)
-def update_options_dropdown(n):
-    """
-    Update the options in the dropdown based on the change hidden button click.
 
-    :param n: the number of clicks on the hidden button it is there just to satisfy dash.
+def update_options_dropdown():
+    """
+    Update the options in the dropdown.
+
     :return: a list of options for the dropdown based on possible clusters with labels and values
     """
-    if 'hidden button'+id_str== ctx.triggered_id:
-        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
-@callback(
-    Output("filter_dropdown"+ id_str, 'value'),
-    Input('hidden-button'+id_str, 'n_clicks')
-)
-def update_values_dropdown(n):
-    """
-    Update the values in the dropdown based on the change hidden button click.
 
-    :param n: the number of clicks on the change hidden button
+def update_values_dropdown():
+    """
+    Update the values in the dropdown.
     :return: a list of values for the dropdown based on possible clusters
     """
-    if 'hidden button'+id_str== ctx.triggered_id:
-        return list([i[0] for i in load.possible_clusters()])
     return list([i[0] for i in load.possible_clusters()])
 @callback(
     Output('cluster name' + id_str, 'children'),
