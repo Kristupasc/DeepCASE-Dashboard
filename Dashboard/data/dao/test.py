@@ -73,5 +73,5 @@ db = Database()
 # conn.commit()
 
 
-print(db.get_sequences_per_cluster())
-print(db.get_sequences_per_cluster().columns)
+print(db.get_sequences_per_cluster(1))
+print(db.get_sequences_per_cluster(1).columns)

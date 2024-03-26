@@ -4,9 +4,16 @@ import pandas as pd
 # DeepCASE Imports
 from Dashboard.processing.processor import Processor
 from Dashboard.data.dao.dao import DAO
-
+from Dashboard.processing.status import Status
 
 class ProcessorAccessObject(object):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(ProcessorAccessObject, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
         # Initialise new processor
         self.processor = Processor()
@@ -17,6 +24,8 @@ class ProcessorAccessObject(object):
         self.labels = np.zeros(0)
         # initialise dao
         self.dao = DAO()
+        # TODO: Get status from the DAO, finished if database is populated, empty otherwise
+        self.status = Status.EMPTY
 
     def create_sequences(self, path):
         self.context, self.events, self.labels, mapping = self.processor.sequence_data(path)
@@ -28,7 +37,6 @@ class ProcessorAccessObject(object):
         self.processor.train_context_builder(self.context, self.events)
         return
 
-
     def create_interpreter_clusters(self):
         """
         clusters : np.array of shape=(n_samples,)
@@ -37,7 +45,7 @@ class ProcessorAccessObject(object):
         # clusters = self.processor.clustering(self.context_train, self.events_train)
         clusters = self.processor.clustering(self.context, self.events)
         confidence, attention = self.processor.get_attention(self.context, self.events)
-        #print(type(attention),attention.get_shape())
+        # print(type(attention),attention.get_shape())
         self.dao.save_clustering_results(clusters, confidence, attention)
         return
 
@@ -70,14 +78,20 @@ class ProcessorAccessObject(object):
         confidence, attention = self.processor.get_attention(self.context, self.events)
         return
 
-#ToDo: add status flag as input parameter [waiting for file, processing, ready for analysis]
+    # ToDo: add status flag as input parameter [waiting for file, processing, ready for analysis]
     def run_DeepCASE(self):
+        self.status = Status.PREPROCESSING
         self.create_sequences('alerts.csv')
+        self.status = Status.CONTEXT_BUILDER
         self.train_context_builder()
+        self.status = Status.INTERPRETER
         self.create_interpreter_clusters()
+        self.status = Status.FINISHED
         self.manual_mode()
         self.automatic_mode()
-        #return status_flag
+        # return status_flag
+    def get_status(self):
+        return self.status
 
 if __name__ == '__main__':
     pao = ProcessorAccessObject()

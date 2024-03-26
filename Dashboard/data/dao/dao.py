@@ -12,6 +12,7 @@ class DAO(object):
         input_file_df.reset_index(inplace=True)
         input_file_df.rename(columns={'index': 'id_event'}, inplace=True)
         self.data_object.store_input_file(input_file_df)
+        print(input_file_df)
         return
     def save_sequencing_results(self, context, events, labels, mapping):
         """
@@ -86,3 +87,9 @@ class DAO(object):
 
     def get_mapping(self):
         return self.data_object.get_mapping()
+
+    def set_clustername(self, cluster_id, cluster_name):
+        self.data_object.set_clustername(cluster_id, cluster_name)
+
+    def set_riskvalue(self, event_id, risk_value):
+        return self.data_object.set_riskvalue(event_id, risk_value)

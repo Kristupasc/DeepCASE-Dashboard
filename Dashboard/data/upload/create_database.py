@@ -22,7 +22,10 @@ def parse_contents(contents, filename, date):
         # TODO add other possible inputs (e.g. xlsx)
         else:
             raise Exception('This file type is not supported')
-        dao.save_input(df)
+        new_df =pd.read_csv('input_data.csv')
+        new_df.drop(columns='Unnamed: 0',inplace=True)
+        dao.save_input(new_df) #fills events table
+
     except Exception as e:
         print(e)
         return html.Div([
@@ -31,7 +34,7 @@ def parse_contents(contents, filename, date):
 
     return html.Div([
         html.H5('File Uploaded Successfully: ' + filename),
-        html.Button('Start Security Analysis'),
+        html.Button('Start Security Analysis', id = 'start_deepcase_btn'),
         html.Hr(),
         displayDataFile()
     ])
