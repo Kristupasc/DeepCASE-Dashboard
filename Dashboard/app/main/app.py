@@ -71,7 +71,7 @@ sidebar_button_arrow_style = {
 #Define sidebar
 
 def sidebar(active_index):
-    active = [False, False, False, False]
+    active = [False] * 5
     active[active_index] = True
 
     sidebar = html.Div(
@@ -82,6 +82,7 @@ def sidebar(active_index):
                 sidebar_button("manual-analysis", "Manual Analysis", active[1]),
                 sidebar_button("ai-analysis", "AI Analysis", active[2]),
                 sidebar_button("database", "Database", active[3]),
+                sidebar_button("user-manual", "User Manual", active[4]),
             ])
         ],
         style=sidebar_style
