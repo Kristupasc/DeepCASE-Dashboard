@@ -130,16 +130,17 @@ def get_name_cluster(data):
 
 @callback(
     Output("scatter-plot", "figure"),
-    [Input("filter_dropdown" + id_str, "value")]
+    [Input("filter_dropdown" + id_str, "value"),
+     Input("scatter-plot", "clickData")]
 )
-def generate_scatter_plot(selected_cluster):
+def generate_scatter_plot(selected_cluster, click_data):
     """
-    Generate a scatter plot based on the selected cluster.
+    Generate a scatter plot based on the selected cluster and highlight the clicked point.
 
     :param selected_cluster: the value selected in the filter dropdown
+    :param click_data: data from the click event on the scatter plot
     :return: a dictionary containing the data and layout for the scatter plot
     """
-    # print(selected_cluster)
     traces = []
     dao = DAO()
     x = []
@@ -157,6 +158,15 @@ def generate_scatter_plot(selected_cluster):
             x.append(timestamp)
             y.append(risk_label)
             colors_graph.append(colors["Risk Label"][choose_risk(int(risk_label))])
+
+    # Check if a point has been clicked
+    if click_data:
+        # Initialize color map to grey for all points
+        colors_graph = [colors["Risk Label"]["Unlabeled"]] * len(x)
+        # Highlight the clicked point
+        point_index = click_data["points"][0]["pointIndex"]
+        colors_graph[point_index] = colors["Risk Label"][choose_risk(int(y[point_index]))]
+
     traces.append(
         go.Scatter(
             x=x,
@@ -186,4 +196,3 @@ def generate_scatter_plot(selected_cluster):
             font={"color": colors["text"]},
         ),
     }
-
