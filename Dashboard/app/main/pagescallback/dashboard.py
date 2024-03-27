@@ -17,6 +17,7 @@ id_str = "_da"
 cid_str = "_cida"
 #Setting variables
 cluster = 0
+prev_row = -1
 @callback(
     Output('selected cluster' + id_str, "data"),
     Input("filter_dropdown"+id_str, "value")
@@ -66,9 +67,10 @@ def store_context_row(state):
 @callback(
     Output('Context information' + cid_str, "data"),
     Input('selected row' + id_str, "data"),
-    Input('selected cluster' + id_str, "data")
+    Input('selected cluster' + id_str, "data"),
+    Input('scatter-plot', 'clickData')
 )
-def display_context(row, cluster):
+def display_context(row, cluster, click_data):
     """
     Display the context information based on the selected row and cluster.
 
@@ -76,8 +78,21 @@ def display_context(row, cluster):
     :param cluster: the selected cluster
     :return: the context frame as a dictionary of records
     """
-    if isinstance(row, int) and isinstance(cluster, int):
+    global prev_row
+    # we check if the graph point was clicked or if the row was clicked in the table:
+    is_graph_click = row is None or prev_row == row
+    if not is_graph_click:
+        # we load from what was clicked in the table
         df = load.formatContext(cluster, row, cid_str)
+        prev_row = row
+        return df.to_dict("records")
+    elif click_data is not None:
+        # there was a graph click
+        # we load from what was clicked in the graph
+        point = int(click_data["points"][0]["pointIndex"])
+        # now we need to find where the data is
+        df = load.formatContext(cluster, point, cid_str)
+
         return df.to_dict("records")
     raise PreventUpdate
 
@@ -171,3 +186,4 @@ def generate_scatter_plot(selected_cluster):
             font={"color": colors["text"]},
         ),
     }
+
