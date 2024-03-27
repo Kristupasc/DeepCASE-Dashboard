@@ -57,7 +57,7 @@ class ProcessorAccessObject(object):
                 the same score.
         """
         scores = self.processor.scoring(self.labels)
-        print(type(scores), scores)
+        self.dao.set_new_scores(scores)
         return
 
     def automatic_mode(self):
@@ -73,18 +73,16 @@ class ProcessorAccessObject(object):
                     * -3: Closest cluster > epsilon
         """
         prediction = self.processor.predict(self.context, self.events)
-        prediction_df = pd.DataFrame(prediction, columns=['prediction'])
-        print(prediction_df)
+        self.dao.set_new_scores(prediction)
+        self.dao.save_cluster_scores()
         confidence, attention = self.processor.get_attention(self.context, self.events)
+        #ToDo: split dao save clusters to have separate save attention method
+
         return
 
-    # ToDo: add status flag as input parameter [waiting for file, processing, ready for analysis]
     def run_DeepCASE(self):
-        self.status = Status.PREPROCESSING
         self.create_sequences('alerts.csv')
-        self.status = Status.CONTEXT_BUILDER
         self.train_context_builder()
-        self.status = Status.INTERPRETER
         self.create_interpreter_clusters()
         self.status = Status.FINISHED
         self.manual_mode()

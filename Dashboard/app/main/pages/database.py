@@ -31,7 +31,7 @@ layout = html.Div([
 ], style=style.content_style)
 
 
-# Called when a user uploads a new file => starts DeepCASE
+# Called when a user uploads a new file
 @callback(Output('output-data-upload', 'children', allow_duplicate=True),
           Input('upload-data', 'contents'),
           State('upload-data', 'filename'),
