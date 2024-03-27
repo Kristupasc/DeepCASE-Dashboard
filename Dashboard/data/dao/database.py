@@ -165,13 +165,11 @@ class Database(object):
         return result
 
     def get_sequences_per_cluster(self, cluster_id):
-        print(float(cluster_id))
-        query = "SELECT sequences.id_sequence, mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
+        query = "SELECT events.id_event, sequences.id_sequence, mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
                 "FROM mapping, sequences, events " \
                 "WHERE sequences.mapping_value = mapping.id " \
                 "AND events.id_event = sequences.id_sequence " \
                 "AND sequences.id_cluster = " + str(float(cluster_id))
-        print(query)
         result = pd.read_sql_query(query, self.conn)
         return result
 
