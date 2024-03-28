@@ -30,7 +30,8 @@ layout = html.Div([
     # https://dash.plotly.com/datatable/filtering
 
 
-], style=style.content_style)
+]#, style=style.content_style
+)
 
 
 
