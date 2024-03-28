@@ -1,7 +1,7 @@
 from io import StringIO
 
 import dash
-from dash import html, dash_table, dcc, callback, Output, Input,ctx
+from dash import html, dash_table, dcc, callback, Output, Input, ctx, State
 import pandas as pd
 from dash.exceptions import PreventUpdate
 import plotly.graph_objs as go
@@ -12,26 +12,33 @@ from Dashboard.data.dao.dao import DAO
 ########################################################################
 #   Dashboard callback (All ids need to match 100%)               #
 ########################################################################
-#suffix for all the ids that might be the same.
+# suffix for all the ids that might be the same.
 id_str = "_da"
 cid_str = "_cida"
-#Setting variables
+# Setting variables
 cluster = 0
 prev_row = -1
+prev_graph = -1
+
+
+
 @callback(
     Output('selected cluster' + id_str, "data"),
-    Input("filter_dropdown"+id_str, "value")
+    Output('selected row' + id_str, "data"),
+    Input("filter_dropdown" + id_str, "value")
 )
-def store_selected_cluster(state):
+def store_selected_cluster_and_row(state):
     """
-      Store the selected cluster.
+    Store the selected cluster and row.
 
-      :param state: the selected value from the filter dropdown
-      :return: the selected cluster if it's an integer
-      """
+    :param state: the selected value from the filter dropdown
+    :return: the selected cluster and row if they are integers
+    """
     if isinstance(state, int):
-        return state
+        return state, None
     raise PreventUpdate
+
+
 @callback(
     Output("dashboard", "data"),
     Input('selected cluster' + id_str, "data")
@@ -48,53 +55,69 @@ def update_table_cluster(state):
         return dff.to_dict("records")
     raise PreventUpdate
 
-@callback(
-    Output('selected row' + id_str, "data"),
-    Input("dashboard", 'selected_rows')
-)
-def store_context_row(state):
-    """
-    Store the selected row for context.
 
-    :param state: the selected rows from the dashboard
-    :return: the selected row if it's an integer
-    """
-    if state is not None:
-        if len(state)>0:
-            if isinstance(state[0], int):
-                return state[0]
-    raise PreventUpdate
 @callback(
     Output('Context information' + cid_str, "data"),
+    Output('dashboard', 'page_current'),
+    Output('dashboard', 'selected_rows'),
     Input('selected row' + id_str, "data"),
     Input('selected cluster' + id_str, "data"),
-    Input('scatter-plot', 'clickData')
+    Input('scatter-plot', 'clickData'),
+    State('dashboard', 'page_current')
 )
-def display_context(row, cluster, click_data):
+def display_context(row, cluster, click_data, current_page):
     """
     Display the context information based on the selected row and cluster.
 
     :param row: the selected row
     :param cluster: the selected cluster
+    :param click_data: data from the click event on the scatter plot
     :return: the context frame as a dictionary of records
     """
     global prev_row
+    global prev_graph
     # we check if the graph point was clicked or if the row was clicked in the table:
-    is_graph_click = row is None or prev_row == row
-    if not is_graph_click:
+    is_graph_click = prev_graph != click_data and click_data is not None
+    print("Something happened")
+    print("prev_graph: ", prev_graph)
+    print("click_data: ", click_data)
+    print("prev_row: ", prev_row)
+    print("row: ", row)
+    print(is_graph_click)
+    if not is_graph_click and row is not None and row != prev_row:
         # we load from what was clicked in the table
         df = load.formatContext(cluster, row, cid_str)
+        print(row)
         prev_row = row
-        return df.to_dict("records")
+        print(current_page)
+        return df.to_dict("records"), current_page, [row]  # Highlight the selected row in the dashboard table
     elif click_data is not None:
         # there was a graph click
         # we load from what was clicked in the graph
         point = int(click_data["points"][0]["pointIndex"])
         # now we need to find where the data is
         df = load.formatContext(cluster, point, cid_str)
-
-        return df.to_dict("records")
+        page_number = point // 10  # Assuming 10 entries per page
+        # get the last number in the point
+        table_row = point % 10
+        print(point)
+        print(page_number)
+        print(table_row)
+        prev_graph = click_data
+        return df.to_dict("records"), page_number, [point]  # Highlight the clicked point in the dashboard table
     raise PreventUpdate
+
+
+@callback(
+    Output('scatter-plot', 'clickData'),
+    Input('dashboard', 'selected_rows')
+)
+def highlight_selected_point(selected_rows):
+    if selected_rows is not None and len(selected_rows) > 0:
+        selected_point_index = selected_rows[0]  # Assuming only one row can be selected at a time
+        return {"points": [{"pointIndex": selected_point_index}]}
+    else:
+        return None
 
 def update_options_dropdown():
     """
@@ -104,12 +127,15 @@ def update_options_dropdown():
     """
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
 
+
 def update_values_dropdown():
     """
     Update the values in the dropdown.
     :return: a list of values for the dropdown based on possible clusters
     """
     return list([i[0] for i in load.possible_clusters()])
+
+
 @callback(
     Output('cluster name' + id_str, 'children'),
     Input('selected cluster' + id_str, "data")
@@ -127,6 +153,7 @@ def get_name_cluster(data):
             if z[0] == data:
                 return z[1]
     return "Cluster not selected"
+
 
 @callback(
     Output("scatter-plot", "figure"),
