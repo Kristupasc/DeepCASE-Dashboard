@@ -58,6 +58,25 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
+
+    # Buttons to filter the scatter plot
+    dcc.RadioItems(
+        id='filter-buttons',
+        options=[
+            {'label': 'All', 'value': 'All'},
+            {'label': 'Info', 'value': 'Info'},
+            {'label': 'Low', 'value': 'Low'},
+            {'label': 'Medium', 'value': 'Medium'},
+            {'label': 'High', 'value': 'High'},
+            {'label': 'Attack', 'value': 'Attack'},
+            {'label': 'Suspicious', 'value': 'Suspicious'},
+            {'label': 'Unlabeled', 'value': 'Unlabeled'},
+            {'label': 'Custom', 'value': 'Custom'}
+        ],
+        value='all',  # Default value
+        labelStyle={'display': 'inline-block'}
+    ),
+
     html.Div(
         [
             html.H2("All Sequences in Cluster", className="graph__title"),

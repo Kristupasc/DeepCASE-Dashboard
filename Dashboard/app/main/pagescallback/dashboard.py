@@ -19,7 +19,7 @@ cid_str = "_cida"
 cluster = 0
 prev_row = -1
 prev_graph = -1
-
+prev_click = -1
 
 
 @callback(
@@ -107,6 +107,7 @@ def highlight_selected_point(selected_rows):
     else:
         return None
 
+
 def update_options_dropdown():
     """
     Update the options in the dropdown.
@@ -145,10 +146,12 @@ def get_name_cluster(data):
 
 @callback(
     Output("scatter-plot", "figure"),
+    Output("filter-buttons", "value"),
     [Input("filter_dropdown" + id_str, "value"),
-     Input("scatter-plot", "clickData")]
+     Input("scatter-plot", "clickData"),
+     Input("filter-buttons", "value")]
 )
-def generate_scatter_plot(selected_cluster, click_data):
+def generate_scatter_plot(selected_cluster, click_data, filter_value):
     """
     Generate a scatter plot based on the selected cluster and highlight the clicked point.
 
@@ -173,14 +176,25 @@ def generate_scatter_plot(selected_cluster, click_data):
             x.append(timestamp)
             y.append(risk_label)
             colors_graph.append(colors["Risk Label"][choose_risk(int(risk_label))])
+    else:
+        filter_value = "All"
 
+    global prev_click
     # Check if a point has been clicked
-    if click_data:
+    if click_data and click_data != prev_click:
+        prev_click = click_data
+        filter_value = "Custom"
         # Initialize color map to grey for all points
         colors_graph = [colors["Risk Label"]["Unlabeled"]] * len(x)
         # Highlight the clicked point
         point_index = click_data["points"][0]["pointIndex"]
         colors_graph[point_index] = colors["Risk Label"][choose_risk(int(y[point_index]))]
+    # Filter points based on the selected category
+    if filter_value != 'All' and filter_value != 'Custom':
+        # set the color for the points that have the filter value
+        colors_graph = [
+            colors["Risk Label"][choose_risk(int(risk_label))] if choose_risk(int(risk_label)) == filter_value else
+            colors["Risk Label"]["Unlabeled"] for risk_label in y]
 
     traces.append(
         go.Scatter(
@@ -210,4 +224,4 @@ def generate_scatter_plot(selected_cluster, click_data):
             paper_bgcolor=colors["background"],
             font={"color": colors["text"]},
         ),
-    }
+    }, filter_value
