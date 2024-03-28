@@ -78,18 +78,10 @@ def display_context(row, cluster, click_data, current_page):
     global prev_graph
     # we check if the graph point was clicked or if the row was clicked in the table:
     is_graph_click = prev_graph != click_data and click_data is not None
-    print("Something happened")
-    print("prev_graph: ", prev_graph)
-    print("click_data: ", click_data)
-    print("prev_row: ", prev_row)
-    print("row: ", row)
-    print(is_graph_click)
     if not is_graph_click and row is not None and row != prev_row:
         # we load from what was clicked in the table
         df = load.formatContext(cluster, row, cid_str)
-        print(row)
         prev_row = row
-        print(current_page)
         return df.to_dict("records"), current_page, [row]  # Highlight the selected row in the dashboard table
     elif click_data is not None:
         # there was a graph click
@@ -99,10 +91,6 @@ def display_context(row, cluster, click_data, current_page):
         df = load.formatContext(cluster, point, cid_str)
         page_number = point // 10  # Assuming 10 entries per page
         # get the last number in the point
-        table_row = point % 10
-        print(point)
-        print(page_number)
-        print(table_row)
         prev_graph = click_data
         return df.to_dict("records"), page_number, [point]  # Highlight the clicked point in the dashboard table
     raise PreventUpdate
