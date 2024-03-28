@@ -1,6 +1,6 @@
 # Define the main content style
 content_style = {
-    'margin-left': '25%',
+    'margin-left': '20%',
     # 'float': 'left',
     # 'margin-right': '5%',
     'width': '85%',
@@ -61,8 +61,33 @@ sidebar_button_text_style = {
 }
 
 sidebar_button_arrow_style = {
-    'float': 'right',
-    'height': 18,
-    'margin-right': 10,
-    'margin-top': 16,
+    # 'float': 'right',
+    # 'height': 18,
+    # 'margin-right': 10,
+    # 'margin-top': 16,
+}
+
+# Define the sidebar style
+table_header = {
+    # # 'border': '0px solid',
+    # 'border-radius': '100px',
+    # 'backgroundColor': 'white',
+    # 'fontWeight': 'bold',
+    # 'borderRadius': '15px'
+}
+
+table_data = {
+    # 'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
+    # 'overflow': 'hidden',
+    # 'textOverflow': 'ellipsis',
+    # # 'border': '0px solid',
+    # 'border-radius': '15px',
+}
+
+table_cell = {
+    # 'border': '1px solid',
+    # # 'border-collapse': 'separate',
+    # # 'border-spacing': '0',
+    # 'border-radius': '5px',
+    # # "overflow": 'hidden'
 }
