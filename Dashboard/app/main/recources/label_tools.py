@@ -9,7 +9,8 @@ def get_colors():
             "High": "#FF4500",  # orangered
             "Attack": "#DC143C",  # crimson
             "Suspicious": "#800080",  # purple
-            "Unlabeled": "#808080"  # grey
+            "Unlabeled": "#808080",  # grey
+            "Custom": "#808080"  # grey
         }
     }
 
