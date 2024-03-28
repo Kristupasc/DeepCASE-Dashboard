@@ -78,9 +78,9 @@ def sidebar(active_index):
         [
             html.H1('DeepCASE', style={'textAlign': 'center', 'padding-bottom': 10}),
             html.Div([
-                sidebar_button("dashboard", "Dashboard", active[0]),
+                sidebar_button("dashboard", "Cluster view", active[0]),
                 sidebar_button("manual-analysis", "Manual Analysis", active[1]),
-                sidebar_button("ai-analysis", "AI Analysis", active[2]),
+                sidebar_button("ai-analysis", "Semi-auto Analysis", active[2]),
                 sidebar_button("database", "Database", active[3]),
                 sidebar_button("user-manual", "User Manual", active[4]),
             ])
