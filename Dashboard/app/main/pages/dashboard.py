@@ -9,7 +9,7 @@ dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboa
 ########################################################################
 
 layout = html.Div([
-    html.H1('Dash'),
+    html.H1('Cluster view'),
     html.H2('cluster name unknown', id='cluster name' + id_str),
     # drop down menu to select cluster
     dcc.Dropdown(
