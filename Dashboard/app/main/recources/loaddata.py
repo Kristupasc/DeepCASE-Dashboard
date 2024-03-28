@@ -43,7 +43,7 @@ def possible_clusters() -> [tuple]:
     df = df[['id_cluster', 'name_cluster']]
     df['id_cluster'] = pd.Series(df['id_cluster'], dtype="string")
     df['name_cluster'] = pd.Series(df['name_cluster'], dtype="string")
-    df['name_cluster'].fillna(df['id_cluster'], inplace=True)
+    df['name_cluster'] = df['name_cluster'].fillna(df['id_cluster'])
     df['id_cluster'] = pd.to_numeric(df['id_cluster'])
     df = list(df.itertuples(index=False, name=None))
     return df
