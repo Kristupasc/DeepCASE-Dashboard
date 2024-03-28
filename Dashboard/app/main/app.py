@@ -80,7 +80,7 @@ def sidebar(active_index):
             html.Div([
                 sidebar_button("dashboard", "Cluster view", active[0]),
                 sidebar_button("manual-analysis", "Manual Analysis", active[1]),
-                sidebar_button("ai-analysis", "Semi-auto Analysis", active[2]),
+                sidebar_button("semi-automatic", "Semi-auto Analysis", active[2]),
                 sidebar_button("database", "Database", active[3]),
                 sidebar_button("user-manual", "User Manual", active[4]),
             ])
