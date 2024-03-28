@@ -3,7 +3,7 @@ content_style = {
     'margin-left': '20%',
     # 'float': 'left',
     # 'margin-right': '5%',
-    'width': '85%',
+    'width': 'auto',
     'padding': '20px 10px',
     'background-color': '#E1E7FF',
     'border-radius': 20,
