@@ -1,0 +1,73 @@
+.app-header {
+    /*height: 60px;*/
+    /*line-height: 5px;*/
+    /*border: 30px solid #c61e1e;*/
+    /*border-bottom: thin lightgrey solid;*/
+    border-radius: 10px;
+}
+table {
+  border-collapse: separate !important;
+  border-spacing: 0px 5px !important; /* Horizontal and vertical spacing */
+}
+
+
+.cell-table {
+  border-collapse: separate !important;
+}
+
+
+
+td {
+    border: 0px solid !important;
+    /*padding: 8px !important;*/
+    background-color: #B8E7BD !important;
+    margin: 10px inherit !important;
+    border: 10px inherit !important;
+    /*border-radius: 5px 5px 0 0 !important;*/
+}
+
+tr {
+    /*border-radius: 10px !important;*/
+    /*border: 10px aqua !important;*/
+    border-spacing: 10px !important;
+    margin-bottom: 10px !important;
+    border: 10px inherit !important;
+    border-radius: 5px !important;
+}
+
+td.column-0 {
+    border-top-left-radius: 10px 10px !important;
+    border-bottom-left-radius: 10px 10px !important;
+}
+
+td.column-5 {
+    border-top-right-radius: 10px 10px !important;
+    border-bottom-right-radius: 10px 10px !important;
+}
+
+
+th {
+    /*background: #c61e1e !important;*/
+    border-radius: 10px !important;
+    border: 0px !important;
+    background-color: inherit !important;
+}
+
+
+cell {
+    /*border: 50px solid #c61e1e;*/
+    padding: 8px;
+
+}
+
+.my-custom-table {
+    /*border: 10px solid #c61e1e;*/
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.cell-table {
+    /*border: 2px solid #000000;*/
+    padding: 8px;
+    border-radius: 10px;
+}
