@@ -7,9 +7,8 @@ dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", titl
 from Dashboard.app.main.pagescallback.automated import *
 
 
-
-
-layout = html.Div([
+layout = html.Div(className="app-header",
+    children=[
     html.H1('Semi-automatic'),
     dcc.Dropdown(
             id="filter_dropdown"+ id_str,
@@ -30,11 +29,9 @@ layout = html.Div([
         ],
         data=df.to_dict('records'),
         filter_action='native',
-        style_data={
-            'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
-            'overflow': 'hidden',
-            'textOverflow': 'ellipsis',
-        },
+        style_data=style.table_data,
+        style_header=style.table_header,
+        style_cell=style.table_cell,
         page_size=10),
     # https://dash.plotly.com/datatable/filtering
     dash_table.DataTable(
@@ -46,11 +43,9 @@ layout = html.Div([
         ],
         data=df.to_dict('records'),
         filter_action='native',
-        style_data={
-            'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
-            'overflow': 'hidden',
-            'textOverflow': 'ellipsis',
-        },
-        page_size=10)
-
+        style_data=style.table_data,
+        style_header=style.table_header,
+        style_cell=style.table_cell,
+        page_size=10),
+    # style = style.table_style
 ], style=style.content_style)
