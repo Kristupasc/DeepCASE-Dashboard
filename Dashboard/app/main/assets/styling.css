@@ -75,3 +75,12 @@ cell {
 /*    padding: 8px;*/
 /*    border-radius: 10px;*/
 /*}*/
+
+.context_semiauto {
+
+    background-color: black !important;
+}
+
+.semiauto_graph {
+    background-color: black !important;
+}
