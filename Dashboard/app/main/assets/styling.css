@@ -19,8 +19,6 @@ table {
   border-collapse: separate !important;
 }
 
-
-
 td {
     border: 0px solid !important;
     /*padding: 8px !important;*/
@@ -76,11 +74,15 @@ cell {
 /*    border-radius: 10px;*/
 /*}*/
 
-.context_semiauto {
-
-    background-color: black !important;
+.semiauto_context {
+    background-color: rgb(184, 231, 189) !important;
+    border-radius: 15px !important;
 }
 
-.semiauto_graph {
-    background-color: black !important;
+/*.semiauto_graph {*/
+/*    background-color: rgba(126, 126, 126, 0.51) !important;*/
+/*}*/
+
+H2 {
+    text-align:center !important;
 }

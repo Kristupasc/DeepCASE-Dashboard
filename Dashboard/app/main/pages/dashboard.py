@@ -39,7 +39,7 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
-    html.Div(className='context_semiauto', children=[
+    html.Div(className='semiauto_context', children=[
     html.H2('Context of the selected sequence', id='sequence name' + cid_str),
 
     # Table to show the context of a sequence
