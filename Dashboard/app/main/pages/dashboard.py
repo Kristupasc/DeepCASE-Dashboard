@@ -46,9 +46,9 @@ layout = html.Div([
     dash_table.DataTable(
         id='Context information'+cid_str,
         columns=[
-            {'name': 'Position(top old, bottom newest)', 'id': 'event_position'+cid_str, 'type': 'numeric', 'hideable': True},
-            {'name': 'event', 'id': 'event'+cid_str, 'type': 'text', 'hideable': True},
-            {'name': 'Event_name', 'id': 'name'+cid_str, 'type': 'text', 'hideable': True},
+            {'name': 'Position(top oldest)', 'id': 'event_position'+cid_str, 'type': 'numeric', 'hideable': True},
+            {'name': 'Event', 'id': 'event'+cid_str, 'type': 'text', 'hideable': True},
+            {'name': 'Event_type', 'id': 'name'+cid_str, 'type': 'text', 'hideable': True},
             {'name': 'Attention', 'id': 'attention'+cid_str, 'type': 'text'}
         ],
         # data=df.to_dict('records'),
