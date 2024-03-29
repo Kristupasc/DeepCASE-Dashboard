@@ -39,7 +39,9 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
+    html.Div(className='context_semiauto', children=[
     html.H2('Context of the selected sequence', id='sequence name' + cid_str),
+
     # Table to show the context of a sequence
     dash_table.DataTable(
         id='Context information'+cid_str,
@@ -51,13 +53,12 @@ layout = html.Div([
         ],
         # data=df.to_dict('records'),
         filter_action='native',
-
         style_data={
             'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
             'overflow': 'hidden',
             'textOverflow': 'ellipsis',
         },
-        page_size=10),
+        page_size=10)], style={'background-color': 'red'}),
 
     # Buttons to filter the scatter plot
     dcc.RadioItems(
@@ -77,7 +78,8 @@ layout = html.Div([
         labelStyle={'display': 'inline-block'}
     ),
 
-    html.Div(
+    # Graph to display the scatter plot
+    html.Div(className="semiauto_graph", children=
         [
             html.H2("All Sequences in Cluster", className="graph__title"),
             dcc.Graph(id="scatter-plot"),
@@ -87,12 +89,13 @@ layout = html.Div([
                 n_intervals=0,
             ),
         ],
-        className="graph",
     ),
+
     # Objects to store intermediate values, selected by the above table.
-dcc.Store(id='selected cluster'+ id_str),
-dcc.Store(id='selected row'+ id_str),
+    dcc.Store(id='selected cluster'+ id_str),
+    dcc.Store(id='selected row'+ id_str),
 
 ],
     # dcc.Store stores the intermediate value
-    style=style.content_style)
+    style=style.content_style
+)
