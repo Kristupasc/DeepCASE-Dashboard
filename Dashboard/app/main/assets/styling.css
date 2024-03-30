@@ -6,6 +6,10 @@
     border-radius: 10px;
 }
 
+H2 {
+    text-align:center !important;
+}
+
 table {
     border-collapse: separate !important;
     border-spacing: 0px 10px !important; /* Horizontal and vertical spacing */
@@ -28,16 +32,21 @@ tr {
     border: 1px solid black;
 }
 
-.cell-table {
-  border-collapse: separate !important;
-}
+/*.cell-table {*/
+/*  border-collapse: separate !important;*/
+/*}*/
 
+th {
+    /*background: #c61e1e !important;*/
+    border-radius: 10px !important;
+    border: 0px !important;
+    background-color: inherit !important;
+}
 
 td {
     border-collapse: separate !important;
     border: 0px solid !important;
     background-color: #B8E7BD !important;
-    margin: 10px inherit !important;
     border: 10px inherit !important;
 
     border: none !important;
@@ -67,38 +76,24 @@ td.dash-select-cell {
     background: rgb(225, 231, 255) !important;
 }
 
-th {
-    /*background: #c61e1e !important;*/
-    border-radius: 10px !important;
-    border: 0px !important;
-    background-color: inherit !important;
-}
-
-
-/*cell {*/
-/*    !*border: 50px solid #c61e1e;*!*/
-/*    padding: 8px;*/
+/*tr:hover {*/
+/*    background: rgba(155, 155, 155, 0.56) !important;*/
 /*}*/
 
-/*.my-custom-table {*/
-/*    !*border: 10px solid #c61e1e;*!*/
-/*    border-collapse: collapse;*/
-/*    width: 100%;*/
-/*}*/
 
-.semiauto_context {
+
+.manual_context {
     background-color: rgb(184, 231, 189) !important;
     border-radius: 15px !important;
     border: 1px solid black !important;
     padding: 5px !important;
 }
 
-/*.semiauto_graph {*/
-/*    background-color: rgba(126, 126, 126, 0.51) !important;*/
-/*}*/
-
-H2 {
-    text-align:center !important;
+.semiauto_context {
+    background-color: rgb(184, 231, 189) !important;
+    border-radius: 15px !important;
+    border: 1px solid black !important;
+    padding: 5px !important;
 }
 
 .cluster_sequences_graph {
@@ -109,7 +104,6 @@ H2 {
     border: 2px solid black !important;
     margin-top: 1rem !important;
     table-layout: auto !important;
-
 
     margin-left: 20%;
     width: auto;
@@ -122,10 +116,64 @@ H2 {
 #scatter-plot {
     table-layout: auto !important;
     width: auto !important;
-    /*align-content: end !important;*/
-    /*    align-items: end !important;*/
-    /*    align-self: end !important;*/
-
-
-
 }
+
+/*input:focus {*/
+/*    background: rgb(213, 0, 0) !important;*/
+/*}*/
+
+/*input:hover  {*/
+/*    appearance: auto !important;*/
+
+/*    border-radius: 100% !important;*/
+/*    width: 50px !important;*/
+/*    height: 50px !important;*/
+
+/*    border: 1px solid #999 !important;*/
+/*    transition: 0.2s all linear !important;*/
+/*    margin-right: 5px !important;*/
+
+/*    position: relative !important;*/
+/*    top: 4px !important;*/
+/*    background-color: darkred !important;*/
+/*    background: mediumvioletred !important;*/
+/*}*/
+
+/*input:active {*/
+/*    appearance: auto !important;*/
+
+/*    border-radius: 100% !important;*/
+/*    width: 50px !important;*/
+/*    height: 50px !important;*/
+
+/*    border: 1px solid #999 !important;*/
+/*    transition: 0.2s all linear !important;*/
+/*    margin-right: 5px !important;*/
+
+/*    position: relative !important;*/
+/*    top: 4px !important;*/
+
+/*    background-color: darkred !important;*/
+/*    background: mediumvioletred !important;*/
+
+/*}*/
+
+/*input:focus {*/
+/*    appearance: auto !important;*/
+
+/*    border-radius: 100% !important;*/
+/*    width: 50px !important;*/
+/*    height: 50px !important;*/
+
+/*    border: 1px solid #999 !important;*/
+/*    transition: 0.2s all linear !important;*/
+/*    margin-right: 5px !important;*/
+
+/*    position: relative !important;*/
+/*    top: 4px !important;*/
+
+/*    background-color: darkred !important;*/
+/*    background: mediumvioletred !important;*/
+/*}*/
+
+
