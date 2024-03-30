@@ -17,13 +17,13 @@ def formatSequenceCluster(cluster: int, id_str: str) -> pd.DataFrame:
     dao = DAO()
     df = dao.get_sequences_per_cluster(cluster_id=cluster)
     df = df[df['id_cluster'] == cluster]
-    df = df[['machine', 'timestamp', 'name', 'risk_label']]
+    df = df[['machine', 'timestamp', 'name', 'risk_label', 'id_event']]
     df['timestamp'] = pd.DatetimeIndex(pd.to_datetime(df['timestamp'], unit='s')).strftime(format_time)
     df['risk_label'] = pd.to_numeric(df['risk_label'])
     df['machine'] = pd.Series(df['machine'], dtype="string")
     df['name'] = pd.Series(df['name'], dtype="string")
     df['timestamp'] = pd.Series(df['timestamp'], dtype="string")
-    df["id_event"] = df["name"].apply(get_event_id)
+    # df["id_event"] = df["name"].apply(get_event_id)
     df['id_event'] = pd.Series(df['id_event'], dtype="string")
     dict_id: dict[str, str] = dict()
     for i in df.columns:
