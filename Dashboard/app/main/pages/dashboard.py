@@ -9,6 +9,8 @@ dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboa
 ########################################################################
 
 layout = html.Div([
+    #TOP SECTION
+    html.Div(children=[
     html.H1('Cluster view'),
     html.H2('cluster name unknown', id='cluster name' + id_str),
     # drop down menu to select cluster
@@ -39,26 +41,32 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
+    html.Div(className='semiauto_context', children=[
     html.H2('Context of the selected sequence', id='sequence name' + cid_str),
+
+
     # Table to show the context of a sequence
     dash_table.DataTable(
         id='Context information'+cid_str,
         columns=[
-            {'name': 'Position(top old, bottom newest)', 'id': 'event_position'+cid_str, 'type': 'numeric', 'hideable': True},
-            {'name': 'event', 'id': 'event'+cid_str, 'type': 'text', 'hideable': True},
-            {'name': 'Event_name', 'id': 'name'+cid_str, 'type': 'text', 'hideable': True},
+            {'name': 'Position(top oldest)', 'id': 'event_position'+cid_str, 'type': 'numeric', 'hideable': True},
+            {'name': 'Event', 'id': 'event'+cid_str, 'type': 'text', 'hideable': True},
+            {'name': 'Event_type', 'id': 'name'+cid_str, 'type': 'text', 'hideable': True},
             {'name': 'Attention', 'id': 'attention'+cid_str, 'type': 'text'}
         ],
         # data=df.to_dict('records'),
         filter_action='native',
-
         style_data={
             'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
             'overflow': 'hidden',
             'textOverflow': 'ellipsis',
         },
-        page_size=10),
+        page_size=10)], style={'background-color': 'red'}),
+],    style=style.content_style
+),
 
+    # BOTTOM SECTION - Sequences graph
+    html.Div(className='cluster_sequences_graph', children=[
     # Buttons to filter the scatter plot
     dcc.RadioItems(
         id='filter-buttons',
@@ -77,7 +85,8 @@ layout = html.Div([
         labelStyle={'display': 'inline-block'}
     ),
 
-    html.Div(
+    # Graph to display the scatter plot
+    html.Div(children=
         [
             html.H2("All Sequences in Cluster", className="graph__title"),
             dcc.Graph(id="scatter-plot"),
@@ -87,12 +96,13 @@ layout = html.Div([
                 n_intervals=0,
             ),
         ],
-        className="graph",
+    ),]
     ),
+
     # Objects to store intermediate values, selected by the above table.
-dcc.Store(id='selected cluster'+ id_str),
-dcc.Store(id='selected row'+ id_str),
+    dcc.Store(id='selected cluster'+ id_str),
+    dcc.Store(id='selected row'+ id_str),
 
 ],
     # dcc.Store stores the intermediate value
-    style=style.content_style)
+)
