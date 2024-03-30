@@ -101,3 +101,31 @@ H2 {
     text-align:center !important;
 }
 
+.cluster_sequences_graph {
+    /*background: black !important;*/
+    background-color: rgb(225, 231, 255) !important;
+    padding: 15px !important;
+    border-radius: 10px !important;
+    border: 2px solid black !important;
+    margin-top: 1rem !important;
+    table-layout: auto !important;
+
+
+    margin-left: 20%;
+    width: auto;
+    padding: 20px 10px;
+    background-color: rgb(225, 231, 255);
+    border-radius: 20px;
+    border: 2px solid rgb(0, 0, 0);
+}
+
+#scatter-plot {
+    table-layout: auto !important;
+    width: auto !important;
+    /*align-content: end !important;*/
+    /*    align-items: end !important;*/
+    /*    align-self: end !important;*/
+
+
+
+}

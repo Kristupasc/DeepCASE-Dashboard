@@ -9,6 +9,8 @@ dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboa
 ########################################################################
 
 layout = html.Div([
+    #TOP SECTION
+    html.Div(children=[
     html.H1('Cluster view'),
     html.H2('cluster name unknown', id='cluster name' + id_str),
     # drop down menu to select cluster
@@ -42,6 +44,7 @@ layout = html.Div([
     html.Div(className='semiauto_context', children=[
     html.H2('Context of the selected sequence', id='sequence name' + cid_str),
 
+
     # Table to show the context of a sequence
     dash_table.DataTable(
         id='Context information'+cid_str,
@@ -59,7 +62,11 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10)], style={'background-color': 'red'}),
+],    style=style.content_style
+),
 
+    # BOTTOM SECTION - Sequences graph
+    html.Div(className='cluster_sequences_graph', children=[
     # Buttons to filter the scatter plot
     dcc.RadioItems(
         id='filter-buttons',
@@ -79,7 +86,7 @@ layout = html.Div([
     ),
 
     # Graph to display the scatter plot
-    html.Div(className="semiauto_graph", children=
+    html.Div(children=
         [
             html.H2("All Sequences in Cluster", className="graph__title"),
             dcc.Graph(id="scatter-plot"),
@@ -89,6 +96,7 @@ layout = html.Div([
                 n_intervals=0,
             ),
         ],
+    ),]
     ),
 
     # Objects to store intermediate values, selected by the above table.
@@ -97,5 +105,4 @@ layout = html.Div([
 
 ],
     # dcc.Store stores the intermediate value
-    style=style.content_style
 )
