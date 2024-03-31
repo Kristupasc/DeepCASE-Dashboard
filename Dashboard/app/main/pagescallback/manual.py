@@ -107,8 +107,8 @@ def update_options_dropdown(n):
     :return: a list of options for the dropdown based on possible clusters with labels and values
     """
     if 'change cluster name' == ctx.triggered_id:
-        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
-    return [{"label": i[1], "value": i[0]} for i in load.possible_clusters()]
+        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+    return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
 
 @callback(
     Output("filter_dropdown" + id_str, 'value'),
@@ -122,8 +122,8 @@ def update_values_dropdown(n):
     :return: a list of values for the dropdown based on possible clusters
     """
     if 'change cluster name' == ctx.triggered_id:
-        return list([i[0] for i in load.possible_clusters()])
-    return list([i[0] for i in load.possible_clusters()])
+        return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])] )
+    return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
 
 
 @callback(
@@ -140,7 +140,7 @@ def get_name_cluster(data):
     if isinstance(data, int):
         k = load.possible_clusters()
         for z in k:
-            if z[0] == data:
+            if not pd.isna(z[0]) and z[0] == data:
                 return z[1]
     return "Cluster not selected"
 
