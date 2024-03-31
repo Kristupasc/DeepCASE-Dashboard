@@ -74,8 +74,6 @@ def display_context(row, cluster, click_data, current_page):
     :param click_data: data from the click event on the scatter plot
     :return: the context frame as a dictionary of records
     """
-    print("Cluster")
-    print(cluster)
     global prev_row
     global prev_graph
     # we check if the graph point was clicked or if the row was clicked in the table:
@@ -176,7 +174,6 @@ def generate_scatter_plot(selected_cluster, click_data, filter_value):
     y = []
     colors_graph = []
     colors = get_colors()
-    print(selected_cluster)
     # check if selected_cluster is a list
     if selected_cluster is not None:
         data = dao.get_sequences_per_cluster(selected_cluster)
