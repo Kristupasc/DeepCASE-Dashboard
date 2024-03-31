@@ -74,6 +74,8 @@ def display_context(row, cluster, click_data, current_page):
     :param click_data: data from the click event on the scatter plot
     :return: the context frame as a dictionary of records
     """
+    print("Cluster")
+    print(cluster)
     global prev_row
     global prev_graph
     # we check if the graph point was clicked or if the row was clicked in the table:
@@ -156,7 +158,7 @@ def get_name_cluster(data):
 @callback(
     Output("scatter-plot", "figure"),
     Output("filter-buttons", "value"),
-    [Input("filter_dropdown" + id_str, "value"),
+    [Input('selected cluster' + id_str, "data"),
      Input("scatter-plot", "clickData"),
      Input("filter-buttons", "value")]
 )
@@ -174,8 +176,9 @@ def generate_scatter_plot(selected_cluster, click_data, filter_value):
     y = []
     colors_graph = []
     colors = get_colors()
+    print(selected_cluster)
     # check if selected_cluster is a list
-    if not isinstance(selected_cluster, list):
+    if selected_cluster is not None:
         data = dao.get_sequences_per_cluster(selected_cluster)
         for sequence in data.to_dict('records'):
             timestamp = sequence["timestamp"]
