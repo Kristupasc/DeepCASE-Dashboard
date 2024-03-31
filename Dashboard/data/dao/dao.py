@@ -1,6 +1,9 @@
+import numpy as np
 import torch
 import pandas as pd
 from Dashboard.data.dao.database import Database
+
+
 class DAO(object):
     def __init__(self):
         self.data_object = Database()
@@ -12,8 +15,8 @@ class DAO(object):
         input_file_df.reset_index(inplace=True)
         input_file_df.rename(columns={'index': 'id_event'}, inplace=True)
         self.data_object.store_input_file(input_file_df)
-        print(input_file_df)
         return
+
     def save_sequencing_results(self, context, events, labels, mapping):
         """
         Saves context, events, labels, mapping into data object.
@@ -52,6 +55,7 @@ class DAO(object):
         self.data_object.store_context(context_df=melted_context_df)
         self.data_object.store_mapping(mapping=mapping)
         return
+
     def save_clustering_results(self, clusters, confidence, attention):
         clusters_df = pd.DataFrame(clusters, columns=['id_cluster'])
         clusters_df = clusters_df.reset_index()
@@ -66,17 +70,27 @@ class DAO(object):
         self.data_object.store_attention(attention_melted_df)
         return
 
-    def save_prediction_results(self, prediction):
-        # TODO: Placeholder, add functionality later
+    def set_new_scores(self, score: np.ndarray):
+        scores_df = pd.DataFrame(score)
+        scores_df.reset_index(inplace=True)
+        scores_df.rename(
+            columns={0: 'risk_label', 'index': 'id_sequence'},
+            inplace=True)
+
+        self.data_object.update_sequence_score(scores_df)
         return
 
+    def save_cluster_scores(self):
+        self.data_object.fill_cluster_table()
+        return
 
     def get_initial_table(self):
         return self.data_object.get_input_table()
+
     def get_sequence_result(self):
         return self.data_object.get_sequences()
 
-    def get_context_per_sequence(self,  sequence_id):
+    def get_context_per_sequence(self, sequence_id):
         return self.data_object.get_context_by_sequence_id(sequence_id)
 
     def get_clusters_result(self):

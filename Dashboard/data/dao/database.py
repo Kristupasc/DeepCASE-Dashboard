@@ -1,10 +1,13 @@
 import sqlite3
 import pandas as pd
 import os
+
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 # Create a file path for "example.txt" in the script's directory
 file_path = os.path.join(script_dir, 'deepcase.db')
+
+
 class Database(object):
     _instance = None
 
@@ -13,6 +16,7 @@ class Database(object):
             cls._instance = super(Database, cls).__new__(cls, *args, **kwargs)
 
         return cls._instance
+
     def __init__(self):
         self.conn = sqlite3.connect(file_path, check_same_thread=False)
         self.cur = self.conn.cursor()
@@ -24,7 +28,7 @@ class Database(object):
         self.cur.execute('''CREATE TABLE IF NOT EXISTS mapping
                                (id INTEGER PRIMARY KEY, name TEXT)''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS clusters
-                               (id_cluster INTEGER PRIMARY KEY, name_cluster TEXT, score INT, risk label TEXT)''')
+                               (id_cluster INTEGER PRIMARY KEY, name_cluster TEXT, score INT)''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS sequences
                                (id_sequence INTEGER PRIMARY KEY, id_cluster INTEGER, mapping_value INT, risk_label TEXT,
                                FOREIGN KEY (id_cluster) REFERENCES clusters(id_cluster),
@@ -40,7 +44,6 @@ class Database(object):
         self.conn.commit()
         return
 
-
     def drop_database(self):
         # Fetch the list of all tables in the database
         self.cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
@@ -51,10 +54,12 @@ class Database(object):
             self.cur.execute(f"DROP TABLE IF EXISTS {table_name[0]}")
         self.conn.commit()
         return
+
     ########################################################################
     #                         Data insertion                               #
     ########################################################################
-    def store_input_file(self, input_file_df):
+    def store_input_file(self, input_file_df: pd.DataFrame):
+
         input_file_df.to_sql('events', self.conn, if_exists='append', index=False, dtype={
             'id_event': 'INTEGER',
             'timestamp': 'REAL',
@@ -62,10 +67,9 @@ class Database(object):
             'event': 'TEXT',
             'label': 'INT'
         })
-        print("---- saved")
-        print(input_file_df)
         self.conn.commit()
-        return
+
+        return True
 
     def store_sequences(self, sequence_df: pd.DataFrame):
         # Upload to sequence table
@@ -81,6 +85,7 @@ class Database(object):
             self.cur.execute("INSERT OR REPLACE INTO mapping (id, name) VALUES (?, ?)", (key, value))
             self.conn.commit()
         return
+
     def store_context(self, context_df: pd.DataFrame):
         # Upload to context events table
         context_df.to_sql('context_events', con=self.conn, if_exists='append', index=False)
@@ -126,15 +131,37 @@ class Database(object):
     def store_risk_labels(self, risk_label_df: pd.DataFrame):
         print(risk_label_df)
         return
+
+    def update_sequence_score(self, score_df: pd.DataFrame):
+        score_old_df = pd.read_sql_query('''SELECT * FROM sequences''', self.conn)
+        # Append updated score column to the old score dataframe
+        merged_df = score_old_df.merge(score_df, on=['id_sequence'], how='left',
+                                       suffixes=('', '_updated'))
+        # Ensure 'score' and 'score_updated' columns are of a numeric type
+
+        merged_df.drop(columns='risk_label', inplace=True)
+        merged_df.rename(columns={'risk_label_updated': 'risk_label'}, inplace=True)
+        merged_df.to_sql('sequences', con=self.conn, if_exists='replace', index=False)
+        self.conn.commit()
+        return
+
+    def fill_cluster_table(self):
+        query = """SELECT id_cluster, id_cluster AS name_cluster, MAX(risk_label) AS risk_label  
+        FROM sequences 
+        GROUP BY id_cluster;
+        """
+        clusters_df =  pd.read_sql_query(query, self.conn)
+        clusters_df.to_sql("clusters", con=self.conn, if_exists='replace', index=False)
+        return
+
     ########################################################################
     #                         Data aggregation                             #
     ########################################################################
-    def get_input_table(self):
+    def get_input_table(self) -> pd.DataFrame:
         # columns: timestamp,machine,event,label
         return pd.read_sql_query('''SELECT * FROM events''', self.conn)
 
-
-    def get_sequences(self):
+    def get_sequences(self) -> pd.DataFrame:
         # columns: main_event_name, timestamp, machine,  id_cluster, risk_label
         result = pd.read_sql_query('''SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label 
                                         FROM mapping, sequences, events 
@@ -142,8 +169,7 @@ class Database(object):
                                         AND events.id_event = sequences.id_sequence''', self.conn)
         return result
 
-    #TODO: create method to get only one sequence by id
-    def get_sequence_by_id(self, sequence_id):
+    def get_sequence_by_id(self, sequence_id: int) -> pd.DataFrame:
         query = "SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
                 "FROM mapping, sequences, events " \
                 "WHERE sequences.mapping_value = mapping.id " \
@@ -151,34 +177,37 @@ class Database(object):
         result = pd.read_sql_query(query, self.conn)
         return result
 
-    def get_context_by_sequence_id(self, sequence_id):
+    def get_context_by_sequence_id(self, sequence_id: int) -> pd.DataFrame:
         # columns:  event_position, event_name, attention
-        query = "SELECT context_events.event_position, mapping.name, context_events.attention " \
-                "FROM mapping, context_events " \
-                "WHERE context_events.mapping_value = mapping.id " \
-                "AND context_events.id_sequence = " + str(sequence_id)
-        result = pd.read_sql_query(query, self.conn)
+        query = """SELECT context_events.event_position, mapping.name, context_events.attention 
+                FROM mapping, context_events 
+                WHERE context_events.mapping_value = mapping.id 
+                AND context_events.id_sequence = ? """
+        # parameterized query to avoid sql injection
+        result = pd.read_sql_query(query, self.conn, params=[sequence_id])
         return result
 
-    def get_clusters(self):
+    def get_clusters(self) -> pd.DataFrame:
         result = pd.read_sql_query('''SELECT * FROM clusters''', self.conn)
         return result
 
-    def get_sequences_per_cluster(self, cluster_id):
-        query = "SELECT events.id_event, sequences.id_sequence, mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
-                "FROM mapping, sequences, events " \
-                "WHERE sequences.mapping_value = mapping.id " \
-                "AND events.id_event = sequences.id_sequence " \
-                "AND sequences.id_cluster = " + str(float(cluster_id))
-        result = pd.read_sql_query(query, self.conn)
+    def get_sequences_per_cluster(self, cluster_id: int) -> pd.DataFrame:
+        query = """SELECT events.id_event, sequences.id_sequence, mapping.name, events.timestamp, events.machine, 
+                sequences.id_cluster, sequences.risk_label
+                FROM mapping, sequences, events 
+                WHERE sequences.mapping_value = mapping.id 
+                AND events.id_event = sequences.id_sequence 
+                AND sequences.id_cluster = ? """
+        result = pd.read_sql_query(query, self.conn, params=[float(cluster_id)])
         return result
 
-
-    def get_mapping(self):
+    def get_mapping(self) -> pd.DataFrame:
         query = "SELECT  mapping.name, mapping.id " \
                 "FROM mapping "
         result = pd.read_sql_query(query, self.conn)
         return result
+
+    #
 
     def set_clustername(self, id_cluster: int, name_cluster: str):
         query = "UPDATE clusters SET name_cluster = \"" + name_cluster + " \" WHERE id_cluster = " + str(id_cluster)

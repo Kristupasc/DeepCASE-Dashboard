@@ -9,8 +9,6 @@ from Dashboard.data.dao.dao import DAO
 
 global dao
 dao = DAO()
-
-#todo: concat files
 def parse_contents(contents, filename, date):
     global dao
     content_type, content_string = contents.split(',')
