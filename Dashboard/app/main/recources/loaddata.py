@@ -61,7 +61,7 @@ def formatContext(cluster: int, index: int, id_str: str) -> pd.DataFrame:
     dao = DAO()
     df = dao.get_sequences_per_cluster(cluster).reindex()
     id_sequence = df.iloc[index].at["id_sequence"]
-    df = dao.get_context_per_sequence(id_sequence)
+    df = dao.get_context_per_sequence(int(id_sequence))
     df["event"] = df["name"].apply(get_event_id)
     dict_id: dict[str, str] = dict()
     for i in df.columns:
