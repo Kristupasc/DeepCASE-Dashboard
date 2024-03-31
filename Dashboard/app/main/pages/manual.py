@@ -42,7 +42,7 @@ layout = html.Div([
             {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
             {'name': 'Event', 'id': 'id_event' + id_str, 'type': 'numeric', 'hideable': True},
             {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
-            {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric', 'editable': False},
+            {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric', 'editable': True},
         ],
         # data=df.to_dict('records'),
         filter_action='native',
@@ -56,23 +56,6 @@ layout = html.Div([
     ################## Editable risk values
     html.Button('Choose next sequence', id='random' + qid_str, n_clicks=0),
     html.H3(id='doneCluster' + qid_str),
-    html.H3("Event to be labeled:"),
-    dash_table.DataTable( id='chosen sequence manual',
-        columns=[
-            {'name': 'Date', 'id': 'timestamp' + qid_str, 'type': 'text'},
-            {'name': 'Source', 'id': 'machine' + qid_str, 'type': 'text'},
-            {'name': 'Event', 'id': 'id_event' + qid_str, 'type': 'numeric', 'hideable': True},
-            {'name': 'Event_text', 'id': 'name' + qid_str, 'type': 'text', 'hideable': True},
-            {'name': 'Risk', 'id': 'risk_label' + qid_str, 'type': 'numeric', 'editable': True},
-        ],
-        data=(pd.DataFrame()).to_dict('records'),
-        filter_action='native',
-        style_data={
-            'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
-            'overflow': 'hidden',
-            'textOverflow': 'ellipsis',
-        },
-        page_size=10),
     html.Button('Submit change', id='submit' + qid_str, n_clicks=0),
     html.H3(id="successful"+qid_str),
 
