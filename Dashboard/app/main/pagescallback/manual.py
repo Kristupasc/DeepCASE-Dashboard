@@ -1,5 +1,5 @@
 from io import StringIO
-
+from math import floor
 import dash
 from dash import html, dash_table, dcc, callback, Output, Input,ctx, State
 import pandas as pd
@@ -54,6 +54,7 @@ def update_table_cluster(state):
 @callback(
     Output('selected row' + id_str, "data"),
     Output('manual','selected_rows'),
+    Output('manual', 'page_current'),#  this is for displau the right page
     Input("manual", 'selected_rows'),
     Input('random' + qid_str, "n_clicks"),
     Input("selected cluster" + id_str, "data")
@@ -67,13 +68,13 @@ def store_context_row(state, click, cluster_id):
     :param cluster_id: the selected cluster ID
     :return: the stored context row or trigger a PreventUpdate exception, As well the updated row selected.
     """
-    if 'random' + qid_str == ctx.triggered_id:
+    if 'random' + qid_str == ctx.triggered_id and isinstance(cluster_id, int):
         state = load.get_random_sequence(cluster_id)
-        return state, [state]
+        return state, [state], floor(state/10)
     if state is not None:
         if len(state) > 0:
             if isinstance(state[0], int):
-                return state[0], state
+                return state[0], state, floor(state[0]/10)
     raise PreventUpdate
 @callback(
     Output('Context information' + cid_str, "data"),
@@ -171,12 +172,12 @@ def set_cluster_name(cluster_id, n_clicks, value):
 
 @callback(
     Output("successful" + qid_str, "children"),
-    Input('chosen sequence manual', 'data'),
-    Input('selected row' + id_str, "data"),
+    Input('selected row'+id_str, "data"),
     Input('selected cluster' + id_str, "data"),
-    Input('submit' + qid_str, "n_clicks")
+    Input('submit' + qid_str, "n_clicks"),
+    Input('manual',"data")
 )
-def set_risk_label(value, row, cluster, n_clicks):
+def set_risk_label(row, cluster, n_clicks, data):
     """
     Set the risk label based on user input.
 
@@ -186,27 +187,22 @@ def set_risk_label(value, row, cluster, n_clicks):
     :param n_clicks: the number of clicks on the submit button
     :return: a message indicating the success of the operation
     """
-    if len(value) != 0:
-        value = value[0]['risk_label' + qid_str]
+    if data != None and row != None:
         if 'submit' + qid_str == ctx.triggered_id:
+            value = data[row]['risk_label' + id_str]
             if isinstance(row, int) and isinstance(cluster, int) and isinstance(value, int):
-                if load.set_riskvalue(cluster_id=cluster, row=row, risk_value=value):
-                    return "Successful, saved."
+                load.set_riskvalue(cluster_id=cluster, row= row, risk_value=value)
+                return "Successful, saved the row."
     return "Nothing saved, need to be int"
-
+########################################################################################
+# Light up the selected row.
+########################################################################################
 @callback(
-    Output("chosen sequence manual", "data"),
-    Input('selected row' + id_str, "data"),
-    Input('selected cluster' + id_str, "data"),
+    Output("manual", "style_data_conditional"),
+    Input("selected row"+id_str, "data")
 )
-def display_judged_sequence(row, cluster):
-    """
-    Display the judged sequence based on the selected row and cluster.
-
-    :param row: the selected row
-    :param cluster: the selected cluster
-    :return: the judged sequence as a dictionary of records
-    """
-    if isinstance(row, int) and isinstance(cluster, int):
-      return load.selectEventFormatted(cluster, row, qid_str).to_dict('records')
-    return pd.DataFrame().to_dict('records')
+def light_up_selected_row(row):
+    if isinstance(row, int):
+        return[{"if": {"row_index":row},'backgroundColor': 'hotpink',
+            'color': 'orange',}]
+    return None
