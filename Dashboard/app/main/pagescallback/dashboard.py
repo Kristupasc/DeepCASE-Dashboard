@@ -107,21 +107,31 @@ def highlight_selected_point(selected_rows):
     else:
         return None
 
-def update_options_dropdown():
+@callback(
+    Output("filter_dropdown" + id_str, 'options'),
+    Input('url', 'pathname')
+)
+def update_options_dropdown(n):
     """
     Update the options in the dropdown.
 
     :return: a list of options for the dropdown based on possible clusters with labels and values
     """
-    return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[0]) and not pd.isna(i[1])]
-
-def update_values_dropdown():
+    if n is None:
+        return  [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+    return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+@callback(
+    Output("filter_dropdown" + id_str, 'value'),
+    Input('url', 'pathname')
+)
+def update_values_dropdown(n):
     """
     Update the values in the dropdown.
     :return: a list of values for the dropdown based on possible clusters
     """
+    if n is None:
+        return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
     return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
-
 
 @callback(
     Output('cluster name' + id_str, 'children'),
@@ -137,7 +147,7 @@ def get_name_cluster(data):
     if isinstance(data, int):
         k = load.possible_clusters()
         for z in k:
-            if not pd.isna(z[0]) and z[0] == data:
+            if not pd.isna(z[0]) and z[0] == float(data):
                 return z[1]
     return "Cluster not selected"
 
