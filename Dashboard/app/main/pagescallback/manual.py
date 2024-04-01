@@ -1,20 +1,23 @@
 from io import StringIO
 from math import floor
 import dash
-from dash import html, dash_table, dcc, callback, Output, Input,ctx, State
+from dash import html, dash_table, dcc, callback, Output, Input, ctx, State
 import pandas as pd
 from dash.exceptions import PreventUpdate
 
 import Dashboard.app.main.recources.loaddata as load
+
 ########################################################################
 #   Manual callback (All ids need to match 100%)               #
 ########################################################################
-#suffix for all the ids that might be the same.
+# suffix for all the ids that might be the same.
 id_str = "_ma"
 cid_str = "_cma"
 qid_str = "-qma"
 # Some initial values
 cluster = 0
+
+
 # df = load.formatSequenceCluster(0, id_str)
 # set_cluster = load.possible_clusters()
 @callback(
@@ -36,6 +39,7 @@ def store_selected_cluster(state, click):
         return state
     raise PreventUpdate
 
+
 @callback(
     Output("manual", "data"),
     Input('selected cluster' + id_str, "data")
@@ -51,10 +55,12 @@ def update_table_cluster(state):
         dff = load.formatSequenceCluster(state, id_str)
         return dff.to_dict("records")
     raise PreventUpdate
+
+
 @callback(
     Output('selected row' + id_str, "data"),
-    Output('manual','selected_rows'),
-    Output('manual', 'page_current'),#  this is for displau the right page
+    Output('manual', 'selected_rows'),
+    Output('manual', 'page_current'),  # this is for displau the right page
     Input("manual", 'selected_rows'),
     Input('random' + qid_str, "n_clicks"),
     Input("selected cluster" + id_str, "data")
@@ -70,12 +76,14 @@ def store_context_row(state, click, cluster_id):
     """
     if 'random' + qid_str == ctx.triggered_id and isinstance(cluster_id, int):
         state = load.get_random_sequence(cluster_id)
-        return state, [state], floor(state/10)
+        return state, [state], floor(state / 10)
     if state is not None:
         if len(state) > 0:
             if isinstance(state[0], int):
-                return state[0], state, floor(state[0]/10)
+                return state[0], state, floor(state[0] / 10)
     raise PreventUpdate
+
+
 @callback(
     Output('Context information' + cid_str, "data"),
     Input('selected row' + id_str, "data"),
@@ -107,8 +115,10 @@ def update_options_dropdown(n):
     :return: a list of options for the dropdown based on possible clusters with labels and values
     """
     if 'change cluster name' == ctx.triggered_id:
-        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if
+                not pd.isna(i[1]) and not pd.isna(i[0])]
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+
 
 @callback(
     Output("filter_dropdown" + id_str, 'value'),
@@ -122,7 +132,7 @@ def update_values_dropdown(n):
     :return: a list of values for the dropdown based on possible clusters
     """
     if 'change cluster name' == ctx.triggered_id:
-        return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])] )
+        return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
     return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
 
 
@@ -143,6 +153,7 @@ def get_name_cluster(data):
             if not pd.isna(z[0]) and z[0] == data:
                 return z[1]
     return "Cluster not selected"
+
 
 ########################################################################################
 # Editable callback extra functionality special for manual.
@@ -172,10 +183,10 @@ def set_cluster_name(cluster_id, n_clicks, value):
 
 @callback(
     Output("successful" + qid_str, "children"),
-    Input('selected row'+id_str, "data"),
+    Input('selected row' + id_str, "data"),
     Input('selected cluster' + id_str, "data"),
     Input('submit' + qid_str, "n_clicks"),
-    Input('manual',"data")
+    Input('manual', "data")
 )
 def set_risk_label(row, cluster, n_clicks, data):
     """
@@ -187,22 +198,24 @@ def set_risk_label(row, cluster, n_clicks, data):
     :param n_clicks: the number of clicks on the submit button
     :return: a message indicating the success of the operation
     """
-    if data != None and row != None:
+    if data is not None and row is not None:
         if 'submit' + qid_str == ctx.triggered_id:
             value = data[row]['risk_label' + id_str]
             if isinstance(row, int) and isinstance(cluster, int) and isinstance(value, int):
-                load.set_riskvalue(cluster_id=cluster, row= row, risk_value=value)
+                load.set_riskvalue(cluster_id=cluster, row=row, risk_value=value)
                 return "Successful, saved the row."
     return "Nothing saved, need to be int"
+
+
 ########################################################################################
 # Light up the selected row.
 ########################################################################################
 @callback(
     Output("manual", "style_data_conditional"),
-    Input("selected row"+id_str, "data")
+    Input("selected row" + id_str, "data")
 )
 def light_up_selected_row(row):
     if isinstance(row, int):
-        return[{"if": {"row_index":row},'backgroundColor': 'hotpink',
-            'color': 'orange',}]
+        return [{"if": {"row_index": row}, 'backgroundColor': 'hotpink',
+                 'color': 'orange', }]
     return None

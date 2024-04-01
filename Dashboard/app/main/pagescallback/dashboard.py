@@ -69,6 +69,7 @@ def display_context(row, cluster, click_data, current_page):
     """
     Display the context information based on the selected row and cluster.
 
+    :param current_page: the page displayed.
     :param row: the selected row
     :param cluster: the selected cluster
     :param click_data: data from the click event on the scatter plot
@@ -107,6 +108,7 @@ def highlight_selected_point(selected_rows):
     else:
         return None
 
+
 @callback(
     Output("filter_dropdown" + id_str, 'options'),
     Input('url', 'pathname')
@@ -118,8 +120,11 @@ def update_options_dropdown(n):
     :return: a list of options for the dropdown based on possible clusters with labels and values
     """
     if n is None:
-        return  [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if
+                not pd.isna(i[1]) and not pd.isna(i[0])]
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+
+
 @callback(
     Output("filter_dropdown" + id_str, 'value'),
     Input('url', 'pathname')
@@ -132,6 +137,7 @@ def update_values_dropdown(n):
     if n is None:
         return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
     return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
+
 
 @callback(
     Output('cluster name' + id_str, 'children'),
@@ -163,6 +169,7 @@ def generate_scatter_plot(selected_cluster, click_data, filter_value):
     """
     Generate a scatter plot based on the selected cluster and highlight the clicked point.
 
+    :param filter_value:  filter value
     :param selected_cluster: the value selected in the filter dropdown
     :param click_data: data from the click event on the scatter plot
     :return: a dictionary containing the data and layout for the scatter plot

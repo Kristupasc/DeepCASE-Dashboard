@@ -1,22 +1,25 @@
 from io import StringIO
 
 import dash
-from dash import html, dash_table, dcc, callback, Output, Input,ctx
+from dash import html, dash_table, dcc, callback, Output, Input, ctx
 import pandas as pd
 from dash.exceptions import PreventUpdate
 
 import Dashboard.app.main.recources.loaddata as load
+
 ########################################################################
 #   Semi-automatic callback (All ids need to match 100%)               #
 ########################################################################
-#suffix for all the ids that might be the same.
+# suffix for all the ids that might be the same.
 id_str = "_sa"
 cid_str = "_cisa"
 # Setting variables
 cluster = 0
+
+
 @callback(
     Output('selected cluster' + id_str, "data"),
-    Input("filter_dropdown"+id_str, "value")
+    Input("filter_dropdown" + id_str, "value")
 )
 def store_selected_cluster(state):
     """
@@ -28,6 +31,8 @@ def store_selected_cluster(state):
     if isinstance(state, int):
         return state
     raise PreventUpdate
+
+
 @callback(
     Output("semi-automatic", "data"),
     Input('selected cluster' + id_str, "data")
@@ -44,6 +49,7 @@ def update_table_cluster(state):
         return dff.to_dict("records")
     raise PreventUpdate
 
+
 @callback(
     Output('selected row' + id_str, "data"),
     Input("semi-automatic", 'selected_rows')
@@ -56,14 +62,16 @@ def store_context_row(state):
     :return: the selected row if it's an integer
     """
     if state is not None:
-        if len(state)>0:
+        if len(state) > 0:
             if isinstance(state[0], int):
                 return state[0]
     raise PreventUpdate
+
+
 @callback(
-    Output('Context information'+cid_str, "data"),
+    Output('Context information' + cid_str, "data"),
     Input('selected row' + id_str, "data"),
-    Input('selected cluster' + id_str,"data")
+    Input('selected cluster' + id_str, "data")
 )
 def display_context(row, cluster):
     """
@@ -77,6 +85,8 @@ def display_context(row, cluster):
         df = load.formatContext(cluster, row, cid_str)
         return df.to_dict("records")
     raise PreventUpdate
+
+
 @callback(
     Output("filter_dropdown" + id_str, 'options'),
     Input('url', 'pathname')
@@ -88,8 +98,11 @@ def update_options_dropdown(n):
     :return: a list of options for the dropdown based on possible clusters with labels and values
     """
     if n is None:
-        return  [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if
+                not pd.isna(i[1]) and not pd.isna(i[0])]
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+
+
 @callback(
     Output("filter_dropdown" + id_str, 'value'),
     Input('url', 'pathname')
@@ -102,6 +115,7 @@ def update_values_dropdown(n):
     if n is None:
         return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
     return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
+
 
 @callback(
     Output('cluster name' + id_str, 'children'),
