@@ -14,10 +14,6 @@ import Dashboard.app.main.recources.loaddata as load
 id_str = "_ma"
 cid_str = "_cma"
 qid_str = "-qma"
-# Some initial values
-cluster_old = 0
-max_row = 0
-
 
 # df = load.formatSequenceCluster(0, id_str)
 # set_cluster = load.possible_clusters()
@@ -76,19 +72,18 @@ def store_context_row(state, click, cluster_id):
     :return: the stored context row or trigger a PreventUpdate exception,
     as well the updated row selected, page current.
     """
-    global cluster_old
-    if cluster_id is not None:
-        if cluster_id != cluster_old:
-            cluster_old = cluster_id
-            return 0, [0], floor(0 / 10)
+    if isinstance(cluster_id, int):
         if 'random' + qid_str == ctx.triggered_id and isinstance(cluster_id, int):
             state = load.get_random_sequence(cluster_id)
             return state, [state], floor(state / 10)
         if state is not None:
             if len(state) > 0:
                 if isinstance(state[0], int):
+                    rows = load.get_row(cluster_id)
+                    state = [min(rows, state[0])]
                     return state[0], state, floor(state[0] / 10)
-    raise PreventUpdate
+        raise PreventUpdate
+    return None, [], None
 
 
 @callback(
