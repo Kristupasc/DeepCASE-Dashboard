@@ -80,7 +80,7 @@ def store_context_row(state, click, cluster_id):
             if len(state) > 0:
                 if isinstance(state[0], int):
                     rows = load.get_row(cluster_id)
-                    state = [min(rows, state[0])]
+                    state = [min(rows-1, state[0])]
                     return state[0], state, floor(state[0] / 10)
         raise PreventUpdate
     return None, [], None
@@ -99,7 +99,7 @@ def display_context(row, cluster):
     :param cluster: the selected cluster
     :return: the context frame as a dictionary of records
     """
-    if isinstance(row, int) and isinstance(cluster, int):
+    if isinstance(row, int) and isinstance(cluster, int) and row <= load.get_row(cluster):
         df = load.formatContext(cluster, row, cid_str)
         return df.to_dict("records")
     raise PreventUpdate
