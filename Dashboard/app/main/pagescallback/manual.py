@@ -185,24 +185,26 @@ def set_cluster_name(cluster_id, n_clicks, value):
 
 @callback(
     Output("successful" + qid_str, "children"),
-    Input('selected row' + id_str, "data"),
     Input('selected cluster' + id_str, "data"),
-    Input('manual', "data")
+    Input('manual', "data"),
+    [State('manual', 'active_cell')], prevent_initial_call=True
 )
-def set_risk_label(row, cluster, data):
+def set_risk_label(cluster, data, active):
     """
     Set the risk label based on user input.
 
-    :param value: the risk label value given in dict.
-    :param row: the selected row
-    :param cluster: the selected cluster
+    :param cluster: is the cluster selected.
+    :param data: is all the data of the dash table, there don't exist a better parameter
+    :param active: is the parameter that checks which cell is edited.
+    (When you want to reconstruct to multiple cells to edit at the same time this should allow for a selection bigger.)
+    This is an state because it needs a bit more dynamically.
     :return: a message indicating the success of the operation
     """
-    if data is not None and row is not None:
-        value = data[row]['risk_label' + id_str]
-        if isinstance(row, int) and isinstance(cluster, int) and isinstance(value, int):
-            load.set_riskvalue(cluster_id=cluster, row=row, risk_value=value)
-            return "Successful, saved the row."
+    if data is not None and active is not None and cluster is not None:
+        value = data[active['row']-1]['risk_label' + id_str]
+        if isinstance(active['row'], int) and isinstance(cluster, int) and isinstance(value, int):
+            if load.set_riskvalue(cluster_id=cluster, row=active['row']-1, risk_value=value):
+                return "Successful, saved the row."
     return "Nothing saved, need to be int"
 
 
