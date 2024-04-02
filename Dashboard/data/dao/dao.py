@@ -11,13 +11,8 @@ class DAO(object):
         # self.data_object.drop_database()
         # self.data_object.create_tables()
 
-    def set_current_file(self, filename):
-        self.data_object.switch_current_file(filename)
-        return
-
-    def store_current_file(self):
-        self.data_object.store_current_file()
-        return
+    def switch_current_file(self, filename):
+        return self.data_object.switch_current_file(filename)
 
     def get_filenames(self):
         return self.data_object.get_filenames()
