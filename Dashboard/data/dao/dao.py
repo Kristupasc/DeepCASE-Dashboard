@@ -11,10 +11,21 @@ class DAO(object):
         # self.data_object.drop_database()
         # self.data_object.create_tables()
 
-    def save_input(self, input_file_df):
+    def set_current_file(self, filename):
+        self.data_object.switch_current_file(filename)
+        return
+
+    def store_current_file(self):
+        self.data_object.store_current_file()
+        return
+
+    def get_filenames(self):
+        return self.data_object.get_filenames()
+
+    def save_input(self, input_file_df: pd.DataFrame, filename: str):
         input_file_df.reset_index(inplace=True)
         input_file_df.rename(columns={'index': 'id_event'}, inplace=True)
-        self.data_object.store_input_file(input_file_df)
+        self.data_object.store_input_file(input_file_df, filename)
         return
 
     def save_sequencing_results(self, context, events, labels, mapping):
@@ -103,7 +114,7 @@ class DAO(object):
         return self.data_object.get_mapping()
 
     def set_clustername(self, cluster_id, cluster_name):
-        self.data_object.set_clustername(cluster_id, cluster_name)
+        self.data_object.set_cluster_name(cluster_id, cluster_name)
 
     def set_riskvalue(self, event_id, risk_value):
-        return self.data_object.set_riskvalue(event_id, risk_value)
+        return self.data_object.set_risk_value(event_id, risk_value)
