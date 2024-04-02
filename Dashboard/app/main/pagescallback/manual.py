@@ -15,7 +15,8 @@ id_str = "_ma"
 cid_str = "_cma"
 qid_str = "-qma"
 # Some initial values
-cluster = 0
+cluster_old = 0
+max_row = 0
 
 
 # df = load.formatSequenceCluster(0, id_str)
@@ -60,7 +61,7 @@ def update_table_cluster(state):
 @callback(
     Output('selected row' + id_str, "data"),
     Output('manual', 'selected_rows'),
-    Output('manual', 'page_current'),  # this is for displau the right page
+    Output('manual', 'page_current'),  # this is for display the right page
     Input("manual", 'selected_rows'),
     Input('random' + qid_str, "n_clicks"),
     Input("selected cluster" + id_str, "data")
@@ -72,15 +73,21 @@ def store_context_row(state, click, cluster_id):
     :param state: the selected rows in the manual component
     :param click: the number of clicks on the random button
     :param cluster_id: the selected cluster ID
-    :return: the stored context row or trigger a PreventUpdate exception, As well the updated row selected.
+    :return: the stored context row or trigger a PreventUpdate exception,
+    as well the updated row selected, page current.
     """
-    if 'random' + qid_str == ctx.triggered_id and isinstance(cluster_id, int):
-        state = load.get_random_sequence(cluster_id)
-        return state, [state], floor(state / 10)
-    if state is not None:
-        if len(state) > 0:
-            if isinstance(state[0], int):
-                return state[0], state, floor(state[0] / 10)
+    global cluster_old
+    if cluster_id is not None:
+        if cluster_id != cluster_old:
+            cluster_old = cluster_id
+            return 0, [0], floor(0 / 10)
+        if 'random' + qid_str == ctx.triggered_id and isinstance(cluster_id, int):
+            state = load.get_random_sequence(cluster_id)
+            return state, [state], floor(state / 10)
+        if state is not None:
+            if len(state) > 0:
+                if isinstance(state[0], int):
+                    return state[0], state, floor(state[0] / 10)
     raise PreventUpdate
 
 

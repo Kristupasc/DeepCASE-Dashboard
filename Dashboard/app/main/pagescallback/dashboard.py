@@ -24,20 +24,36 @@ prev_click = -1
 
 @callback(
     Output('selected cluster' + id_str, "data"),
-    Output('selected row' + id_str, "data"),
     Input("filter_dropdown" + id_str, "value")
 )
-def store_selected_cluster_and_row(state):
+def store_selected_cluster(state):
     """
-    Store the selected cluster and row.
+    Store the selected cluster
 
     :param state: the selected value from the filter dropdown
-    :return: the selected cluster and row if they are integers
+    :return: the selected cluster
     """
     if isinstance(state, int):
-        return state, None
+        return state
     raise PreventUpdate
+@callback(
+    Output('selected row' + id_str, "data"),
+    Input("dashboard", 'selected_rows'),
+    Input("selected cluster"+ id_str, "data")
+)
+def store_context_row(state, cluster):
+    """
+    Store the selected row for context.
 
+    :param state: the selected rows from the dashboard
+    :param cluster: the cluster id, and a way to trigger this methode. To prevent an outbound.
+    :return: the selected row if it's an integer
+    """
+    if state is not None:
+        if len(state) > 0 and isinstance(cluster, int):
+            if isinstance(state[0], int):
+                return min(state[0], load.get_row(cluster)-1)
+    raise PreventUpdate
 
 @callback(
     Output("dashboard", "data"),

@@ -52,19 +52,21 @@ def update_table_cluster(state):
 
 @callback(
     Output('selected row' + id_str, "data"),
-    Input("semi-automatic", 'selected_rows')
+    Input("semi-automatic", 'selected_rows'),
+    Input("selected cluster"+ id_str, "data")
 )
-def store_context_row(state):
+def store_context_row(state, cluster):
     """
     Store the selected row for context.
 
     :param state: the selected rows from the dashboard
+    :param cluster: the cluster id, and a way to trigger this methode. To prevent an outbound.
     :return: the selected row if it's an integer
     """
     if state is not None:
-        if len(state) > 0:
+        if len(state) > 0 and isinstance(cluster, int):
             if isinstance(state[0], int):
-                return state[0]
+                return min(state[0], load.get_row(cluster)-1)
     raise PreventUpdate
 
 
