@@ -1,6 +1,6 @@
 import random
 from typing import Dict, Any
-from Dashboard.data.dao.dao import *
+from Dashboard.data.dao.dao import DAO
 import pandas as pd
 
 format_time = "%H:%M:%S.%f, %d %b %Y"  # For second %s %ssss

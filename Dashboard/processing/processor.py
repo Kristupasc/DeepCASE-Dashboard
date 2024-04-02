@@ -1,5 +1,6 @@
 # Other imports
 import numpy as np
+import pandas
 import torch
 
 # DeepCASE Imports
@@ -41,8 +42,8 @@ class Processor(object):
     #                             Loading data                             #
     ########################################################################
 
-    def sequence_data(self, path):
-        context, events, labels, mapping = self.preprocessor.csv(path, verbose=True)
+    def sequence_data(self, data: pandas.DataFrame):
+        context, events, labels, mapping = self.preprocessor.sequence(data=data, verbose=True)
 
         if labels is None:
             labels = np.full(events.shape[0], -1, dtype=int)
