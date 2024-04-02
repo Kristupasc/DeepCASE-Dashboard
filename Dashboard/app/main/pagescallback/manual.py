@@ -187,25 +187,22 @@ def set_cluster_name(cluster_id, n_clicks, value):
     Output("successful" + qid_str, "children"),
     Input('selected row' + id_str, "data"),
     Input('selected cluster' + id_str, "data"),
-    Input('submit' + qid_str, "n_clicks"),
     Input('manual', "data")
 )
-def set_risk_label(row, cluster, n_clicks, data):
+def set_risk_label(row, cluster, data):
     """
     Set the risk label based on user input.
 
     :param value: the risk label value given in dict.
     :param row: the selected row
     :param cluster: the selected cluster
-    :param n_clicks: the number of clicks on the submit button
     :return: a message indicating the success of the operation
     """
     if data is not None and row is not None:
-        if 'submit' + qid_str == ctx.triggered_id:
-            value = data[row]['risk_label' + id_str]
-            if isinstance(row, int) and isinstance(cluster, int) and isinstance(value, int):
-                load.set_riskvalue(cluster_id=cluster, row=row, risk_value=value)
-                return "Successful, saved the row."
+        value = data[row]['risk_label' + id_str]
+        if isinstance(row, int) and isinstance(cluster, int) and isinstance(value, int):
+            load.set_riskvalue(cluster_id=cluster, row=row, risk_value=value)
+            return "Successful, saved the row."
     return "Nothing saved, need to be int"
 
 
@@ -218,6 +215,6 @@ def set_risk_label(row, cluster, n_clicks, data):
 )
 def light_up_selected_row(row):
     if isinstance(row, int):
-        return [{"if": {"row_index": row}, 'backgroundColor': 'hotpink',
+        return [{"if": {"row_index": row%10}, 'backgroundColor': 'hotpink',
                  'color': 'orange', }]
     return None

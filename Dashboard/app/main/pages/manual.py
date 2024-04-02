@@ -56,7 +56,6 @@ layout = html.Div([
     ################## Editable risk values
     html.Button('Choose next sequence', id='random' + qid_str, n_clicks=0),
     html.H3(id='doneCluster' + qid_str),
-    html.Button('Submit change', id='submit' + qid_str, n_clicks=0),
     html.H3(id="successful" + qid_str),
 
     ## Selected sequence context
