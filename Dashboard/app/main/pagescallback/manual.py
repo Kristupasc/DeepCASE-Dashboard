@@ -6,6 +6,7 @@ import pandas as pd
 from dash.exceptions import PreventUpdate
 import Dashboard.app.main.pagescallback.display_sequence as display_sequence
 import Dashboard.app.main.recources.loaddata as load
+import dash_bootstrap_components as dbc
 
 ########################################################################
 #   Manual callback (All ids need to match 100%)               #
@@ -125,43 +126,54 @@ callback(
 ########################################################################################
 
 @callback(
-    Output("set label cluster" + id_str, 'children'),
+    Output("modal_set_cluster"+id_str, "opened"),
+    Output("modal_set_cluster"+id_str, "title"),
     Input('selected cluster' + id_str, "data"),
     Input('change cluster name', 'n_clicks'),
-    State('cluster name' + id_str, 'value')
+    State('cluster name' + id_str, 'value'),
+    State("modal_set_cluster"+ id_str, "opened"),
+    prevent_initial_call = True,
 )
-def set_cluster_name(cluster_id, n_clicks, value):
+def set_cluster_name(cluster_id, button, cluster_name, opened):
     """
-    Set the label for the cluster based on user input.
+    Set the label for the cluster based on user input and send an modal.
 
     :param cluster_id: the selected cluster ID
     :param n_clicks: the number of clicks on the change cluster name button
     :param value: the new value for the cluster name
-    :return: a message indicating the success of the operation or unchanged status
+    :param opened: send feedback if the pop up is opened
+    :return: a message indicating the success of the operation or unchanged status, true if pop-up need to be shown.
     """
     if 'change cluster name' == ctx.triggered_id:
-        if isinstance(cluster_id, int) and isinstance(value, str):
-            if load.set_cluster_name(cluster_id, value):
-                return "Successful changed"
-    return "cluster name unchanged"
+        if isinstance(cluster_id, int) and isinstance(cluster_name, str):
+            if load.set_cluster_name(cluster_id, cluster_name):
+                return not opened, "Succesfully changed to: "+cluster_name
+        return not opened, "Nothing changed, please provide correct input"
+    return opened, "nothing"
+
 
 
 @callback(
-    Output("successful" + qid_str, "children"),
+    Output("modal_set_risk"+id_str, "opened"),
+    Output("modal_set_risk"+id_str, "title"),
     Input('selected cluster' + id_str, "data"),
     Input('manual', "data"),
     Input('manual', "data_previous"),
-    [State('manual', 'active_cell')], prevent_initial_call=True
+    State('manual', 'active_cell'),
+    State("modal_set_risk"+id_str, "opened"),
+    prevent_initial_call=True
 )
-def set_risk_label(cluster, data, data_previous, active):
+def set_risk_label(cluster, data, data_previous, active, opened):
     """
     Set the risk label based on user input.
 
     :param cluster: is the cluster selected.
     :param data: is all the data of the dash table, there don't exist a better parameter
+    :param data_previous: is all the data of the dash table, before change.
     :param active: is the parameter that checks which cell is edited.
     (When you want to reconstruct to multiple cells to edit at the same time this should allow for a selection bigger.)
     This is an state because it needs a bit more dynamically.
+    :param opened: provide feedback of the modal.
     :return: a message indicating the success of the operation
     """
     if data is not None and active is not None and cluster is not None:
@@ -169,8 +181,9 @@ def set_risk_label(cluster, data, data_previous, active):
         if data_previous[active['row']-1]['risk_label' + id_str] != value:
             if isinstance(active['row'], int) and isinstance(cluster, int) and isinstance(value, int):
                 if load.set_riskvalue(cluster_id=cluster, row=active['row']-1, risk_value=value):
-                    return "Successful, saved the row."
-    return "Nothing saved, need to be int"
+                    return not opened, "Successful, saved the row."
+            return not opened, "Please provide correct values"
+    return opened, "Nothing to be seen"
 
 
 ########################################################################################

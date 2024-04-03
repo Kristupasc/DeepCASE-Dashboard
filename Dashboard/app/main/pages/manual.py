@@ -1,6 +1,6 @@
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.manual import *
-
+import dash_mantine_components as dmc
 dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", title="Manual Analysis", order=1)
 
 ########################################################################
@@ -74,8 +74,11 @@ layout = html.Div([
         dcc.Store(id='selected cluster' + id_str),
         dcc.Store(id='selected row' + id_str)
 
-    ], )
+    ], ),
+    dmc.Modal( title="Yeeeeeeeeaaaaaaaa", id = "modal_set_cluster"+id_str),
+    dmc.Modal( title="Noooooooo", id = "modal_set_risk"+id_str),
 ],
+
     # dcc.Store stores the intermediate value
     style=style.content_style
 )
