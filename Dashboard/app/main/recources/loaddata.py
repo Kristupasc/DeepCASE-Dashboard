@@ -109,7 +109,7 @@ def get_event_id(event_text):
     # look if it exists, it otherwise produces an error, catch it and return the same name.
     try:
         return df[df["name"] == event_text].iloc[0].at["id"]
-    except:
+    except (ValueError, IndexError):
         return event_text
 
 
@@ -128,7 +128,7 @@ def set_riskvalue(cluster_id, row, risk_value):
     try:
         dao.set_riskvalue(event_id, risk_value)
         return True
-    except:
+    except (ValueError, IndexError):
         return False
 
 
@@ -144,7 +144,7 @@ def set_cluster_name(cluster_id, cluster_name):
     try:
         dao.set_clustername(cluster_id=cluster_id, cluster_name=cluster_name)
         return True
-    except:
+    except (ValueError, IndexError):
         return False
 
 
@@ -173,3 +173,15 @@ def get_random_sequence(cluster_id):
     rows = df.shape[0]
     rand = random.randrange(0, rows, 1)
     return rand
+
+def get_row(cluster_id):
+    """
+    Get the max row number
+
+    :param cluster_id: cluster ID
+    :return: random sequence index
+    """
+    dao = DAO()
+    df = dao.get_sequences_per_cluster(cluster_id)
+    rows = df.shape[0]
+    return rows

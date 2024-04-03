@@ -1,0 +1,8 @@
+deepCase
+dash
+pandas
+argformat
+torch
+tqdm
+scipy
+scikit-learn

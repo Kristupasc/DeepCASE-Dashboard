@@ -4,7 +4,7 @@ import dash
 from dash import html, dash_table, dcc, callback, Output, Input, ctx, State
 import pandas as pd
 from dash.exceptions import PreventUpdate
-
+import Dashboard.app.main.pagescallback.display_sequence as display_sequence
 import Dashboard.app.main.recources.loaddata as load
 
 ########################################################################
@@ -14,9 +14,6 @@ import Dashboard.app.main.recources.loaddata as load
 id_str = "_ma"
 cid_str = "_cma"
 qid_str = "-qma"
-# Some initial values
-cluster = 0
-
 
 # df = load.formatSequenceCluster(0, id_str)
 # set_cluster = load.possible_clusters()
@@ -60,7 +57,7 @@ def update_table_cluster(state):
 @callback(
     Output('selected row' + id_str, "data"),
     Output('manual', 'selected_rows'),
-    Output('manual', 'page_current'),  # this is for displau the right page
+    Output('manual', 'page_current'),  # this is for display the right page
     Input("manual", 'selected_rows'),
     Input('random' + qid_str, "n_clicks"),
     Input("selected cluster" + id_str, "data")
@@ -72,16 +69,21 @@ def store_context_row(state, click, cluster_id):
     :param state: the selected rows in the manual component
     :param click: the number of clicks on the random button
     :param cluster_id: the selected cluster ID
-    :return: the stored context row or trigger a PreventUpdate exception, As well the updated row selected.
+    :return: the stored context row or trigger a PreventUpdate exception,
+    as well the updated row selected, page current.
     """
-    if 'random' + qid_str == ctx.triggered_id and isinstance(cluster_id, int):
-        state = load.get_random_sequence(cluster_id)
-        return state, [state], floor(state / 10)
-    if state is not None:
-        if len(state) > 0:
-            if isinstance(state[0], int):
-                return state[0], state, floor(state[0] / 10)
-    raise PreventUpdate
+    if isinstance(cluster_id, int):
+        if 'random' + qid_str == ctx.triggered_id and isinstance(cluster_id, int):
+            state = load.get_random_sequence(cluster_id)
+            return state, [state], floor(state / 10)
+        if state is not None:
+            if len(state) > 0:
+                if isinstance(state[0], int):
+                    rows = load.get_row(cluster_id)
+                    state = [min(rows-1, state[0])]
+                    return state[0], state, floor(state[0] / 10)
+        raise PreventUpdate
+    return None, [], None
 
 
 @callback(
@@ -97,125 +99,101 @@ def display_context(row, cluster):
     :param cluster: the selected cluster
     :return: the context frame as a dictionary of records
     """
-    if isinstance(row, int) and isinstance(cluster, int):
+    if isinstance(row, int) and isinstance(cluster, int) and row <= load.get_row(cluster):
         df = load.formatContext(cluster, row, cid_str)
         return df.to_dict("records")
     raise PreventUpdate
 
 
-@callback(
+callback(
     Output("filter_dropdown" + id_str, 'options'),
     Input('change cluster name', 'n_clicks')
-)
-def update_options_dropdown(n):
-    """
-    Update the options in the dropdown based on the change cluster name button click.
-
-    :param n: the number of clicks on the change cluster name button
-    :return: a list of options for the dropdown based on possible clusters with labels and values
-    """
-    if 'change cluster name' == ctx.triggered_id:
-        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if
-                not pd.isna(i[1]) and not pd.isna(i[0])]
-    return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
-
-
-@callback(
+)(display_sequence.update_options_dropdown)
+callback(
     Output("filter_dropdown" + id_str, 'value'),
     Input('change cluster name', 'n_clicks')
-)
-def update_values_dropdown(n):
-    """
-    Update the values in the dropdown based on the change cluster name button click.
-
-    :param n: the number of clicks on the change cluster name button
-    :return: a list of values for the dropdown based on possible clusters
-    """
-    if 'change cluster name' == ctx.triggered_id:
-        return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
-    return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
+)(display_sequence.update_values_dropdown)
 
 
-@callback(
+callback(
     Output('cluster name' + id_str, 'value'),
     Input('selected cluster' + id_str, "data")
-)
-def get_name_cluster(data):
-    """
-    Get the name of the selected cluster based on the cluster ID.
-
-    :param data: the selected cluster ID
-    :return: the name of the selected cluster or a default message if no cluster is selected
-    """
-    if isinstance(data, int):
-        k = load.possible_clusters()
-        for z in k:
-            if not pd.isna(z[0]) and z[0] == data:
-                return z[1]
-    return "Cluster not selected"
-
+)(display_sequence.get_name_cluster)
 
 ########################################################################################
 # Editable callback extra functionality special for manual.
 ########################################################################################
 
 @callback(
-    Output("set label cluster" + id_str, 'children'),
+    Output("modal_set_cluster"+id_str, "opened"),
+    Output("modal_set_cluster"+id_str, "title"),
     Input('selected cluster' + id_str, "data"),
     Input('change cluster name', 'n_clicks'),
-    State('cluster name' + id_str, 'value')
+    State('cluster name' + id_str, 'value'),
+    State("modal_set_cluster"+ id_str, "opened"),
+    prevent_initial_call = True,
 )
-def set_cluster_name(cluster_id, n_clicks, value):
+def set_cluster_name(cluster_id, button, cluster_name, opened):
     """
-    Set the label for the cluster based on user input.
+    Set the label for the cluster based on user input and send an modal.
 
     :param cluster_id: the selected cluster ID
     :param n_clicks: the number of clicks on the change cluster name button
     :param value: the new value for the cluster name
-    :return: a message indicating the success of the operation or unchanged status
+    :param opened: send feedback if the pop up is opened
+    :return: a message indicating the success of the operation or unchanged status, true if pop-up need to be shown.
     """
     if 'change cluster name' == ctx.triggered_id:
-        if isinstance(cluster_id, int) and isinstance(value, str):
-            if load.set_cluster_name(cluster_id, value):
-                return "Successful changed"
-    return "cluster name unchanged"
+        if isinstance(cluster_id, int) and isinstance(cluster_name, str):
+            if load.set_cluster_name(cluster_id, cluster_name):
+                return not opened, "Succesfully changed to: "+cluster_name
+        return not opened, "Nothing changed, please provide correct input"
+    return opened, "nothing"
+
 
 
 @callback(
-    Output("successful" + qid_str, "children"),
-    Input('selected row' + id_str, "data"),
+    Output("modal_set_risk"+id_str, "opened"),
+    Output("modal_set_risk"+id_str, "title"),
     Input('selected cluster' + id_str, "data"),
-    Input('submit' + qid_str, "n_clicks"),
-    Input('manual', "data")
+    Input('manual', "data"),
+    Input('manual', "data_previous"),
+    State('manual', 'active_cell'),
+    State("modal_set_risk"+id_str, "opened"),
+    prevent_initial_call=True
 )
-def set_risk_label(row, cluster, n_clicks, data):
+def set_risk_label(cluster, data, data_previous, active, opened):
     """
     Set the risk label based on user input.
 
-    :param value: the risk label value given in dict.
-    :param row: the selected row
-    :param cluster: the selected cluster
-    :param n_clicks: the number of clicks on the submit button
+    :param cluster: is the cluster selected.
+    :param data: is all the data of the dash table, there don't exist a better parameter
+    :param data_previous: is all the data of the dash table, before change.
+    :param active: is the parameter that checks which cell is edited.
+    (When you want to reconstruct to multiple cells to edit at the same time this should allow for a selection bigger.)
+    This is an state because it needs a bit more dynamically.
+    :param opened: provide feedback of the modal.
     :return: a message indicating the success of the operation
     """
-    if data is not None and row is not None:
-        if 'submit' + qid_str == ctx.triggered_id:
-            value = data[row]['risk_label' + id_str]
-            if isinstance(row, int) and isinstance(cluster, int) and isinstance(value, int):
-                load.set_riskvalue(cluster_id=cluster, row=row, risk_value=value)
-                return "Successful, saved the row."
-    return "Nothing saved, need to be int"
+    if data is not None and active is not None and cluster is not None:
+        value = data[active['row']-1]['risk_label' + id_str]
+        if verify_not_different_data(data, data_previous, active): # To prevent extra pop-up.
+            if data_previous[active['row']-1]['risk_label' + id_str] != value:
+                if isinstance(active['row'], int) and isinstance(cluster, int) and isinstance(value, int):
+                    if load.set_riskvalue(cluster_id=cluster, row=active['row']-1, risk_value=value):
+                        return not opened, "Successful, saved the row."
+                return not opened, "Please provide correct values"
+    return opened, "Nothing to be seen"
 
+def verify_not_different_data(data, data_previous,active):
+    check1 = data[active['row']-1]['timestamp' + id_str] ==  data_previous[active['row']-1]['timestamp' + id_str]
+    check2 = data[active['row']-1]['machine' + id_str] ==  data_previous[active['row']-1]['machine' + id_str]
+    return check2 and check1
 
 ########################################################################################
 # Light up the selected row.
 ########################################################################################
-@callback(
+callback(
     Output("manual", "style_data_conditional"),
     Input("selected row" + id_str, "data")
-)
-def light_up_selected_row(row):
-    if isinstance(row, int):
-        return [{"if": {"row_index": row}, 'backgroundColor': 'hotpink',
-                 'color': 'orange', }]
-    return None
+)(display_sequence.light_up_selected_row)

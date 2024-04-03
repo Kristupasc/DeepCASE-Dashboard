@@ -1,16 +1,6 @@
-import dash
-from dash import html, dash_table, dcc, callback, Output, Input
-import pandas as pd
-import Dashboard.app.main.recources.style as style
-from dash import html, dash_table, dcc, callback, Output, Input
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.manual import *
-
-import dash
-
-import pandas as pd
-import Dashboard.app.main.recources.loaddata as load
-
+import dash_mantine_components as dmc
 dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", title="Manual Analysis", order=1)
 
 ########################################################################
@@ -33,10 +23,17 @@ layout = html.Div([
     # Change name of cluster and display
     dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
     html.Button('Change cluster name', id='change cluster name', n_clicks=0),
-    html.P(id="set label cluster" + id_str),
     # Get new cluster
     html.Button('Choose random cluster', id='random' + id_str, n_clicks=0),
+    html.Button('Choose next sequence', id='random' + qid_str, n_clicks=0),
     # drop down menu to select cluster
+    dcc.Dropdown(
+        id="filter_dropdown" + id_str,
+        # options=[{"label": i[1], "value": i[0]} for i in set_cluster],
+        placeholder="-Select a Cluster-",
+        multi=False,
+        # value=list([i[0] for i in set_cluster])
+    ),
 
     # data table to display the cluster
     dash_table.DataTable(
@@ -64,6 +61,7 @@ layout = html.Div([
     html.H3(id="successful" + qid_str),
 
     ## Selected sequence context
+    # Selected sequence context
     html.Div(className='manual_context', children=[
         html.H2('Context of the selected sequence', id='sequence name' + cid_str),
         # Table to show the context of a sequence
@@ -89,7 +87,9 @@ layout = html.Div([
         dcc.Store(id='selected cluster' + id_str),
         dcc.Store(id='selected row' + id_str)
 
-    ], )
+    ], ),
+    dmc.Modal( title="Yeeeeeeeeaaaaaaaa", id = "modal_set_cluster"+id_str),
+    dmc.Modal( title="Noooooooo", id = "modal_set_risk"+id_str),
 ],
     # dcc.Store stores the intermediate value
     style=style.content_style

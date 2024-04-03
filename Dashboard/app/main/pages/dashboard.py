@@ -1,5 +1,8 @@
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.dashboard import *
+from Dashboard.app.main.pagescallback.display_sequence import *
+from dash import html, dcc, dash_table
+import dash
 
 dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboard", order=0)
 
@@ -86,17 +89,15 @@ layout = html.Div([
         ),
 
         # Graph to display the scatter plot
-        html.Div(children=
-        [
-            html.H2("All Sequences in Cluster", className="graph__title"),
-            dcc.Graph(id="scatter-plot"),
-            dcc.Interval(
-                id="scatter-update",
-                interval=int(5000),
-                n_intervals=0,
-            ),
-        ],
-        ), ]
+        html.Div(children=[html.H2("All Sequences in Cluster", className="graph__title"),
+                           dcc.Graph(id="scatter-plot"),
+                           dcc.Interval(
+                               id="scatter-update",
+                               interval=int(5000),
+                               n_intervals=0,
+                           ),
+                           ],
+                 ), ]
              ),
 
     # Objects to store intermediate values, selected by the above table.
