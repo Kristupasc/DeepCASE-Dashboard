@@ -2,6 +2,8 @@ FROM python:3.8-slim
 
 WORKDIR /usr/src/app
 
+ENV PYTHONPATH "${PYTHONPATH}:/usr/src/app"
+
 COPY . .
 
 # For debugging purposes and control group
