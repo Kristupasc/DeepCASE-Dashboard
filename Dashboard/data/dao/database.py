@@ -50,7 +50,7 @@ class Database(object):
         self.cur.execute('''CREATE TABLE IF NOT EXISTS sequences
                                (id_sequence INTEGER, filename TEXT, id_cluster INTEGER, mapping_value INT, risk_label TEXT,
                                PRIMARY KEY(id_sequence, filename),
-                               FOREIGN KEY (filename) REFERENCES files(filename)
+                               FOREIGN KEY (filename) REFERENCES files(filename), 
                                FOREIGN KEY (id_cluster) REFERENCES clusters(id_cluster),
                                FOREIGN KEY (id_sequence) REFERENCES events(id_event),
                                FOREIGN KEY (mapping_value) REFERENCES mapping(id)
