@@ -12,9 +12,9 @@ layout = html.Div([
     # Change name of cluster and display
     dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
     html.Button('Change cluster name', id='change cluster name', n_clicks=0),
-    html.P(id="set label cluster" + id_str),
     # Get new cluster
     html.Button('Choose next cluster', id='random' + id_str, n_clicks=0),
+    html.Button('Choose next sequence', id='random' + qid_str, n_clicks=0),
     # drop down menu to select cluster
     dcc.Dropdown(
         id="filter_dropdown" + id_str,
@@ -43,11 +43,6 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
-    # ################# Editable risk values
-    html.Button('Choose next sequence', id='random' + qid_str, n_clicks=0),
-    html.H3(id='doneCluster' + qid_str),
-    html.H3(id="successful" + qid_str),
-
     # Selected sequence context
     html.Div(className='manual_context', children=[
         html.H2('Context of the selected sequence', id='sequence name' + cid_str),
