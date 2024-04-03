@@ -7,9 +7,6 @@ from Dashboard.data.dao.database import Database
 class DAO(object):
     def __init__(self):
         self.data_object = Database()
-        # Reset the database => for testing purpose
-        # self.data_object.drop_database()
-        # self.data_object.create_tables()
 
     def switch_current_file(self, filename):
         return self.data_object.switch_current_file(filename)
@@ -76,6 +73,16 @@ class DAO(object):
         self.data_object.store_attention(attention_melted_df)
         return
 
+    def update_attention(self, confidence, attention):
+        if attention.is_cuda:
+            attention = attention.cpu()
+        attention_df = pd.DataFrame(attention)
+        attention_melted_df = attention_df.reset_index().melt(id_vars=["index"], var_name='event_position',
+                                                              value_name='attention')
+        attention_melted_df.rename(columns={'index': 'id_sequence'}, inplace=True)
+        self.data_object.store_attention(attention_melted_df)
+        return
+
     def set_new_scores(self, score: np.ndarray):
         scores_df = pd.DataFrame(score)
         scores_df.reset_index(inplace=True)
@@ -113,3 +120,12 @@ class DAO(object):
 
     def set_riskvalue(self, event_id, risk_value):
         return self.data_object.set_risk_value(event_id, risk_value)
+
+    def set_new_filename(self, file, new_filename):
+        return self.data_object.set_file_name(file, new_filename)
+
+    def get_all_files(self):
+        return self.data_object.get_filenames()
+
+    def is_input_file_empty(self):
+        return self.data_object.is_file_saved()

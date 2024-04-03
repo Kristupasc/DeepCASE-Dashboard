@@ -4,7 +4,7 @@ from Dashboard.app.main.pagescallback.display_sequence import *
 from dash import html, dcc, dash_table
 import dash
 
-dash.register_page(__name__, path="/", name="Dashboard", title="Dashboard", order=0)
+dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboard", order=0)
 
 ########################################################################
 #   Dash objects page(Makes use of the callback addition)    #

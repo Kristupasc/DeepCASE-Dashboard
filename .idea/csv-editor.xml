@@ -38,6 +38,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Dashboard\processing\newalerts.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\DeepCase\mapping\mappings\mapping_alienvault_ossim.csv">
           <value>
             <Attribute>

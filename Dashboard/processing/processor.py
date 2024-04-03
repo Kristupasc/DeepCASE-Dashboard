@@ -12,19 +12,19 @@ from DeepCase.deepcase.interpreter import Interpreter
 class Processor(object):
 
     def __init__(self):
-        #Create preprocessor
+        # Create preprocessor
         self.preprocessor = Preprocessor(
             length=10,  # 10 events in context
             timeout=86400,  # Ignore events older than 1 day (60*60*24 = 86400 seconds)
         )
-        #Create context builder
+        # Create context builder
         self.context_builder = ContextBuilder(
             input_size=100,  # Number of input features to expect
             output_size=100,  # Same as input size
             hidden_size=128,  # Number of nodes in hidden layer, in paper we set this to 128
             max_length=10,  # Length of the context, should be same as context in Preprocessor
         )
-        #Create interpreter
+        # Create interpreter
         self.interpreter = Interpreter(
             context_builder=self.context_builder,  # ContextBuilder used to fit data
             features=100,  # Number of input features to expect, should be same as ContextBuilder
@@ -36,7 +36,6 @@ class Processor(object):
 
         if torch.cuda.is_available():
             self.context_builder = self.context_builder.to('cuda')
-
 
     ########################################################################
     #                             Loading data                             #
@@ -126,5 +125,4 @@ class Processor(object):
         )
         return prediction
 
-    #repeat get_attention method with test data
-
+    # repeat get_attention method with test data

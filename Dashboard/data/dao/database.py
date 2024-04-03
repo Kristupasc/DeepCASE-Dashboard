@@ -31,7 +31,7 @@ class Database(object):
 
     def create_tables(self):
         self.cur.execute('''CREATE TABLE IF NOT EXISTS files
-                                (filename TEXT PRIMARY KEY)''')
+                                (filename TEXT PRIMARY KEY, custom_name TEXT)''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS events
                                 (id_event INTEGER, filename TEXT, timestamp REAL, machine TEXT, event TEXT, label INT, 
                                 PRIMARY KEY(id_event, filename),
@@ -66,8 +66,8 @@ class Database(object):
         return
 
     def switch_current_file(self, filename):
-        # Checl if the filename exists in the database
-        if filename in self.get_filenames()['filename'].values:
+        # Check if the filename exists in the database
+        if filename in self.get_filenames().values:
             self.filename = filename
             return True
         return False
@@ -90,7 +90,7 @@ class Database(object):
         now = datetime.now()
         # Append current datetime to the filename
         self.filename = filename + '_' + now.strftime("%Y-%m-%d %H:%M:%S")
-        self.cur.execute("INSERT  INTO files (filename) VALUES (?)", (self.filename,))
+        self.cur.execute("INSERT  INTO files (filename, custom_name) VALUES (?, ?)", (self.filename, self.filename))
         self.conn.commit()
 
         input_file_df['filename'] = self.filename
@@ -115,8 +115,6 @@ class Database(object):
         return
 
     def store_mapping(self, mapping):
-        # sequences_old_df = pd.read_sql_query('''SELECT * FROM sequences WHERE filename = ?''', self.conn, params=[self.filename])
-        # context_events_old_df = pd.read_sql_query('''SELECT * FROM context_events WHERE filename = ?''', self.conn, params=[self.filename])
         # Iterate through dict and upload to mapping table
         for key, value in mapping.items():
             self.cur.execute("INSERT OR REPLACE INTO mapping (id, name, filename) VALUES (?, ?, ?)",
@@ -137,17 +135,15 @@ class Database(object):
         clusters_old_df = pd.read_sql_query('''SELECT * FROM sequences WHERE filename = ?''', self.conn,
                                             params=[self.filename])
         other_clusters_df = pd.read_sql_query('''SELECT * FROM sequences WHERE NOT filename = ?''', self.conn,
-                                            params=[self.filename])
+                                              params=[self.filename])
         clusters_df['id_sequence'] = clusters_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
         clusters_old_df['id_sequence'] = clusters_old_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
         # Append updated attention column to the old attention dataframe
         merged_df = clusters_old_df.merge(clusters_df, on='id_sequence', how='left', suffixes=('', '_updated'))
-        # Ensure 'attention' and 'attention_updated' columns are of a numeric type
-        cols_to_convert = ['id_cluster', 'id_cluster_updated']
-        merged_df[cols_to_convert] = merged_df[cols_to_convert].apply(pd.to_numeric, errors='coerce')
-        # Filling null values in 'attention' column with values from 'attention_updated'
-        merged_df['id_cluster'] = merged_df['id_cluster'].fillna(merged_df['id_cluster_updated'])
-        merged_df.drop(columns=['id_cluster_updated'], inplace=True)
+
+        merged_df.drop(columns='id_cluster', inplace=True)
+        merged_df.rename(columns={'id_cluster_updated': 'id_cluster'}, inplace=True)
+
         merged_df['filename'] = self.filename
         result_df = pd.concat([merged_df, other_clusters_df], ignore_index=True)
         result_df.to_sql('sequences', con=self.conn, if_exists='replace', index=False)
@@ -159,22 +155,20 @@ class Database(object):
         attention_old_df = pd.read_sql_query('''SELECT * FROM context_events WHERE filename = ?''', self.conn,
                                              params=[self.filename])
         other_attention_df = pd.read_sql_query('''SELECT * FROM context_events WHERE NOT filename = ?''', self.conn,
-                                              params=[self.filename])
+                                               params=[self.filename])
 
         attention_df['id_sequence'] = attention_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
         attention_old_df['id_sequence'] = attention_old_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
         # Append updated attention column to the old attention dataframe
         merged_df = attention_old_df.merge(attention_df, on=['id_sequence', 'event_position'], how='left',
                                            suffixes=('', '_updated'))
-        # Ensure 'attention' and 'attention_updated' columns are of a numeric type
-        cols_to_convert = ['attention', 'attention_updated']
-        merged_df[cols_to_convert] = merged_df[cols_to_convert].apply(pd.to_numeric, errors='coerce')
-        # Filling null values in 'attention' column with values from 'attention_updated'
-        merged_df['attention'] = merged_df['attention'].fillna(merged_df['attention_updated'])
-        merged_df.drop(columns=['attention_updated'], inplace=True)
+
+        merged_df.drop(columns='attention', inplace=True)
+        merged_df.rename(columns={'attention_updated': 'attention'}, inplace=True)
+
         merged_df['filename'] = self.filename
         # Remove old records
-        result_df = pd.concat([merged_df , other_attention_df], ignore_index=True)
+        result_df = pd.concat([merged_df, other_attention_df], ignore_index=True)
 
         result_df.to_sql('context_events', con=self.conn, if_exists='replace', index=False)
         self.conn.commit()
@@ -184,7 +178,7 @@ class Database(object):
         score_old_df = pd.read_sql_query('''SELECT * FROM sequences WHERE filename = ?''', self.conn,
                                          params=[self.filename])
         others_score_df = pd.read_sql_query('''SELECT * FROM sequences WHERE NOT filename = ?''', self.conn,
-                                         params=[self.filename])
+                                            params=[self.filename])
 
         score_df['id_sequence'] = score_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
         score_old_df['id_sequence'] = score_old_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
@@ -209,9 +203,28 @@ class Database(object):
         """
         clusters_df = pd.read_sql_query(query, self.conn, params=[self.filename])
         clusters_df['filename'] = self.filename
-        other_clusters_df = pd.read_sql_query("SELECT * FROM clusters WHERE NOT filename = ?", self.conn, params=[self.filename])
+        other_clusters_df = pd.read_sql_query("SELECT * FROM clusters WHERE NOT filename = ?", self.conn,
+                                              params=[self.filename])
         result_df = pd.concat([clusters_df, other_clusters_df], ignore_index=True)
         result_df.to_sql("clusters", con=self.conn, if_exists='replace', index=False)
+        return
+
+    def set_cluster_name(self, id_cluster: int, name_cluster: str):
+        query = "UPDATE clusters SET name_cluster = ? WHERE id_cluster = ? AND filename = ?"
+        self.cur.execute(query, (name_cluster, id_cluster, self.filename))
+        self.conn.commit()
+        return
+
+    def set_risk_value(self, event_id, risk_value):
+        query = "UPDATE sequences SET risk_label = ? WHERE id_sequence = ? AND filename = ?"
+        self.cur.execute(query, (risk_value, event_id, self.filename))
+        self.conn.commit()
+        return True
+
+    def set_file_name(self, filename: str, new_name: str):
+        query = "UPDATE files SET custom_name = ? WHERE filename = ?"
+        self.cur.execute(query, (new_name, filename))
+        self.conn.commit()
         return
 
     ########################################################################
@@ -227,15 +240,19 @@ class Database(object):
                                         FROM mapping, sequences, events 
                                         WHERE sequences.mapping_value = mapping.id 
                                         AND events.id_event = sequences.id_sequence
-                                        AND sequences.filename = ?''', self.conn, params=[self.filename])
+                                        AND sequences.filename = ?
+                                        AND events.filename = sequences.filename
+                                        AND mapping.filename = sequences.filename''', self.conn, params=[self.filename])
         return result
 
     def get_sequence_by_id(self, sequence_id: int) -> pd.DataFrame:
-        query = "SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label " \
-                "FROM mapping, sequences, events " \
-                "WHERE sequences.mapping_value = mapping.id " \
-                "AND events.id_event = ?" \
-                "AND sequences.filename = ?"
+        query = """SELECT mapping.name, events.timestamp, events.machine, sequences.id_cluster, sequences.risk_label 
+                FROM mapping, sequences, events 
+                WHERE sequences.mapping_value = mapping.id 
+                AND events.id_event = ?
+                AND sequences.filename = ?
+                AND mapping.filename = sequences.filename
+                AND events.filename = sequences.filename"""
         result = pd.read_sql_query(query, self.conn, params=[sequence_id, self.filename])
         return result
 
@@ -245,7 +262,9 @@ class Database(object):
                 FROM mapping, context_events 
                 WHERE context_events.mapping_value = mapping.id 
                 AND context_events.id_sequence = ? 
-                AND context_events.filename = ?"""
+                AND context_events.filename = ?
+                AND context_events.filename = mapping.filename"""
+
         # parameterized query to avoid sql injection
         result = pd.read_sql_query(query, self.conn, params=[sequence_id, self.filename])
         return result
@@ -261,32 +280,25 @@ class Database(object):
                 WHERE sequences.mapping_value = mapping.id 
                 AND events.id_event = sequences.id_sequence 
                 AND sequences.id_cluster = ? 
-                AND sequences.filename = ?"""
+                AND sequences.filename = ?
+                AND events.filename = sequences.filename
+                AND mapping.filename = sequences.filename"""
         result = pd.read_sql_query(query, self.conn, params=[float(cluster_id), self.filename])
         return result
 
     def get_mapping(self) -> pd.DataFrame:
-        query = "SELECT  mapping.name, mapping.id " \
-                "FROM mapping " \
-                "WHERE filename = ?"
+        query = """SELECT  mapping.name, mapping.id 
+                FROM mapping 
+                WHERE filename = ?"""
         result = pd.read_sql_query(query, self.conn, params=[self.filename])
         return result
 
-    #
-
-    def set_cluster_name(self, id_cluster: int, name_cluster: str):
-        query = "UPDATE clusters SET name_cluster = ? WHERE id_cluster = ? AND filename = ?"
-        self.cur.execute(query, (name_cluster, id_cluster, self.filename))
-        self.conn.commit()
-        return
-
-    def set_risk_value(self, event_id, risk_value):
-        query = "UPDATE sequences SET risk_label = ? WHERE id_sequence = ? AND filename = ?"
-        self.cur.execute(query, (risk_value, event_id, self.filename))
-        self.conn.commit()
-        return True
-
     def get_filenames(self):
-        return pd.read_sql_query('''SELECT * FROM files''', self.conn)
+        return pd.read_sql_query('''SELECT custom_name FROM files''', self.conn)
 
+    def is_file_saved(self):
+        self.conn.commit()
+        self.cur.execute("SELECT * FROM events WHERE filename = ?", (self.filename,))
 
+        result = self.cur.fetchone()
+        return result is None
