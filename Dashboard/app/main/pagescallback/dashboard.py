@@ -1,6 +1,6 @@
 import pandas as pd
 import plotly.graph_objs as go
-from dash import callback, Output, Input, State
+from dash import callback, Output, Input, State, callback_context
 from dash.exceptions import PreventUpdate
 
 import Dashboard.app.main.pagescallback.display_sequence as display_sequence
@@ -14,11 +14,6 @@ from Dashboard.data.dao.dao import DAO
 # suffix for all the ids that might be the same.
 id_str = "_da"
 cid_str = "_cida"
-# Setting variables
-prev_row = -1
-prev_graph = -1
-prev_click = -1
-
 
 callback(
     Output('selected cluster' + id_str, "data"),
@@ -52,11 +47,10 @@ callback(
     Output('dashboard', 'page_current'),
     Output('dashboard', 'selected_rows'),
     Input('selected row' + id_str, "data"),
-    State('selected cluster' + id_str, "data"),
     Input('scatter-plot', 'clickData'),
     State('dashboard', 'page_current')
 )
-def display_context(row, cluster, click_data, current_page):
+def display_context(row, click_data, current_page):
     """
     Display the context information based on the selected row and cluster.
 
@@ -66,36 +60,16 @@ def display_context(row, cluster, click_data, current_page):
     :param click_data: data from the click event on the scatter plot
     :return: the context frame as a dictionary of records
     """
-    global prev_row
-    global prev_graph
     # we check if the graph point was clicked or if the row was clicked in the table:
-    is_graph_click = prev_graph != click_data and click_data is not None
-    if not is_graph_click and row is not None and row != prev_row:
-        # we load from what was clicked in the table
-        prev_row = row
-        return current_page, [row]  # Highlight the selected row in the dashboard table
-    elif click_data is not None:
+    if click_data is not None:
         # there was a graph click
         # we load from what was clicked in the graph
         point = int(click_data["points"][0]["pointIndex"])
         # now we need to find where the data is
         page_number = point // 10  # Assuming 10 entries per page
         # get the last number in the point
-        prev_graph = click_data
         return page_number, [point]  # Highlight the clicked point in the dashboard table
     raise PreventUpdate
-
-
-# @callback(
-#     Output('scatter-plot', 'clickData'),
-#     Input('dashboard', 'selected_rows')
-# )
-# def highlight_selected_point(selected_rows):
-#     if selected_rows is not None and len(selected_rows) > 0:
-#         selected_point_index = selected_rows[0]  # Assuming only one row can be selected at a time
-#         return {"points": [{"pointIndex": selected_point_index}]}
-#     else:
-#         return None
 
 
 @callback(
@@ -130,6 +104,8 @@ def generate_scatter_plot(selected_cluster, selected_row, filter_value):
     :param click_data: data from the click event on the scatter plot
     :return: a dictionary containing the data and layout for the scatter plot
     """
+    # get the trigger, to see what made the callback happen
+    triggered_input = callback_context.triggered[0]["prop_id"].split(".")[0]
     if selected_row is None:
         click_data = None
         events = None
@@ -156,11 +132,8 @@ def generate_scatter_plot(selected_cluster, selected_row, filter_value):
             colors_graph.append(colors["Risk Label"][choose_risk(int(risk_label))])
     else:
         filter_value = "All"
-
-    global prev_click
-    # Check if a point has been clicked
-    if click_data and click_data != prev_click:
-        prev_click = click_data
+    # if the trigger is the scatter plot (dashboard), we set the filter value to custom and highlight the point
+    if triggered_input == "dashboard":
         filter_value = "Custom"
         # Initialize color map to grey for all points
         colors_graph = [colors["Risk Label"]["Unlabeled"]] * len(x)
