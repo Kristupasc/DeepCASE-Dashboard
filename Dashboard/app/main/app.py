@@ -4,6 +4,7 @@ from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 import Dashboard.app.main.recources.style as style
 
+
 from server import app, pao
 
 from dash import Dash, html, dcc

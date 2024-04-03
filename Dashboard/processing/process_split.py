@@ -6,6 +6,7 @@ from Dashboard.processing.processor import Processor
 from Dashboard.data.dao.dao import DAO
 from Dashboard.processing.status import Status
 
+
 class ProcessorAccessObject(object):
     _instance = None
 
@@ -27,8 +28,8 @@ class ProcessorAccessObject(object):
         # TODO: Get status from the DAO, finished if database is populated, empty otherwise
         self.status = Status.EMPTY
 
-    def create_sequences(self, path):
-        self.context, self.events, self.labels, mapping = self.processor.sequence_data(path)
+    def create_sequences(self, data: pd.DataFrame):
+        self.context, self.events, self.labels, mapping = self.processor.sequence_data(data)
         self.dao.save_sequencing_results(self.context, self.events, self.labels, mapping)
         return
 
@@ -76,20 +77,23 @@ class ProcessorAccessObject(object):
         self.dao.set_new_scores(prediction)
         self.dao.save_cluster_scores()
         confidence, attention = self.processor.get_attention(self.context, self.events)
-        #ToDo: split dao save clusters to have separate save attention method
 
         return
 
     def run_DeepCASE(self):
-        self.create_sequences('alerts.csv')
+        dao = DAO()
+        data = dao.get_initial_table()
+        self.create_sequences(data=data)
         self.train_context_builder()
         self.create_interpreter_clusters()
         self.status = Status.FINISHED
         self.manual_mode()
         self.automatic_mode()
         # return status_flag
+
     def get_status(self):
         return self.status
+
 
 if __name__ == '__main__':
     pao = ProcessorAccessObject()
