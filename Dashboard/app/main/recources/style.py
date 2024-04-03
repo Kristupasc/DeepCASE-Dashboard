@@ -1,4 +1,6 @@
 # Define the main content style
+wrapper_style = {}
+
 content_style = {
     'margin-left': '20%',
     # 'float': 'left',
@@ -7,7 +9,8 @@ content_style = {
     'padding': '20px 10px',
     'background-color': '#E1E7FF',
     'border-radius': 20,
-    'border': '2px solid #000000'
+    'border': '2px solid #000000',
+    'font-family': 'Calibri',
 }
 
 manual_content_wrapper_style = {
@@ -21,8 +24,9 @@ sidebar_style = {
     'left': 0,
     'bottom': 0,
     'width': '20%',
-    'background-color': '#f8f9fa',
+    'background-color': '#DCF5D6',
     'font-family': 'Calibri',
+    'box-shadow': '0px 10px 60px 0px #E2ECF9'
     # "float": "left"
 }
 
@@ -31,7 +35,7 @@ sidebar_button_style_active = {
     'height': 50,
     'margin': 'auto',
     'border-radius': 8,
-    'background-color': '#009999',
+    'background-color': '#42AB49',
     'margin-bottom': 20,
     'color': '#FFFFFF',
 }
@@ -41,7 +45,7 @@ sidebar_button_style_inactive = {
     'height': 50,
     'margin': 'auto',
     'border-radius': 8,
-    'background-color': '#FFFFFF',
+    'background-color': '#80c783',
     'margin-bottom': 20,
     'color': '#9197B3',
 }
@@ -61,10 +65,10 @@ sidebar_button_text_style = {
 }
 
 sidebar_button_arrow_style = {
-    # 'float': 'right',
-    # 'height': 18,
-    # 'margin-right': 10,
-    # 'margin-top': 16,
+    'float': 'right',
+    'height': 18,
+    'margin-right': 10,
+    'margin-top': 16,
 }
 
 # Define the sidebar style
