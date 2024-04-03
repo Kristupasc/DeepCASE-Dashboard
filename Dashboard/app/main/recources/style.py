@@ -4,7 +4,7 @@ content_style = {
     # 'float': 'left',
     # 'margin-right': '5%',
     'width': 'auto',
-    'padding': '20px 10px',
+    'padding': '10px 10px',
     'background-color': '#E1E7FF',
     'border-radius': 20,
     'border': '2px solid #000000'

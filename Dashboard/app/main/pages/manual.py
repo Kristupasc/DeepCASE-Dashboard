@@ -18,21 +18,25 @@ dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", ti
 ########################################################################
 
 layout = html.Div([
-    html.H1('Manual analysis'),
-    # Change name of cluster and display
-    dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
-    html.Button('Change cluster name', id='change cluster name', n_clicks=0),
-    html.P(id="set label cluster" + id_str),
-    # Get new cluster
-    html.Button('Choose next cluster', id='random' + id_str, n_clicks=0),
-    # drop down menu to select cluster
+    html.Div([
+
     dcc.Dropdown(
         id="filter_dropdown" + id_str,
         # options=[{"label": i[1], "value": i[0]} for i in set_cluster],
         placeholder="-Select a Cluster-",
         multi=False,
+        clearable=False,
         # value=list([i[0] for i in set_cluster])
     ),
+    html.H1('Manual analysis'),
+], style={'display': 'flex', 'align-items': 'center'}),
+    # Change name of cluster and display
+    dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
+    html.Button('Change cluster name', id='change cluster name', n_clicks=0),
+    html.P(id="set label cluster" + id_str),
+    # Get new cluster
+    html.Button('Choose random cluster', id='random' + id_str, n_clicks=0),
+    # drop down menu to select cluster
 
     # data table to display the cluster
     dash_table.DataTable(
@@ -54,7 +58,7 @@ layout = html.Div([
         },
         page_size=10),
     ################## Editable risk values
-    html.Button('Choose next sequence', id='random' + qid_str, n_clicks=0),
+    html.Button('Choose random sequence', id='random' + qid_str, n_clicks=0),
     html.H3(id='doneCluster' + qid_str),
     html.Button('Submit change', id='submit' + qid_str, n_clicks=0),
     html.H3(id="successful" + qid_str),

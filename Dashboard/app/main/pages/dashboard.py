@@ -18,6 +18,7 @@ layout = html.Div([
             options=update_options_dropdown(None),
             value=update_values_dropdown(None),
             placeholder="-Select a Cluster-",
+            clearable=False,
             multi=False,
         ),
 

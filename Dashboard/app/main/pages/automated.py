@@ -12,7 +12,7 @@ dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", titl
 ########################################################################
 
 layout = html.Div([
-    html.H1('Semi-automatic'),
+    html.H1('Semi-automatic analysis'),
     html.H2('No cluster selected', id='cluster name' + id_str),
     # drop down menu to select cluster
     dcc.Dropdown(
@@ -20,6 +20,7 @@ layout = html.Div([
         options=update_options_dropdown(None),
         value=update_values_dropdown(None),
         placeholder="-Select a Cluster-",
+        clearable=False,
         multi=False,
     ),
 

@@ -5,6 +5,10 @@
     /*border-bottom: thin lightgrey solid;*/
     border-radius: 10px;
 }
+H1 {
+    text-align:center !important;
+    margin-top: 0px !important;
+}
 
 H2 {
     text-align:center !important;
@@ -12,7 +16,7 @@ H2 {
 
 table {
     border-collapse: separate !important;
-    border-spacing: 0px 10px !important; /* Horizontal and vertical spacing */
+    border-spacing: 0px 7px !important; /* Horizontal and vertical spacing */
     /*max-width: 150px !important;*/
     table-layout: auto !important;
     text-align: center !important
@@ -36,11 +40,28 @@ tr {
 /*  border-collapse: separate !important;*/
 /*}*/
 
+/*th {*/
+/*    !*background: #c61e1e !important;*!*/
+/*    border-collapse: collapse !important;*/
+/*    border-radius: 10px !important;*/
+/*    border: 1px !important;*/
+/*    background-color: rgb(11, 38, 148) !important;*/
+/*}*/
+
 th {
-    /*background: #c61e1e !important;*/
-    border-radius: 10px !important;
-    border: 0px !important;
-    background-color: inherit !important;
+    background-color: #B8E7BD !important;
+    /* other styles */
+}
+
+/* Apply border-radius to only the first and last th elements */
+th:first-child {
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+}
+
+th:last-child {
+    border-top-right-radius: 10px !important;
+    border-bottom-right-radius: 10px !important;
 }
 
 td {
@@ -177,3 +198,28 @@ td.dash-select-cell {
 /*}*/
 
 
+/*.Select-control {*/
+/*    border-radius: 10px !important;*/
+/*    border: 1px solid black !important;*/
+/*    background-color: #B8E7BD !important;*/
+/*    padding: 5px !important;*/
+/*    width: 50px;*/
+/*    background-image: url("Dashboard/app/main/assets/view_clusters_button.png") !important;*/
+/*}*/
+
+div.Select-control {
+    appearance: none !important;
+    border-radius: 10px !important;
+    border: 2px solid black !important;
+    background-color: white !important;
+    /*padding: 10px !important;*/
+    /*: 50px !important*/
+    width: 10px;
+    background-image: url("view_clusters_button.svg") !important;
+    background-size: contain  !important;
+
+}
+
+div.dash-dropdown {
+    padding: 10px;
+}
