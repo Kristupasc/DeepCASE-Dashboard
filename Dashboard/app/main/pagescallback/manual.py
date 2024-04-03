@@ -105,17 +105,17 @@ def display_context(row, cluster):
     raise PreventUpdate
 
 
-@callback(
+callback(
     Output("filter_dropdown" + id_str, 'options'),
     Input('change cluster name', 'n_clicks')
 )(display_sequence.update_options_dropdown)
-@callback(
+callback(
     Output("filter_dropdown" + id_str, 'value'),
     Input('change cluster name', 'n_clicks')
 )(display_sequence.update_values_dropdown)
 
 
-@callback(
+callback(
     Output('cluster name' + id_str, 'value'),
     Input('selected cluster' + id_str, "data")
 )(display_sequence.get_name_cluster)

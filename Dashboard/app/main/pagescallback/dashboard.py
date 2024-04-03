@@ -21,7 +21,7 @@ prev_graph = -1
 prev_click = -1
 
 
-@callback(
+callback(
     Output('selected cluster' + id_str, "data"),
     Input("filter_dropdown" + id_str, "value")
 )(display_sequence.store_selected_cluster)
