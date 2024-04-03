@@ -49,7 +49,6 @@ callback(
 
 
 @callback(
-    Output('Context information' + cid_str, "data"),
     Output('dashboard', 'page_current'),
     Output('dashboard', 'selected_rows'),
     Input('selected row' + id_str, "data"),
@@ -73,32 +72,30 @@ def display_context(row, cluster, click_data, current_page):
     is_graph_click = prev_graph != click_data and click_data is not None
     if not is_graph_click and row is not None and row != prev_row:
         # we load from what was clicked in the table
-        df = load.formatContext(cluster, row, cid_str)
         prev_row = row
-        return df.to_dict("records"), current_page, [row]  # Highlight the selected row in the dashboard table
+        return current_page, [row]  # Highlight the selected row in the dashboard table
     elif click_data is not None:
         # there was a graph click
         # we load from what was clicked in the graph
         point = int(click_data["points"][0]["pointIndex"])
         # now we need to find where the data is
-        df = load.formatContext(cluster, point, cid_str)
         page_number = point // 10  # Assuming 10 entries per page
         # get the last number in the point
         prev_graph = click_data
-        return df.to_dict("records"), page_number, [point]  # Highlight the clicked point in the dashboard table
+        return page_number, [point]  # Highlight the clicked point in the dashboard table
     raise PreventUpdate
 
 
-@callback(
-    Output('scatter-plot', 'clickData'),
-    Input('dashboard', 'selected_rows')
-)
-def highlight_selected_point(selected_rows):
-    if selected_rows is not None and len(selected_rows) > 0:
-        selected_point_index = selected_rows[0]  # Assuming only one row can be selected at a time
-        return {"points": [{"pointIndex": selected_point_index}]}
-    else:
-        return None
+# @callback(
+#     Output('scatter-plot', 'clickData'),
+#     Input('dashboard', 'selected_rows')
+# )
+# def highlight_selected_point(selected_rows):
+#     if selected_rows is not None and len(selected_rows) > 0:
+#         selected_point_index = selected_rows[0]  # Assuming only one row can be selected at a time
+#         return {"points": [{"pointIndex": selected_point_index}]}
+#     else:
+#         return None
 
 
 @callback(
@@ -119,11 +116,12 @@ def highlight_selected_point(selected_rows):
 @callback(
     Output("scatter-plot", "figure"),
     Output("filter-buttons", "value"),
+    Output('Context information' + cid_str, "data"),
     [Input('selected cluster' + id_str, "data"),
-     Input("scatter-plot", "clickData"),
+     Input('dashboard', 'selected_rows'),
      Input("filter-buttons", "value")]
 )
-def generate_scatter_plot(selected_cluster, click_data, filter_value):
+def generate_scatter_plot(selected_cluster, selected_row, filter_value):
     """
     Generate a scatter plot based on the selected cluster and highlight the clicked point.
 
@@ -132,6 +130,13 @@ def generate_scatter_plot(selected_cluster, click_data, filter_value):
     :param click_data: data from the click event on the scatter plot
     :return: a dictionary containing the data and layout for the scatter plot
     """
+    if selected_row is None:
+        click_data = None
+        events = None
+    else:
+        click_data = {"points": [{"pointIndex": selected_row[0]}]}
+        df = load.formatContext(selected_cluster, selected_row[0], cid_str)
+        events = df.to_dict("records")
     traces = []
     dao = DAO()
     x = []
@@ -197,7 +202,7 @@ def generate_scatter_plot(selected_cluster, click_data, filter_value):
             paper_bgcolor=colors["background"],
             font={"color": colors["text"]},
         ),
-    }, filter_value
+    }, filter_value, events
 ########################################################################################
 # Light up the selected row.
 ########################################################################################
