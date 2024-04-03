@@ -6,7 +6,6 @@ import pandas as pd
 from dash.exceptions import PreventUpdate
 import Dashboard.app.main.pagescallback.display_sequence as display_sequence
 import Dashboard.app.main.recources.loaddata as load
-import dash_bootstrap_components as dbc
 
 ########################################################################
 #   Manual callback (All ids need to match 100%)               #
