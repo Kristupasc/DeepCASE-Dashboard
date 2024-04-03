@@ -1,6 +1,7 @@
 import pandas as pd
-from dash.exceptions import PreventUpdate
+
 import Dashboard.app.main.recources.loaddata as load
+
 
 def store_selected_cluster(state):
     """
@@ -13,6 +14,7 @@ def store_selected_cluster(state):
         return state
     return None
 
+
 def store_context_row(state, cluster):
     """
     Store the selected row for context.
@@ -24,8 +26,9 @@ def store_context_row(state, cluster):
     if state is not None:
         if len(state) > 0 and isinstance(cluster, int):
             if isinstance(state[0], int):
-                return min(state[0], load.get_row(cluster)-1)
+                return min(state[0], load.get_row(cluster) - 1)
     return None
+
 
 def update_options_dropdown(n):
     """
@@ -37,6 +40,8 @@ def update_options_dropdown(n):
         return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if
                 not pd.isna(i[1]) and not pd.isna(i[0])]
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+
+
 def update_values_dropdown(n):
     """
     Update the values in the dropdown.
@@ -45,6 +50,7 @@ def update_values_dropdown(n):
     if n is None:
         return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
     return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
+
 
 def get_name_cluster(data):
     """
@@ -60,6 +66,7 @@ def get_name_cluster(data):
                 return z[1]
     return "Cluster not selected"
 
+
 def light_up_selected_row(row):
     """
     Light up the selected event.
@@ -67,6 +74,6 @@ def light_up_selected_row(row):
     :return: the adjusted layout
     """
     if isinstance(row, int):
-        return [{"if": {"row_index": row%10}, 'backgroundColor': 'hotpink',
+        return [{"if": {"row_index": row % 10}, 'backgroundColor': 'hotpink',
                  'color': 'orange', }]
     return None
