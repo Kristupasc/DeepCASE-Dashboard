@@ -1,49 +1,39 @@
-# DeepCASE-Dashboard
-DeepCASE-Dashboard makes from deepCASE a visualisation.
-This can be used to gain trust in deepCASE and in practical cases.
-## Installation
-Besides the obvious that python is required.
-A few libraries are highlighted to be installed:
-In order to run deepCase-Dashboard for windows,\
-simply do:
-```
-pip install deepCase
-```
-In case the command is not trusted or insufficient, then\
-the following documentation can be read:\
-https://deepcase.readthedocs.io/en/latest/ \
 
-Further the dashboard relays on the package dash:
+# DeepCASE-Dashboard
+
+DeepCASE-Dashboard enhances deepCASE by providing a visualization interface. This tool is designed to build trust in deepCASE and is particularly useful in practical scenarios.
+
+## Running DeepCASE-Dashboard with Docker-Compose
+
+To facilitate easy setup and running of DeepCASE-Dashboard, Docker and `docker-compose` are recommended. Follow these instructions to get started:
+
+1. **Docker Installation**: Ensure Docker and `docker-compose` are installed on your system. Visit the Docker official website for installation instructions specific to your operating system.
+
+2. **Dockerfile & Docker-Compose File**: Ensure a `docker-compose.yml` and `Dockerfile` in the root directory of your project.
+
+This configuration uses the `python:3.8-slim` Docker image, mounts the current directory to `.` inside the container, sets the working directory, and specifies the command to run the dashboard. It also maps port 8050 of the container to port 8050 on the host, allowing you to access the dashboard via `http://localhost:8050`.
+
+3. **Running the Container**: Navigate to the directory, which is the root directory, containing the `docker-compose.yml` file and run:
+
 ```
-pip install dash
+docker-compose up
 ```
-and pandas a subpart of dash(some python installation comes with it.)
+
+This command will build and start the DeepCASE-Dashboard container. Once the application is running, you can access the dashboard through your web browser.
+
+4. **Stopping the Container**: To stop and remove the containers, use:
+
 ```
-pip install pandas
+docker-compose down
 ```
-### More liberies
-argformat
-```
-pip install argformat
-```
-## Running DeepCASE-Dashboard
-In order to run DeepCASE, simply run 
-Dashboard.app.main.app file.
 
 ## Usage
-Just follow the instruction on the command line.
-The website will contain everything.
+
+Follow the instructions displayed in the command line. The web interface will guide you through the rest. For more help, you can consult the user manual page. 
 
 ## Credits
-Thijs van Ede for his help.
+Special thanks to Thijs van Ede for his assistance.
 
 ## License
 I suggest we use one, git can add a fancy one.
 
-## Authors
-Beau Jonkhout
-Jan van Zwol
-Lucian Trusca
-Marijke van Iperen
-Kristupas Cepelis
-Katy Radzkova
