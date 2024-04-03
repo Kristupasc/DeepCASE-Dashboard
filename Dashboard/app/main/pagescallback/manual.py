@@ -187,9 +187,10 @@ def set_cluster_name(cluster_id, n_clicks, value):
     Output("successful" + qid_str, "children"),
     Input('selected cluster' + id_str, "data"),
     Input('manual', "data"),
+    Input('manual', "data_previous"),
     [State('manual', 'active_cell')], prevent_initial_call=True
 )
-def set_risk_label(cluster, data, active):
+def set_risk_label(cluster, data, data_previous, active):
     """
     Set the risk label based on user input.
 
@@ -202,9 +203,10 @@ def set_risk_label(cluster, data, active):
     """
     if data is not None and active is not None and cluster is not None:
         value = data[active['row']-1]['risk_label' + id_str]
-        if isinstance(active['row'], int) and isinstance(cluster, int) and isinstance(value, int):
-            if load.set_riskvalue(cluster_id=cluster, row=active['row']-1, risk_value=value):
-                return "Successful, saved the row."
+        if data_previous[active['row']-1]['risk_label' + id_str] != value:
+            if isinstance(active['row'], int) and isinstance(cluster, int) and isinstance(value, int):
+                if load.set_riskvalue(cluster_id=cluster, row=active['row']-1, risk_value=value):
+                    return "Successful, saved the row."
     return "Nothing saved, need to be int"
 
 
