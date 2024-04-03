@@ -1,15 +1,5 @@
-import dash
-from dash import html, dash_table, dcc, callback, Output, Input
-import pandas as pd
-import Dashboard.app.main.recources.style as style
-from dash import html, dash_table, dcc, callback, Output, Input
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.manual import *
-
-import dash
-
-import pandas as pd
-import Dashboard.app.main.recources.loaddata as load
 
 dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", title="Manual Analysis", order=1)
 
@@ -53,12 +43,12 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
-    ################## Editable risk values
+    # ################# Editable risk values
     html.Button('Choose next sequence', id='random' + qid_str, n_clicks=0),
     html.H3(id='doneCluster' + qid_str),
     html.H3(id="successful" + qid_str),
 
-    ## Selected sequence context
+    # Selected sequence context
     html.Div(className='manual_context', children=[
         html.H2('Context of the selected sequence', id='sequence name' + cid_str),
         # Table to show the context of a sequence

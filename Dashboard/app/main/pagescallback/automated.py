@@ -1,12 +1,9 @@
-from io import StringIO
-
-import dash
-from dash import html, dash_table, dcc, callback, Output, Input, ctx
-import pandas as pd
+from dash import callback, Output, Input
 from dash.exceptions import PreventUpdate
 
-import Dashboard.app.main.recources.loaddata as load
 import Dashboard.app.main.pagescallback.display_sequence as display_sequence
+import Dashboard.app.main.recources.loaddata as load
+
 ########################################################################
 #   Semi-automatic callback (All ids need to match 100%)               #
 ########################################################################
@@ -15,7 +12,6 @@ id_str = "_sa"
 cid_str = "_cisa"
 # Setting variables
 cluster = 0
-
 
 callback(
     Output('selected cluster' + id_str, "data"),
@@ -43,9 +39,8 @@ def update_table_cluster(state):
 callback(
     Output('selected row' + id_str, "data"),
     Input("semi-automatic", 'selected_rows'),
-    Input("selected cluster"+ id_str, "data")
+    Input("selected cluster" + id_str, "data")
 )(display_sequence.store_context_row)
-
 
 
 @callback(
@@ -72,15 +67,19 @@ callback(
     Input('url', 'pathname')
 )(display_sequence.update_options_dropdown)
 
-
 callback(
     Output("filter_dropdown" + id_str, 'value'),
     Input('url', 'pathname')
 )(display_sequence.update_values_dropdown)
 
-
 callback(
     Output('cluster name' + id_str, 'children'),
     Input('selected cluster' + id_str, "data")
 )(display_sequence.get_name_cluster)
-
+########################################################################################
+# Light up the selected row.
+########################################################################################
+callback(
+    Output("semi-automatic", "style_data_conditional"),
+    Input("selected row" + id_str, "data")
+)(display_sequence.light_up_selected_row)

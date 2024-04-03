@@ -11,7 +11,7 @@ def store_selected_cluster(state):
     """
     if isinstance(state, int):
         return state
-    return PreventUpdate
+    return None
 
 def store_context_row(state, cluster):
     """
@@ -25,7 +25,7 @@ def store_context_row(state, cluster):
         if len(state) > 0 and isinstance(cluster, int):
             if isinstance(state[0], int):
                 return min(state[0], load.get_row(cluster)-1)
-    return PreventUpdate
+    return None
 
 def update_options_dropdown(n):
     """
@@ -59,3 +59,14 @@ def get_name_cluster(data):
             if not pd.isna(z[0]) and z[0] == float(data):
                 return z[1]
     return "Cluster not selected"
+
+def light_up_selected_row(row):
+    """
+    Light up the selected event.
+    :param row: the row selected
+    :return: the adjusted layout
+    """
+    if isinstance(row, int):
+        return [{"if": {"row_index": row%10}, 'backgroundColor': 'hotpink',
+                 'color': 'orange', }]
+    return None

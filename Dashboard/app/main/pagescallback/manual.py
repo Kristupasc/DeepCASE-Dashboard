@@ -4,7 +4,7 @@ import dash
 from dash import html, dash_table, dcc, callback, Output, Input, ctx, State
 import pandas as pd
 from dash.exceptions import PreventUpdate
-
+import Dashboard.app.main.pagescallback.display_sequence as display_sequence
 import Dashboard.app.main.recources.loaddata as load
 
 ########################################################################
@@ -108,54 +108,17 @@ def display_context(row, cluster):
 @callback(
     Output("filter_dropdown" + id_str, 'options'),
     Input('change cluster name', 'n_clicks')
-)
-def update_options_dropdown(n):
-    """
-    Update the options in the dropdown based on the change cluster name button click.
-
-    :param n: the number of clicks on the change cluster name button
-    :return: a list of options for the dropdown based on possible clusters with labels and values
-    """
-    if 'change cluster name' == ctx.triggered_id:
-        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if
-                not pd.isna(i[1]) and not pd.isna(i[0])]
-    return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
-
-
+)(display_sequence.update_options_dropdown)
 @callback(
     Output("filter_dropdown" + id_str, 'value'),
     Input('change cluster name', 'n_clicks')
-)
-def update_values_dropdown(n):
-    """
-    Update the values in the dropdown based on the change cluster name button click.
-
-    :param n: the number of clicks on the change cluster name button
-    :return: a list of values for the dropdown based on possible clusters
-    """
-    if 'change cluster name' == ctx.triggered_id:
-        return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
-    return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
+)(display_sequence.update_values_dropdown)
 
 
 @callback(
     Output('cluster name' + id_str, 'value'),
     Input('selected cluster' + id_str, "data")
-)
-def get_name_cluster(data):
-    """
-    Get the name of the selected cluster based on the cluster ID.
-
-    :param data: the selected cluster ID
-    :return: the name of the selected cluster or a default message if no cluster is selected
-    """
-    if isinstance(data, int):
-        k = load.possible_clusters()
-        for z in k:
-            if not pd.isna(z[0]) and z[0] == data:
-                return z[1]
-    return "Cluster not selected"
-
+)(display_sequence.get_name_cluster)
 
 ########################################################################################
 # Editable callback extra functionality special for manual.
@@ -213,12 +176,7 @@ def set_risk_label(cluster, data, data_previous, active):
 ########################################################################################
 # Light up the selected row.
 ########################################################################################
-@callback(
+callback(
     Output("manual", "style_data_conditional"),
     Input("selected row" + id_str, "data")
-)
-def light_up_selected_row(row):
-    if isinstance(row, int):
-        return [{"if": {"row_index": row%10}, 'backgroundColor': 'hotpink',
-                 'color': 'orange', }]
-    return None
+)(display_sequence.light_up_selected_row)

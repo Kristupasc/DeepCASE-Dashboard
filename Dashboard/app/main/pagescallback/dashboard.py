@@ -1,14 +1,13 @@
-from io import StringIO
-
-import dash
-from dash import html, dash_table, dcc, callback, Output, Input, ctx, State
 import pandas as pd
-from dash.exceptions import PreventUpdate
 import plotly.graph_objs as go
+from dash import callback, Output, Input, State
+from dash.exceptions import PreventUpdate
+
+import Dashboard.app.main.pagescallback.display_sequence as display_sequence
 import Dashboard.app.main.recources.loaddata as load
 from Dashboard.app.main.recources.label_tools import choose_risk, get_colors
 from Dashboard.data.dao.dao import DAO
-import Dashboard.app.main.pagescallback.display_sequence as display_sequence
+
 ########################################################################
 #   Dashboard callback (All ids need to match 100%)               #
 ########################################################################
@@ -43,15 +42,11 @@ def update_table_cluster(state):
     raise PreventUpdate
 
 
-
 callback(
     Output('selected row' + id_str, "data"),
     Input("dashboard", 'selected_rows'),
-    Input("selected cluster"+ id_str, "data")
+    Input("selected cluster" + id_str, "data")
 )(display_sequence.store_context_row)
-
-
-
 
 
 @callback(
@@ -111,19 +106,14 @@ def highlight_selected_point(selected_rows):
     Output("filter_dropdown" + id_str, 'options'),
     Input('url', 'pathname')
 )(display_sequence.update_options_dropdown)
-
-
 @callback(
     Output("filter_dropdown" + id_str, 'value'),
     Input('url', 'pathname')
 )(display_sequence.update_values_dropdown)
-
 @callback(
     Output('cluster name' + id_str, 'children'),
     Input('selected cluster' + id_str, "data")
 )(display_sequence.get_name_cluster)
-
-
 @callback(
     Output("scatter-plot", "figure"),
     Output("filter-buttons", "value"),
@@ -206,3 +196,10 @@ def generate_scatter_plot(selected_cluster, click_data, filter_value):
             font={"color": colors["text"]},
         ),
     }, filter_value
+########################################################################################
+# Light up the selected row.
+########################################################################################
+callback(
+    Output("dashboard", "style_data_conditional"),
+    Input("selected row" + id_str, "data")
+)(display_sequence.light_up_selected_row)
