@@ -1,6 +1,6 @@
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.manual import *
-
+import dash_mantine_components as dmc
 dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", title="Manual Analysis", order=1)
 
 ########################################################################
@@ -12,9 +12,9 @@ layout = html.Div([
     # Change name of cluster and display
     dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
     html.Button('Change cluster name', id='change cluster name', n_clicks=0),
-    html.P(id="set label cluster" + id_str),
     # Get new cluster
     html.Button('Choose next cluster', id='random' + id_str, n_clicks=0),
+    html.Button('Choose next sequence', id='random' + qid_str, n_clicks=0),
     # drop down menu to select cluster
     dcc.Dropdown(
         id="filter_dropdown" + id_str,
@@ -43,11 +43,6 @@ layout = html.Div([
             'textOverflow': 'ellipsis',
         },
         page_size=10),
-    # ################# Editable risk values
-    html.Button('Choose next sequence', id='random' + qid_str, n_clicks=0),
-    html.H3(id='doneCluster' + qid_str),
-    html.H3(id="successful" + qid_str),
-
     # Selected sequence context
     html.Div(className='manual_context', children=[
         html.H2('Context of the selected sequence', id='sequence name' + cid_str),
@@ -74,8 +69,11 @@ layout = html.Div([
         dcc.Store(id='selected cluster' + id_str),
         dcc.Store(id='selected row' + id_str)
 
-    ], )
+    ], ),
+    dmc.Modal( title="Yeeeeeeeeaaaaaaaa", id = "modal_set_cluster"+id_str),
+    dmc.Modal( title="Noooooooo", id = "modal_set_risk"+id_str),
 ],
+
     # dcc.Store stores the intermediate value
     style=style.content_style
 )
