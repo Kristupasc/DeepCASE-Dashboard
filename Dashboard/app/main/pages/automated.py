@@ -4,6 +4,7 @@ import pandas as pd
 import Dashboard.app.main.recources.loaddata as load
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.automated import *
+from Dashboard.app.main.pagescallback.display_sequence import *
 dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", title="Semi-automatic", order=2)
 
 

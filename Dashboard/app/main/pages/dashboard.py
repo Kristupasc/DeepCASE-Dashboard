@@ -1,5 +1,6 @@
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.dashboard import *
+from Dashboard.app.main.pagescallback.display_sequence import *
 
 dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboard", order=0)
 
