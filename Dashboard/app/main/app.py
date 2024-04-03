@@ -2,6 +2,7 @@ import os
 import dash
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
+import Dashboard.app.main.recources.style as style
 
 from server import app, pao
 
@@ -11,68 +12,11 @@ GRAPH_INTERVAL = os.environ.get("GRAPH_INTERVAL", 5000)
 
 #TODO: create and transfer to style file
 
-#style
-wrapper_style = {
-    'font_family': 'Calibri'
-}
-
-# Define the sidebar style
-sidebar_style = {
-    'position': 'fixed',
-    'top': 0,
-    'left': 0,
-    'bottom': 0,
-    'width': '20%',
-    'background-color': '#f8f9fa',
-    'font-family': 'Calibri'
-}
-
-sidebar_button_style_active = {
-    'width': '80%',
-    'height': 50,
-    'margin': 'auto',
-    'border-radius': 8,
-    'background-color': '#009999',
-    'margin-bottom': 20,
-    'color': '#FFFFFF',
-}
-
-sidebar_button_style_inactive = {
-    'width': '80%',
-    'height': 50,
-    'margin': 'auto',
-    'border-radius': 8,
-    'background-color': '#FFFFFF',
-    'margin-bottom': 20,
-    'color': '#9197B3',
-}
-
-sidebar_button_img_style = {
-    'height': 18,
-    'float': 'left',
-    'margin-left': 16,
-    'margin-right': 20,
-    'margin-top': 16,
-}
-
-sidebar_button_text_style = {
-    'float': 'left',
-    'font-size': 18,
-    'padding-top': 14
-}
-
-sidebar_button_arrow_style = {
-    'float': 'right',
-    'height': 18,
-    'margin-right': 10,
-    'margin-top': 16,
-}
-
 #Define sidebar
 
 def sidebar(active_index):
     active = [False] * 5
-    active[active_index] = True
+    # active[active_index] = True
 
     sidebar = html.Div(
         [
@@ -85,7 +29,7 @@ def sidebar(active_index):
                 sidebar_button("user-manual", "User Manual", active[4]),
             ])
         ],
-        style=sidebar_style
+        style=style.sidebar_style
     )
 
     return sidebar
@@ -99,12 +43,12 @@ def sidebar_button(link, text, active):
         arrow = f"assets/arrow_inactive.svg"
 
     return dcc.Link(
-            html.Div([
-                html.Img(src= img_path, style=sidebar_button_img_style),
-                html.Div([text], style=sidebar_button_text_style),
-                html.Img(src=arrow, style=sidebar_button_arrow_style),
+            html.Div(className = 'sidebar-button', children=[
+                html.Img(className = 'sidebar-button-img', src=img_path),
+                html.Div([text], className = 'sidebar-button-text'),
+                html.Img(className = 'sidebar-button-arrow', src=arrow),
             ],
-                style=sidebar_button_style_active if active else sidebar_button_style_inactive
+                # style=style.sidebar_button_style_active if active else style.sidebar_button_style_inactive
             ),
             href=link)
 
@@ -118,7 +62,7 @@ app.layout = html.Div([
     sidebar(1),
     content
     ],
-    style=wrapper_style)
+    style=style.wrapper_style)
 
 #TODO: rewrite 404 page s.t it is not shown on sidebar
 

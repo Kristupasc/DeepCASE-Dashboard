@@ -19,8 +19,8 @@ table {
     border-spacing: 0px 7px !important; /* Horizontal and vertical spacing */
     /*max-width: 150px !important;*/
     table-layout: auto !important;
-    text-align: center !important
-
+    text-align: center !important;
+    font-family: Calibri;
 }
 tr {
     /*border-spacing: 10px !important;*/
@@ -29,7 +29,6 @@ tr {
     /*border-radius: 5px !important;*/
 
     /*border: 1px solid #000 !important; !* Adjust the border style as needed *!*/
-    box-shadow: 0 5px 0 0 #fff; /* Adjust the color to match your table's background */
     background-color: #B8E7BD; /* Adjust the background color as needed */
     border-collapse: separate !important;
     border-radius: 10px !important;
@@ -76,6 +75,9 @@ td {
     border-radius: 0px !important;
 }
 
+html{
+    background-color: #DCF5D6;
+}
 
 td:first-child {
     border-top-left-radius: 10px !important;
@@ -119,7 +121,7 @@ td.dash-select-cell {
 
 .cluster_sequences_graph {
     /*background: black !important;*/
-    background-color: rgb(225, 231, 255) !important;
+    background-color: #E1E7FF !important;
     padding: 15px !important;
     border-radius: 10px !important;
     border: 2px solid black !important;
@@ -138,6 +140,43 @@ td.dash-select-cell {
     table-layout: auto !important;
     width: auto !important;
 }
+
+.sidebar-button {
+    width: 80%;
+    height: 50px;
+    margin: auto;
+    border-radius: 8px;
+    background-color: #80c783;
+    margin-bottom: 20px;
+    color: #9197B3;
+}
+
+.sidebar-button:focus{
+    background-color: #000000;
+}
+
+.sidebar-button-text{
+    float: left;
+    font-size: 18px;
+    padding-top: 14px;
+}
+
+.sidebar-button-img{
+    height: 18px;
+    float: left;
+    margin-left: 16px;
+    margin-right: 20px;
+    margin-top: 16px;
+    fill: #ff0000;
+}
+
+.sidebar-button-arrow{
+    float: right;
+    height: 18px;
+    margin-right: 10px;
+    margin-top: 16px;
+}
+
 
 /*input:focus {*/
 /*    background: rgb(213, 0, 0) !important;*/
