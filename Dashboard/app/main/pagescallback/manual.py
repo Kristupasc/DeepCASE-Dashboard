@@ -177,13 +177,18 @@ def set_risk_label(cluster, data, data_previous, active, opened):
     """
     if data is not None and active is not None and cluster is not None:
         value = data[active['row']-1]['risk_label' + id_str]
-        if data_previous[active['row']-1]['risk_label' + id_str] != value:
-            if isinstance(active['row'], int) and isinstance(cluster, int) and isinstance(value, int):
-                if load.set_riskvalue(cluster_id=cluster, row=active['row']-1, risk_value=value):
-                    return not opened, "Successful, saved the row."
-            return not opened, "Please provide correct values"
+        if verify_not_different_data(data, data_previous, active): # To prevent extra pop-up.
+            if data_previous[active['row']-1]['risk_label' + id_str] != value:
+                if isinstance(active['row'], int) and isinstance(cluster, int) and isinstance(value, int):
+                    if load.set_riskvalue(cluster_id=cluster, row=active['row']-1, risk_value=value):
+                        return not opened, "Successful, saved the row."
+                return not opened, "Please provide correct values"
     return opened, "Nothing to be seen"
 
+def verify_not_different_data(data, data_previous,active):
+    check1 = data[active['row']-1]['timestamp' + id_str] ==  data_previous[active['row']-1]['timestamp' + id_str]
+    check2 = data[active['row']-1]['machine' + id_str] ==  data_previous[active['row']-1]['machine' + id_str]
+    return check2 and check1
 
 ########################################################################################
 # Light up the selected row.
