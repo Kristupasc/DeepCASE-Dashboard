@@ -15,7 +15,6 @@ from Dashboard.data.dao.dao import DAO
 id_str = "_da"
 cid_str = "_cida"
 # Setting variables
-cluster = 0
 prev_row = -1
 prev_graph = -1
 prev_click = -1
@@ -44,7 +43,7 @@ def update_table_cluster(state):
 
 callback(
     Output('selected row' + id_str, "data"),
-    Input("dashboard", 'selected_rows'),
+    State("dashboard", 'selected_rows'),
     Input("selected cluster" + id_str, "data")
 )(display_sequence.store_context_row)
 
@@ -54,7 +53,7 @@ callback(
     Output('dashboard', 'page_current'),
     Output('dashboard', 'selected_rows'),
     Input('selected row' + id_str, "data"),
-    Input('selected cluster' + id_str, "data"),
+    State('selected cluster' + id_str, "data"),
     Input('scatter-plot', 'clickData'),
     State('dashboard', 'page_current')
 )
@@ -114,6 +113,9 @@ def highlight_selected_point(selected_rows):
     Output('cluster name' + id_str, 'children'),
     Input('selected cluster' + id_str, "data")
 )(display_sequence.get_name_cluster)
+
+
+
 @callback(
     Output("scatter-plot", "figure"),
     Output("filter-buttons", "value"),
