@@ -9,17 +9,21 @@ dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", ti
 
 layout = html.Div([
     html.Div([
-
+            html.H1('Manual analysis'),
+        ], style={'display': 'flex', 'align-items': 'center'}),
+    # Start automatic analysis.
+    html.Button('Start semi-automatic analysis', id='start automatic', n_clicks=0),
+    # Change name of cluster and display
+    dcc.Textarea(id='filename' + id_str, value='File not selected'),
+    html.Button('Change filename', id='change filename', n_clicks=0),
     dcc.Dropdown(
-        id="filter_dropdown" + id_str,
+        id="filename_dropdown" + id_str,
         # options=[{"label": i[1], "value": i[0]} for i in set_cluster],
-        placeholder="-Select a Cluster-",
+        placeholder="-Select a file-",
         multi=False,
         clearable=False,
         # value=list([i[0] for i in set_cluster])
     ),
-    html.H1('Manual analysis'),
-], style={'display': 'flex', 'align-items': 'center'}),
     # Change name of cluster and display
     dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
     html.Button('Change cluster name', id='change cluster name', n_clicks=0),
