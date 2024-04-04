@@ -7,7 +7,7 @@ dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboa
 #   Dash objects page(Makes use of the callback addition)    #
 ########################################################################
 
-layout = html.Div([
+layout = html.Div(className='content', children=[
     # TOP SECTION
     html.Div(children=[
         html.H1('Cluster view'),
@@ -61,7 +61,7 @@ layout = html.Div([
                     'textOverflow': 'ellipsis',
                 },
                 page_size=10)], style={'background-color': 'red'}),
-    ], style=style.content_style
+    ]
     ),
 
     # BOTTOM SECTION - Sequences graph

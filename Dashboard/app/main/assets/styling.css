@@ -1,3 +1,10 @@
+* {
+    --primary-color: #ffab40;
+    --secondary-color: #84d5e6;
+    --tertiary-color: #001633;
+    --quarniary-color: #ffffff;
+}
+
 .app-header {
     /*height: 60px;*/
     /*line-height: 5px;*/
@@ -55,7 +62,7 @@ td {
 }
 
 html{
-    background-color: #DCF5D6;
+    background-color: var(--tertiary-color);
 }
 
 td:first-child {
@@ -120,17 +127,29 @@ td.dash-select-cell {
     width: auto !important;
 }
 
+.sidebar {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 20%;
+    background-color: var(--tertiary-color);
+    font-family: Calibri;
+    box-shadow: 0px 10px 60px 0px #E2ECF9;
+    color: var(--primary-color);
+}
+
 .sidebar-button {
     width: 80%;
     height: 50px;
     margin: auto;
     border-radius: 8px;
-    background-color: #80c783;
+    background-color: var(--secondary-color);
     margin-bottom: 20px;
-    color: #9197B3;
+    color: var(--tertiary-color);
 }
 
-.sidebar-button:focus{
+.sidebar-button:active{
     background-color: #000000;
 }
 
@@ -155,6 +174,17 @@ td.dash-select-cell {
     margin-right: 10px;
     margin-top: 16px;
 }
+
+.content {
+    margin-left: 20%;
+    width: auto;
+    padding: 20px 10px;
+    background-color: #E1E7FF;
+    border-radius: 4px;
+    border: 2px solid #000000;
+    font-family: Calibri;
+}
+
 
 
 /*input:focus {*/
