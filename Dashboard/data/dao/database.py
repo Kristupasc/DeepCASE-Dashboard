@@ -25,8 +25,8 @@ class Database(object):
             self.cur = self.conn.cursor()
             self.filename = 'defaultfilename'
             self.initialized = True  # Mark the instance as initialized
-            # self.drop_database()
-            # self.create_tables()
+            self.drop_database()
+            self.create_tables()
         return
 
     def create_tables(self):

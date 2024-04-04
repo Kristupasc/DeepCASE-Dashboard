@@ -82,13 +82,19 @@ class Processor(object):
         return clusters
 
     def get_attention(self, context, events):
-        confidence, attention, _ = self.context_builder.query(
+        print(f"get_attention: {len(context)}, {len(events)}")
+
+        confidence, attention, inverse = self.context_builder.query(
             X=context,  # Context to train with
             y=events.reshape(-1, 1),  # Events to train with, note that these should be of shape=(n_events, 1)
             iterations=100,  # Number of iterations to use for attention query, in paper this was 100
             batch_size=1024,  # Batch size to use for attention query, used to limit CUDA memory usage
             verbose=True,  # If True, prints progress
         )
+        confidence = confidence[inverse]
+        attention = attention[inverse]
+
+        print(f"get_confidence: {len(confidence)}, {len(attention)}")
         return confidence, attention
 
     ########################################################################

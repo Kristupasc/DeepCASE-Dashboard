@@ -105,7 +105,6 @@ class ProcessorAccessObject(object):
         self.create_interpreter_clusters()
         self.status = Status.FINISHED
         self.manual_mode()
-        self.run_automatic_mode()
         # return status_flag
 
     def get_status(self):
@@ -119,6 +118,7 @@ class ProcessorAccessObject(object):
         self.create_interpreter_clusters()
         self.status = Status.FINISHED
         self.manual_mode()
+        self.run_automatic_mode()
 
 
 if __name__ == '__main__':

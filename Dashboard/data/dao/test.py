@@ -1,3 +1,4 @@
+from datetime import datetime
 import sqlite3
 import pandas as pd
 import os
@@ -12,7 +13,6 @@ from database import Database
 #             FROM sequences, temporary
 #             WHERE sequences.id_sequence = temporary.id_sequence''')
 
-db = Database()
 # db.drop_database()
 #
 #
@@ -72,6 +72,77 @@ db = Database()
 #
 # conn.commit()
 
+# script_dir = os.path.dirname(os.path.abspath(__file__))
+# # Create a file path for "example.txt" in the script's directory
+# file_path = os.path.join(script_dir, 'deepcase.db')
+# conn = sqlite3.connect(file_path, check_same_thread=False)
+# cur = conn.cursor()
+#
+#
+# # print(pd.read_sql_query("SELECT sequences.id_cluster, MAX(sequences.risk_label) FROM sequences", conn))
+#
+# def fill_cluster_table():
+#     # take unique ids from sequences table + max score per sequence
+#     get_unique_ids_query = "SELECT DISTINCT sequences.id_cluster, sequences.risk_label FROM sequences"
+#     get_unique_ids_query = """ SELECT id_cluster, MAX(risk_label) AS risk_label FROM sequences GROUP BY id_cluster;
+#     """
+#     return pd.read_sql_query(get_unique_ids_query, conn)
+#     get_max_sequence_score_query = "SELECT FROM WHERE"
+#
 
-print(db.get_sequences_per_cluster(1))
-print(db.get_sequences_per_cluster(1).columns)
+filename = "alerts.csv1710771346.185"
+# store_attention
+att_df_1 = pd.DataFrame([{'id_sequence': 0, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 1, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 2, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 3, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 4, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 5, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 6, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 7, 'event_position': 0, 'attention': 0.010116898454725742}])
+att_df_2 = pd.DataFrame([{'id_sequence': 8, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 9, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 10, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 11, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 12, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 13, 'event_position': 0, 'attention': 0.010116898454725742},
+                         {'id_sequence': 14, 'event_position': 0, 'attention': 0.003188725560903549},
+                         {'id_sequence': 15, 'event_position': 0, 'attention': 0.002493527252227068}])
+att_df_3 = pd.DataFrame([{'id_sequence': 16, 'event_position': 0, 'attention': 0.0025230764877051115},
+                         {'id_sequence': 17, 'event_position': 0, 'attention': 0.004003714304417372},
+                         {'id_sequence': 18, 'event_position': 0, 'attention': 0.0040802680887281895},
+                         {'id_sequence': 19, 'event_position': 0, 'attention': 0.004231778439134359}])
+
+# store_clusters
+clust_df_1 = pd.DataFrame(
+    [{'id_sequence': 0, 'id_cluster': 1}, {'id_sequence': 1, 'id_cluster': 1}, {'id_sequence': 2, 'id_cluster': 0},
+     {'id_sequence': 3, 'id_cluster': 0}, {'id_sequence': 4, 'id_cluster': -1}])
+clust_df_2 = pd.DataFrame(
+    [{'id_sequence': 5, 'id_cluster': -1}, {'id_sequence': 6, 'id_cluster': -1}, {'id_sequence': 7, 'id_cluster': -1},
+     {'id_sequence': 8, 'id_cluster': 8}, {'id_sequence': 9, 'id_cluster': 8}, {'id_sequence': 10, 'id_cluster': -1}])
+clust_df_3 = pd.DataFrame(
+    [{'id_sequence': 11, 'id_cluster': -1}, {'id_sequence': 12, 'id_cluster': 8}, {'id_sequence': 13, 'id_cluster': 8},
+     {'id_sequence': 14, 'id_cluster': 10}, {'id_sequence': 15, 'id_cluster': 10},
+     {'id_sequence': 16, 'id_cluster': 13}, {'id_sequence': 17, 'id_cluster': 16},
+     {'id_sequence': 18, 'id_cluster': 12}, {'id_sequence': 19, 'id_cluster': 12}])
+
+# store_sequences
+seq_df_1 = pd.DataFrame([{'mapping_value': 72, 'risk_label': 3}, {'mapping_value': 72, 'risk_label': 3},
+                         {'mapping_value': 72, 'risk_label': 3}, {'mapping_value': 72, 'risk_label': 3}])
+seq_df_2 = pd.DataFrame([{'mapping_value': 44, 'risk_label': 3}, {'mapping_value': 44, 'risk_label': 3},
+                         {'mapping_value': 42, 'risk_label': 3}, {'mapping_value': 42, 'risk_label': 3}])
+seq_df_3 = pd.DataFrame([{'mapping_value': 86, 'risk_label': 3}, {'mapping_value': 86, 'risk_label': 3},
+                         {'mapping_value': 87, 'risk_label': 3}, {'mapping_value': 87, 'risk_label': 3}])
+seq_df_4 = pd.DataFrame([{'mapping_value': 86, 'risk_label': 3}, {'mapping_value': 86, 'risk_label': 3},
+                         {'mapping_value': 87, 'risk_label': 3}, {'mapping_value': 87, 'risk_label': 3}])
+seq_df_5 = pd.DataFrame([{'mapping_value': 66, 'risk_label': 3}, {'mapping_value': 66, 'risk_label': 3},
+                         {'mapping_value': 66, 'risk_label': 3}, {'mapping_value': 66, 'risk_label': 3}])
+
+db = Database()
+db.switch_current_file("alerts.csv_2024-04-04 01:08:13 ")
+
+print(db.get_context_by_sequence_id(0))
+
+# db.store_attention(att_df_1)
+# db.store_clusters(clust_df_1)
+# db.fill_cluster_table()
