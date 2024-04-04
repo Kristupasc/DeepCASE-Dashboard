@@ -1,5 +1,3 @@
-# User Manual: Interface Usage Guide
-
 This manual provides step-by-step instructions on how to effectively use our platform's interface for data analysis. Ensure you follow each step for a seamless experience.
 
 ## Step 1: Uploading Your CSV File

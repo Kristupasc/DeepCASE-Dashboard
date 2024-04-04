@@ -11,36 +11,38 @@ layout = html.Div(className='content', children=[
     # TOP SECTION
     html.Div(children=[
         html.H1('Cluster view'),
-        html.H2('cluster name unknown', id='cluster name' + id_str),
-        # drop down menu to select cluster
-        dcc.Dropdown(
-            id="filter_dropdown" + id_str,
-            options=update_options_dropdown(None),
-            value=update_values_dropdown(None),
-            placeholder="-Select a Cluster-",
-            multi=False,
-        ),
+        html.Div(className='subcontent', children=[
+            html.H2('cluster name unknown', id='cluster name' + id_str),
+            # drop down menu to select cluster
+            dcc.Dropdown(
+                id="filter_dropdown" + id_str,
+                options=update_options_dropdown(None),
+                value=update_values_dropdown(None),
+                placeholder="-Select a Cluster-",
+                multi=False,
+            ),
 
-        # data table to display the cluster
-        dash_table.DataTable(
-            id='dashboard',
-            columns=[
-                {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
-                {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
-                {'name': 'Event', 'id': 'id_event' + id_str, 'type': 'numeric', 'hideable': True},
-                {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
-                {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric'},
-            ],
-            # data=df.to_dict('records'),
-            filter_action='native',
-            row_selectable="single",
-            style_data={
-                'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
-            },
-            page_size=10),
-        html.Div(className='semiauto_context', children=[
+            # data table to display the cluster
+            dash_table.DataTable(
+                id='dashboard',
+                columns=[
+                    {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
+                    {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
+                    {'name': 'Event', 'id': 'id_event' + id_str, 'type': 'numeric', 'hideable': True},
+                    {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
+                    {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric'},
+                ],
+                # data=df.to_dict('records'),
+                filter_action='native',
+                row_selectable="single",
+                style_data={
+                    'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
+                    'overflow': 'hidden',
+                    'textOverflow': 'ellipsis',
+                },
+                page_size=10)
+        ]),
+        html.Div(className='subcontent', children=[
             html.H2('Context of the selected sequence', id='sequence name' + cid_str),
 
             # Table to show the context of a sequence
@@ -60,9 +62,8 @@ layout = html.Div(className='content', children=[
                     'overflow': 'hidden',
                     'textOverflow': 'ellipsis',
                 },
-                page_size=10)], style={'background-color': 'red'}),
-    ]
-    ),
+                page_size=10)]),
+        ]),
 
     # BOTTOM SECTION - Sequences graph
     html.Div(className='cluster_sequences_graph', children=[
