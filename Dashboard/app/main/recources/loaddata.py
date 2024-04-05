@@ -185,3 +185,17 @@ def get_row(cluster_id):
     df = dao.get_sequences_per_cluster(cluster_id)
     rows = df.shape[0]
     return rows
+
+def set_file_name(file_id, file_name):
+    """
+
+    :param file_id:
+    :param file_name:
+    :return:
+    """
+    dao = DAO()
+    try:
+        dao.set_new_filename(file_id=file_id, new_filename=file_name)
+        return True
+    except (ValueError, IndexError):
+        return False
