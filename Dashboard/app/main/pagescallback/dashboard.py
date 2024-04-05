@@ -15,10 +15,13 @@ from Dashboard.data.dao.dao import DAO
 id_str = "_da"
 cid_str = "_cida"
 
+# The call back for the dropdown. It runs when a user selects a cluster.
 callback(
     Output('selected cluster' + id_str, "data"),
     Input("filter_dropdown" + id_str, "value")
 )(display_sequence.store_selected_cluster)
+
+
 @callback(
     Output("dashboard", "data"),
     Input('selected cluster' + id_str, "data")
@@ -36,6 +39,7 @@ def update_table_cluster(state):
     raise PreventUpdate
 
 
+# A callback to store the selected row in the table.
 callback(
     Output('selected row' + id_str, "data"),
     State("dashboard", 'selected_rows'),
@@ -46,21 +50,15 @@ callback(
 @callback(
     Output('dashboard', 'page_current'),
     Output('dashboard', 'selected_rows'),
-    Input('selected row' + id_str, "data"),
     Input('scatter-plot', 'clickData'),
-    State('dashboard', 'page_current')
 )
-def display_context(row, click_data, current_page):
+def display_context(click_data):
     """
     Display the context information based on the selected row and cluster.
 
-    :param current_page: the page displayed.
-    :param row: the selected row
-    :param cluster: the selected cluster
-    :param click_data: data from the click event on the scatter plot
-    :return: the context frame as a dictionary of records
+    :param click_data: the data from the click event on the scatter plot
     """
-    # we check if the graph point was clicked or if the row was clicked in the table:
+    # we check if the graph point was clicked
     if click_data is not None:
         # there was a graph click
         # we load from what was clicked in the graph
@@ -72,6 +70,7 @@ def display_context(row, click_data, current_page):
     raise PreventUpdate
 
 
+# Various callbacks for the dropdown
 @callback(
     Output("filter_dropdown" + id_str, 'options'),
     Input('url', 'pathname')
@@ -80,13 +79,11 @@ def display_context(row, click_data, current_page):
     Output("filter_dropdown" + id_str, 'value'),
     Input('url', 'pathname')
 )(display_sequence.update_values_dropdown)
+# A callback to get the cluster name and show it in the dashboard
 @callback(
     Output('cluster name' + id_str, 'children'),
     Input('selected cluster' + id_str, "data")
 )(display_sequence.get_name_cluster)
-
-
-
 @callback(
     Output("scatter-plot", "figure"),
     Output("filter-buttons", "value"),
@@ -95,31 +92,35 @@ def display_context(row, click_data, current_page):
      Input('dashboard', 'selected_rows'),
      Input("filter-buttons", "value")]
 )
-def generate_scatter_plot(selected_cluster, selected_row, filter_value):
+def interact_with_data(selected_cluster, selected_row, filter_value):
     """
-    Generate a scatter plot based on the selected cluster and highlight the clicked point.
+    Updates the scatter plot, the table and the events table based on the user selection.
+    The selection can happen either in the table or in the graph.
+    Once a user selects something in the graph, the point is also automatically selected in the table and vice versa.
 
-    :param filter_value:  filter value
-    :param selected_cluster: the value selected in the filter dropdown
-    :param click_data: data from the click event on the scatter plot
-    :return: a dictionary containing the data and layout for the scatter plot
+    :param selected_cluster: the selected cluster
+    :param selected_row: the selected row in the table
+    :param filter_value: the selected filter value
     """
     # get the trigger, to see what made the callback happen
     triggered_input = callback_context.triggered[0]["prop_id"].split(".")[0]
+    # if a row in a table is selected, then it's not a graph click
     if selected_row is None:
         click_data = None
         events = None
     else:
+        # it's a graph click
         click_data = {"points": [{"pointIndex": selected_row[0]}]}
         df = load.formatContext(selected_cluster, selected_row[0], cid_str)
         events = df.to_dict("records")
+    # start generating values for the scatter plot
     traces = []
     dao = DAO()
     x = []
     y = []
     colors_graph = []
     colors = get_colors()
-    # check if selected_cluster is a list
+    # check if a cluster is selected
     if selected_cluster is not None:
         data = dao.get_sequences_per_cluster(selected_cluster)
         for sequence in data.to_dict('records'):
@@ -129,6 +130,7 @@ def generate_scatter_plot(selected_cluster, selected_row, filter_value):
             risk_label = sequence["risk_label"]
             x.append(timestamp)
             y.append(risk_label)
+            # chooses a color based on the label
             colors_graph.append(colors["Risk Label"][choose_risk(int(risk_label))])
     else:
         filter_value = "All"
@@ -146,7 +148,7 @@ def generate_scatter_plot(selected_cluster, selected_row, filter_value):
         colors_graph = [
             colors["Risk Label"][choose_risk(int(risk_label))] if choose_risk(int(risk_label)) == filter_value else
             colors["Risk Label"]["Unlabeled"] for risk_label in y]
-
+    # append all the information to the graph
     traces.append(
         go.Scatter(
             x=x,
@@ -161,7 +163,6 @@ def generate_scatter_plot(selected_cluster, selected_row, filter_value):
             name="Sda"
         )
     )
-
     return {
         "data": traces,
         "layout": go.Layout(
@@ -176,9 +177,9 @@ def generate_scatter_plot(selected_cluster, selected_row, filter_value):
             font={"color": colors["text"]},
         ),
     }, filter_value, events
-########################################################################################
+
+
 # Light up the selected row.
-########################################################################################
 callback(
     Output("dashboard", "style_data_conditional"),
     Input("selected row" + id_str, "data")
