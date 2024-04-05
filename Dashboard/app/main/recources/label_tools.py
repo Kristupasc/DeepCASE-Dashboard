@@ -17,17 +17,15 @@ def get_colors():
 
 def choose_risk(weight):
     # TODO: change it to accept a different format than 0-10
-    if weight == 0:
+    if weight <= 0:
         return "Unlabeled"
-    elif weight < 1:
+    elif weight <= 1:
         return "Info"
-    elif weight < 3:
+    elif weight <= 3:
         return "Low"
-    elif weight < 5:
+    elif weight <= 5:
         return "Medium"
-    elif weight < 7:
+    elif weight <= 7:
         return "High"
-    elif weight < 9:
-        return "Suspicious"
     else:
         return "Attack"
