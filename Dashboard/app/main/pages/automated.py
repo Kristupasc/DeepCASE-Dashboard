@@ -14,6 +14,15 @@ dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", titl
 
 layout = html.Div([
     html.H1('Semi-automatic analysis'),
+    # Change name of file and display
+    dcc.Textarea(id='filename' + id_str, value='File not selected'),
+    html.Button('Change filename', id='change filename' + id_str, n_clicks=0),
+    dcc.Dropdown(
+        id="filename_dropdown" + id_str,
+        placeholder="-Select a file-",
+        multi=False,
+        clearable=False,
+    ),
     html.H2('No cluster selected', id='cluster name' + id_str),
     # drop down menu to select cluster
     dcc.Dropdown(
@@ -24,7 +33,8 @@ layout = html.Div([
         clearable=False,
         multi=False,
     ),
-
+    html.H3('Security label cluster:'),
+    html.H3('8', id="display risk cluster" + id_str),
     # Table - cluster data
     dash_table.DataTable(
         id='semi-automatic',

@@ -197,3 +197,21 @@ callback(
     Output("manual", "style_data_conditional"),
     Input("selected row" + id_str, "data")
 )(display_sequence.light_up_selected_row)
+
+########################################################################################
+# Selected file, change name file
+########################################################################################
+# callback(
+#     Output("filter_dropdown" + id_str, 'options'),
+#     Input('change cluster name', 'n_clicks')
+# )(display_sequence.update_options_dropdown)
+# callback(
+#     Output("filter_dropdown" + id_str, 'value'),
+#     Input('change cluster name', 'n_clicks')
+# )(display_sequence.update_values_dropdown)
+#
+#
+# callback(
+#     Output('cluster name' + id_str, 'value'),
+#     Input('selected cluster' + id_str, "data")
+# )(display_sequence.get_name_cluster)
