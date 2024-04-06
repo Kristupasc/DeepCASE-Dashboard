@@ -54,18 +54,34 @@ def display_table(pathname):
     return table
 
 
-@callback(Output('deepcase-status-display', 'children'),
+@callback(Output('deepcase-status-display', 'children', allow_duplicate=True),
           Input('start_deepcase_btn', 'n_clicks'),
           prevent_initial_call=True)
 def run_deepcase(n_clicks):
-    if n_clicks and n_clicks == 1:
-        # TODO: a user can press the button multiple times, so?
+    if n_clicks and n_clicks > 0:
         pao = ProcessorAccessObject()
         thread = Thread(target=pao.run_DeepCASE())
         thread.start()
-        return pao.status.name
+        return "DeepCASE process is finished. You can review results on Manual Analysis page."
     return dash.no_update
 
+@callback(
+    Output('start_deepcase_btn', 'style'),
+    Input('start_deepcase_btn', 'n_clicks')
+)
+def hide_button(n_clicks):
+    if n_clicks and n_clicks > 0:
+        return {'display': 'none'}
+    return {}
+
+@callback(
+    Output('deepcase-status-display', 'children'),
+    Input('start_deepcase_btn', 'n_clicks')
+)
+def hide_button(n_clicks):
+    if n_clicks and n_clicks > 0:
+        return 'DeepCASE is running. Please do not close this page until the process is finished. It may take several minutes.'
+    return dash.no_update
 
 # @callback(
 #     Output('deepcase-status-display', 'children'),

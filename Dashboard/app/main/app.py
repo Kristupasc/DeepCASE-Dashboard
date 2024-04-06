@@ -11,10 +11,8 @@ from dash import Dash, html, dcc
 
 GRAPH_INTERVAL = os.environ.get("GRAPH_INTERVAL", 5000)
 
-#TODO: create and transfer to style file
 
 #Define sidebar
-
 def sidebar(active_index):
     active = [False] * 5
     # active[active_index] = True
@@ -64,16 +62,6 @@ app.layout = html.Div([
     content
     ],
     style=style.wrapper_style)
-
-#TODO: rewrite 404 page s.t it is not shown on sidebar
-
-#     # If the user tries to reach a different page, return a 404 message
-#     return dcc.Jumbotron([
-#         html.H1('404: Not found', className='text-danger'),
-#         html.Hr(),
-#         html.P(f"The pathname {pathname} was not recognised...")
-#     ])
-#
 
 
 
