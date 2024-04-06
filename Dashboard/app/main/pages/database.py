@@ -22,7 +22,6 @@ layout = html.Div([
         # Allow multiple files to be uploaded
         multiple=True
     ),
-    html.Div(id='deepcase-status-display'),
     html.Div([
 
         dcc.Location(id='url', refresh=False),
