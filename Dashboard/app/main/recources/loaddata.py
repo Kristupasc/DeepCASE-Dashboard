@@ -3,6 +3,10 @@ from typing import Dict, Any
 from Dashboard.data.dao.dao import DAO
 import pandas as pd
 
+from Dashboard.processing.process_split import ProcessorAccessObject
+
+# from Dashboard.processing.process_split import ProcessorAccessObject
+# from Dashboard.app.main.server import
 format_time = "%H:%M:%S.%f, %d %b %Y"  # For second %s %ssss
 
 
@@ -199,3 +203,8 @@ def set_file_name(file_id, file_name):
         return True
     except (ValueError, IndexError):
         return False
+
+def start_automatic():
+    pao = ProcessorAccessObject()
+    pao.run_automatic_mode()
+    return pao

@@ -13,15 +13,6 @@ layout = html.Div([
         ], style={'display': 'flex', 'align-items': 'center'}),
     # Start automatic analysis.
     html.Button('Start semi-automatic analysis', id='start automatic', n_clicks=0),
-    # Change name of file and display
-    dcc.Textarea(id='filename' + id_str, value='File not selected'),
-    html.Button('Change filename', id='change filename'+id_str, n_clicks=0),
-    dcc.Dropdown(
-        id="filename_dropdown" + id_str,
-        placeholder="-Select a file-",
-        multi=False,
-        clearable=False,
-    ),
     # Change name of cluster and display
     dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
     html.H3('Security label cluster:'),
@@ -94,6 +85,7 @@ layout = html.Div([
     ], ),
     dmc.Modal( title="Yeeeeeeeeaaaaaaaa", id = "modal_set_cluster"+id_str),
     dmc.Modal( title="Noooooooo", id = "modal_set_risk"+id_str),
+    dmc.Modal( title="ohoh", id = "feedback start automatic"+id_str),
 ],
     # dcc.Store stores the intermediate value
     style=style.content_style

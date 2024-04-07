@@ -201,17 +201,13 @@ callback(
 ########################################################################################
 # Selected file, change name file
 ########################################################################################
-# callback(
-#     Output("filter_dropdown" + id_str, 'options'),
-#     Input('change cluster name', 'n_clicks')
-# )(display_sequence.update_options_dropdown)
-# callback(
-#     Output("filter_dropdown" + id_str, 'value'),
-#     Input('change cluster name', 'n_clicks')
-# )(display_sequence.update_values_dropdown)
-#
-#
-# callback(
-#     Output('cluster name' + id_str, 'value'),
-#     Input('selected cluster' + id_str, "data")
-# )(display_sequence.get_name_cluster)
+@callback(Output("feedback start automatic"+id_str, 'opened'),
+          Output("feedback start automatic"+id_str, 'title'),
+          Input('start automatic', 'n_clicks'),
+          Input("feedback start automatic"+id_str, 'opened'),
+          prevent_initial_call=True)
+def run_deepcase(n_clicks, opened):
+    if 'start automatic' == ctx.triggered_id:
+        pao = load.start_automatic()
+        return not opened, pao.status.name
+    return opened, "Not pressed button"

@@ -14,15 +14,6 @@ layout = html.Div([
     # TOP SECTION
     html.Div(children=[
         html.H1('Cluster view'),
-        # Change name of file and display
-        dcc.Textarea(id='filename' + id_str, value='File not selected'),
-        html.Button('Change filename', id='change filename' + id_str, n_clicks=0),
-        dcc.Dropdown(
-            id="filename_dropdown" + id_str,
-            placeholder="-Select a file-",
-            multi=False,
-            clearable=False,
-        ),
         html.H2('cluster name unknown', id='cluster name' + id_str),
         # drop down menu to select cluster
         dcc.Dropdown(
