@@ -13,22 +13,24 @@ from Dashboard.processing.process_split import ProcessorAccessObject
 
 dash.register_page(__name__, path="/database", name="Database", title="Database", order=3)
 
-layout = html.Div([
+layout = html.Div(className = 'content', children = [
     html.H1('Database'),
-    html.H2('All Sequences'),
-    dcc.Upload(
-        id='upload-data',
-        children=html.Button("Upload File"),
-        # Allow multiple files to be uploaded
-        multiple=True
-    ),
-    html.Div(id='deepcase-status-display'),
-    html.Div([
+    html.Div(className = 'subcontent', children=[
+        html.H2('All Sequences'),
+        dcc.Upload(
+            id='upload-data',
+            children=html.Button("Upload File"),
+            # Allow multiple files to be uploaded
+            multiple=True
+        ),
+        html.Div(id='deepcase-status-display'),
+        html.Div([
 
-        dcc.Location(id='url', refresh=False),
-        html.Div(id='output-data-upload')
+            dcc.Location(id='url', refresh=False),
+            html.Div(id='output-data-upload')
+        ])
     ])
-], style=style.content_style)
+])
 
 
 # Called when a user uploads a new file
