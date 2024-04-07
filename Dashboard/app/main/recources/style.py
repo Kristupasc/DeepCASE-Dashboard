@@ -71,6 +71,25 @@ sidebar_button_arrow_style = {
     'margin-top': 16,
 }
 
+centred = {
+    'display': 'flex',
+    'justify-content': 'center',
+    'align-items': 'center'
+}
+
+attention_frame_style = {
+    'border-color': '#201658',
+    'border-width': 105,
+    'background-color': '#DCF2F1',
+    'color': 'white',
+    'padding': 20,
+    'align': 'center',
+    'border-radius': 15,
+    'text-align': 'center',
+    'width': 'fit-content',
+    'margin': 0
+}
+
 # Define the sidebar style
 table_header = {
     # # 'border': '0px solid',

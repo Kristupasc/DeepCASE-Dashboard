@@ -10,10 +10,12 @@ import io
 from dash.dependencies import Input, Output, State
 import Dashboard.app.main.recources.style as style
 from Dashboard.processing.process_split import ProcessorAccessObject
+from Dashboard.data.dao.dao import DAO
 
 dash.register_page(__name__, path="/database", name="Database", title="Database", order=3)
+dao = DAO()
 
-layout = html.Div(className = 'content', children = [
+layout = html.Div(className = 'content', children=[
     html.H1('Database'),
     html.Div(className = 'subcontent', children=[
         html.H2('All Sequences'),
@@ -23,8 +25,13 @@ layout = html.Div(className = 'content', children = [
             # Allow multiple files to be uploaded
             multiple=True
         ),
-        html.Div(id='deepcase-status-display'),
-        html.Div([
+        dcc.Dropdown(
+            id="file-dropdown",
+            placeholder="-Select a file-",
+            multi=False,
+            clearable=False,
+        ),
+    html.Div([
 
             dcc.Location(id='url', refresh=False),
             html.Div(id='output-data-upload')
@@ -56,18 +63,57 @@ def display_table(pathname):
     return table
 
 
-@callback(Output('deepcase-status-display', 'children'),
+@callback(
+    Output('output-data-upload', 'children', allow_duplicate=True),
+    Input('file-dropdown', 'value'),
+    Input('url', 'pathname'),
+    prevent_initial_call=True)
+def update_selected_file(value, pathname):
+    dao.switch_current_file(value)
+    return display_table(pathname=pathname)
+
+
+@callback(
+    Output("file-dropdown", "options"),
+    Input('output-data-upload', 'children'),
+    Input('file-dropdown', 'value')
+)
+def update_options(children, value):
+    return dao.get_filenames().values.flatten().tolist()
+
+
+@callback(Output('deepcase-status-display', 'children', allow_duplicate=True),
           Input('start_deepcase_btn', 'n_clicks'),
           prevent_initial_call=True)
 def run_deepcase(n_clicks):
-    if n_clicks and n_clicks == 1:
-        # TODO: a user can press the button multiple times, so?
+    if n_clicks and n_clicks > 0:
         pao = ProcessorAccessObject()
         thread = Thread(target=pao.run_DeepCASE())
         thread.start()
-        return pao.status.name
+        return "DeepCASE process is finished. You can review results on Manual Analysis page."
     return dash.no_update
 
+
+@callback(
+    Output('start_deepcase_btn', 'style'),
+    Input('start_deepcase_btn', 'n_clicks'),
+    prevent_initial_call=True
+
+)
+def hide_button(n_clicks):
+    if n_clicks and n_clicks > 0:
+        return {'display': 'none'}
+    return {}
+
+
+@callback(
+    Output('deepcase-status-display', 'children'),
+    Input('start_deepcase_btn', 'n_clicks')
+)
+def hide_button(n_clicks):
+    if n_clicks and n_clicks > 0:
+        return 'DeepCASE is running. Please do not close this page until the process is finished. It may take several minutes.'
+    return dash.no_update
 
 # @callback(
 #     Output('deepcase-status-display', 'children'),

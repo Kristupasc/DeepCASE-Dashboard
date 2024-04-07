@@ -82,7 +82,6 @@ class Processor(object):
         return clusters
 
     def get_attention(self, context, events):
-        print(f"get_attention: {len(context)}, {len(events)}")
 
         confidence, attention, inverse = self.context_builder.query(
             X=context,  # Context to train with
@@ -94,7 +93,6 @@ class Processor(object):
         confidence = confidence[inverse]
         attention = attention[inverse]
 
-        print(f"get_confidence: {len(confidence)}, {len(attention)}")
         return confidence, attention
 
     ########################################################################

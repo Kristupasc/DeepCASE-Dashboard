@@ -7,7 +7,7 @@ import dash
 dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboard", order=0)
 
 ########################################################################
-#   Dash objects page(Makes use of the callback addition)    #
+#               Cluster View page (the main dashboard).                #
 ########################################################################
 
 layout = html.Div(className='content', children=[
@@ -133,7 +133,6 @@ layout = html.Div(className='content', children=[
                 {'label': 'Medium', 'value': 'Medium'},
                 {'label': 'High', 'value': 'High'},
                 {'label': 'Attack', 'value': 'Attack'},
-                {'label': 'Suspicious', 'value': 'Suspicious'},
                 {'label': 'Unlabeled', 'value': 'Unlabeled'},
                 {'label': 'Custom', 'value': 'Custom'}
             ],
@@ -156,7 +155,5 @@ layout = html.Div(className='content', children=[
     dcc.Store(id='selected cluster' + id_str),
     dcc.Store(id='selected row' + id_str),
 
-    ])
-    # dcc.Store stores the intermediate value
-    # ])
-])
+],
+)

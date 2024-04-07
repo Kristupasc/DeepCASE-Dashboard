@@ -27,10 +27,6 @@ class ProcessorAccessObject(object):
         self.labels = torch.empty(0, 0)
         # initialise dao
         self.dao = DAO()
-        # TODO: Get status from the DAO, finished if database is populated, empty otherwise
-        self.dao.is_input_file_empty()
-
-        self.status = Status.EMPTY
 
     def get_context_tensor(self) -> torch.Tensor:
         return self.context
@@ -103,20 +99,17 @@ class ProcessorAccessObject(object):
         self.create_sequences(data=data)
         self.train_context_builder()
         self.create_interpreter_clusters()
-        self.status = Status.FINISHED
         self.manual_mode()
-        # return status_flag
 
     def get_status(self):
         return self.status
 
     # Testing only
     def run_DeepCASE_dummy(self):
-        data = pd.read_csv('newalerts.csv')
+        data = pd.read_csv('alerts.csv')
         self.create_sequences(data=data)
         self.train_context_builder()
         self.create_interpreter_clusters()
-        self.status = Status.FINISHED
         self.manual_mode()
         self.run_automatic_mode()
 

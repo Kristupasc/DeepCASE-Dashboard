@@ -6,6 +6,7 @@ import pandas as pd
 from dash import html
 import io
 from Dashboard.data.dao.dao import DAO
+import Dashboard.app.main.recources.style as style
 
 
 def parse_contents(contents, filename, date):
@@ -31,6 +32,11 @@ def parse_contents(contents, filename, date):
 
     return html.Div([
         html.H5('File Uploaded Successfully: ' + filename),
+        html.Div(
+            html.Div('Press "Start Security Analysis" button to run DeepCASE.', id='deepcase-status-display',
+                     style=style.attention_frame_style),
+            style=style.centred
+        ),
         html.Button('Start Security Analysis', id='start_deepcase_btn'),
         html.Hr(),
         displayDataFile()
