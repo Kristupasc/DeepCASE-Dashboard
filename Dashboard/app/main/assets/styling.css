@@ -265,7 +265,6 @@ button:not(.show-hide) {
     width: 150px !important;
     height:10px !important;
     background-color: rgba(var(--primary-color-rgb), 0.9);
-    text
 }
 
 .Select-menu-outer {
