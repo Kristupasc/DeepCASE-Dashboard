@@ -127,6 +127,8 @@ tr:hover {
     padding: 10px !important;
     margin-top: 10px;
     background-color: rgba(var(--secondary-color-rgb), 0.2);
+    box-shadow: -2px 3px 4px -2px var(--secondary-color);
+
 }
 
 .user_manual {
@@ -165,6 +167,8 @@ tr:hover {
     /*box-shadow: 0px 10px 60px 0px #E2ECF9;*/
     border-right: 3px solid var(--secondary-color);
     color: var(--primary-color);
+    /*box-shadow: 8px 0px 3px -5px var(--secondary-color);*/
+
 }
 
 .sidebar-button {
@@ -175,6 +179,10 @@ tr:hover {
     background-color: var(--secondary-color);
     margin-bottom: 20px;
     color: var(--tertiary-color);
+}
+
+.sidebar-button-arrow {
+    filter: brightness(0%);
 }
 
 .sidebar-button:active{
@@ -292,3 +300,37 @@ tr:hover {
 /*.select_file {*/
 /*    margin: 10px !important;*/
 /*}*/
+
+textarea {
+    background-color: rgba(var(--secondary-color-rgb), 0.9);
+    background-color: rgba(var(--primary-color-rgb), 0.9);
+    min-width: 50px !important;
+    min-height:10px !important;
+    margin: 5px !important;
+    border-radius:5px !important;
+    padding:5px !important;
+    border: 5px !important;
+
+}
+
+button:not(.show-hide) {
+    align-items: center !important;
+    justify-content: center !important;
+    height:35px !important;
+}
+
+.Select-control {
+    width: 150px !important;
+    height:10px !important;
+
+}
+
+.Select-menu-outer {
+    width:150px !important;
+    /*max-width: 150px !important;*/
+}
+
+.top-bar {
+    display: flex;
+    align-items: center;
+}

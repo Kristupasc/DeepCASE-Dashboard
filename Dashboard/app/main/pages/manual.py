@@ -23,29 +23,35 @@ layout = html.Div(className='content', children=[
         #     multi=False,
         #     # value=list([i[0] for i in set_cluster])
         # ),
-        html.Div(className="subcontent", children=[
-        # html.H1('Manual analysis'),
-        # Start automatic analysis.
-        html.Button('Start semi-automatic analysis', id='start automatic', n_clicks=0),
-        # Change name of file and display
-        dcc.Textarea(id='filename' + id_str, value='File not selected'),
-        html.Button('Change filename', id='change filename'+id_str, n_clicks=0),
-        dcc.Dropdown(
-            id="filename_dropdown" + id_str,
-            placeholder="-Select a file-",
-            multi=False,
-            clearable=False,
-        ),
-    ]),
+        html.Div(className="subcontent top-bar", children=[
+            # html.H1('Manual analysis'),
+            # Start automatic analysis.
+            html.Button('Start semi-automatic analysis', id='start automatic', n_clicks=0),
+            # Change name of file and display
+            dcc.Textarea(id='filename' + id_str, value='File not selected'),
+            html.Button('Change filename', id='change filename'+id_str, n_clicks=0),
+            dcc.Dropdown(
+                id="filename_dropdown" + id_str,
+                placeholder="-Select a file-",
+                multi=False,
+                clearable=False,
+            ),
+        ]),
 
     html.Div(className='subcontent', children=[
     # Change name of cluster and display
     # dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
-    html.Div(className='', children=[
-        html.Div([
-            html.H3('Security label cluster: '),
-            html.H3('Fix this & add correct value', id="display risk cluster"+id_str),
-            ], style= {'display': 'flex', "text-align": "center"}
+    html.H3('Security label cluster: Fix this & add correct value', id="display risk cluster"+id_str),
+    # html.H3('8', id="display risk cluster"+id_str),
+    html.Div(className='top-bar', children=[
+        dcc.Dropdown(
+            id="filter_dropdown" + id_str,
+            # options=[{"label": i[1], "value": i[0]} for i in set_cluster],
+            placeholder="-Select a Cluster-",
+            clearable=False,
+            multi=False,
+
+        # value=list([i[0] for i in set_cluster])
         ),
         dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
         html.Button('Change cluster name', id='change cluster name', n_clicks=0),
@@ -53,14 +59,7 @@ layout = html.Div(className='content', children=[
         html.Button('Choose random cluster', id='random' + id_str, n_clicks=0),
         html.Button('Choose random sequence', id='random' + qid_str, n_clicks=0),
         # drop down menu to select cluster
-        dcc.Dropdown(
-            id="filter_dropdown" + id_str,
-        # options=[{"label": i[1], "value": i[0]} for i in set_cluster],
-        placeholder="-Select a Cluster-",
-        clearable=False,
-        multi=False,
-        # value=list([i[0] for i in set_cluster])
-        ),
+
 
             # data table to display the cluster
             # dash_table.DataTable(

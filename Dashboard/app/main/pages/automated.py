@@ -20,6 +20,7 @@ layout = html.Div(className = 'content', children = [
             id="filter_dropdown" + id_str,
             options=update_options_dropdown(None),
             value=update_values_dropdown(None),
+            clearable=False,
             placeholder="-Select a Cluster-",
             multi=False,
         ),
