@@ -107,7 +107,7 @@ td:last-child {
 }
 
 td.dash-select-cell {
-    background: rgb(225, 231, 255) !important;
+    background: rgba(var(--secondary-color-rgb), 0.2) !important;
 }
 
 tr:hover {
@@ -288,3 +288,7 @@ tr:hover {
 .sidebar-button-img {
     filter: brightness(0%);
 }
+
+/*.select_file {*/
+/*    margin: 10px !important;*/
+/*}*/
