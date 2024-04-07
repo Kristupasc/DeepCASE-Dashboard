@@ -43,8 +43,9 @@ tr {
     border: 1px solid black;
 }
 
-/*.cell-table {*/
-/*  border-collapse: separate !important;*/
+/*table.cell-table {*/
+/*  !*border-collapse: separate !important;*!*/
+/*    width: auto !important;*/
 /*}*/
 
 th {
@@ -123,12 +124,21 @@ tr:hover {
     padding: 5px !important;
 }
 
+.content {
+    margin-left: 20%;
+    width: auto;
+    padding: 20px 10px;
+    background-color: var(--tertiary-color);
+    color: var(--primary-color);
+    box-shadow: -2px 3px 4px -2px var(--secondary-color) !important;
+    font-family: Calibri;
+}
+
 .subcontent {
     padding: 10px !important;
     margin-top: 10px;
     background-color: rgba(var(--secondary-color-rgb), 0.2);
-    box-shadow: -2px 3px 4px -2px var(--secondary-color);
-
+    /*box-shadow: -2px 3px 4px -2px var(--secondary-color);*/
 }
 
 .user_manual {
@@ -211,15 +221,6 @@ tr:hover {
     margin-top: 16px;
 }
 
-.content {
-    margin-left: 20%;
-    width: auto;
-    padding: 20px 10px;
-    background-color: var(--tertiary-color);
-    color: var(--primary-color);
-    font-family: Calibri;
-}
-
 .data_table_style {
   width: auto;
   minWidth: normal;
@@ -227,66 +228,6 @@ tr:hover {
   overflow: hidden;
   textOverflow: ellipsis;
 }
-
-
-
-/*input:focus {*/
-/*    background: rgb(213, 0, 0) !important;*/
-/*}*/
-
-/*input:hover  {*/
-/*    appearance: auto !important;*/
-
-/*    border-radius: 100% !important;*/
-/*    width: 50px !important;*/
-/*    height: 50px !important;*/
-
-/*    border: 1px solid #999 !important;*/
-/*    transition: 0.2s all linear !important;*/
-/*    margin-right: 5px !important;*/
-
-/*    position: relative !important;*/
-/*    top: 4px !important;*/
-/*    background-color: darkred !important;*/
-/*    background: mediumvioletred !important;*/
-/*}*/
-
-/*input:active {*/
-/*    appearance: auto !important;*/
-
-/*    border-radius: 100% !important;*/
-/*    width: 50px !important;*/
-/*    height: 50px !important;*/
-
-/*    border: 1px solid #999 !important;*/
-/*    transition: 0.2s all linear !important;*/
-/*    margin-right: 5px !important;*/
-
-/*    position: relative !important;*/
-/*    top: 4px !important;*/
-
-/*    background-color: darkred !important;*/
-/*    background: mediumvioletred !important;*/
-
-/*}*/
-
-/*input:focus {*/
-/*    appearance: auto !important;*/
-
-/*    border-radius: 100% !important;*/
-/*    width: 50px !important;*/
-/*    height: 50px !important;*/
-
-/*    border: 1px solid #999 !important;*/
-/*    transition: 0.2s all linear !important;*/
-/*    margin-right: 5px !important;*/
-
-/*    position: relative !important;*/
-/*    top: 4px !important;*/
-
-/*    background-color: darkred !important;*/
-/*    background: mediumvioletred !important;*/
-/*}*/
 
 
 /*.previous-next-container{*/
