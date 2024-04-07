@@ -243,8 +243,9 @@ tr:hover {
 /*}*/
 
 textarea {
-    background-color: rgba(var(--secondary-color-rgb), 0.9);
+    /*background-color: rgba(var(--secondary-color-rgb), 0.9);*/
     background-color: rgba(var(--primary-color-rgb), 0.9);
+    /*background-color: #84d5e6;*/
     min-width: 50px !important;
     min-height:10px !important;
     margin: 5px !important;
@@ -263,12 +264,17 @@ button:not(.show-hide) {
 .Select-control {
     width: 150px !important;
     height:10px !important;
-
+    background-color: rgba(var(--primary-color-rgb), 0.9);
+    text
 }
 
 .Select-menu-outer {
     width:150px !important;
     /*max-width: 150px !important;*/
+}
+
+.Select-placeholder {
+    color: rgb(0, 0, 0);
 }
 
 .top-bar {
