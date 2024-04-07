@@ -17,8 +17,9 @@ dao = DAO()
 
 layout = html.Div(className = 'content', children=[
     html.H1('Database'),
-    html.Div(className = 'subcontent', children=[
+    html.Div(className='subcontent', children=[
         html.H2('All Sequences'),
+        html.Div(className='top-bar', children=[
         dcc.Upload(
             id='upload-data',
             children=html.Button("Upload File"),
@@ -31,8 +32,8 @@ layout = html.Div(className = 'content', children=[
             multi=False,
             clearable=False,
         ),
+        ]),
     html.Div([
-
             dcc.Location(id='url', refresh=False),
             html.Div(id='output-data-upload')
         ])

@@ -130,7 +130,7 @@ tr:hover {
     padding: 20px 10px;
     background-color: var(--tertiary-color);
     color: var(--primary-color);
-    box-shadow: -2px 3px 4px -2px var(--secondary-color) !important;
+    /*box-shadow: -2px 3px 4px -2px var(--secondary-color) !important;*/
     font-family: Calibri;
 }
 

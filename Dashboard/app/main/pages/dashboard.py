@@ -152,8 +152,7 @@ layout = html.Div(className='content', children=[
     ]),
 
     # Objects to store intermediate values, selected by the above table.
-    dcc.Store(id='selected cluster' + id_str),
-    dcc.Store(id='selected row' + id_str),
-
-],
-)
+        dcc.Store(id='selected cluster' + id_str),
+        dcc.Store(id='selected row' + id_str),
+    ])
+    ])
