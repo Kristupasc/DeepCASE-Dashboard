@@ -67,7 +67,7 @@ class Database(object):
 
     def switch_current_file(self, filename):
         # Check if the filename exists in the database
-        if filename in self.get_filenames().values:
+        if filename in self.get_filenames().values.flatten().tolist():
             self.filename = filename
             return True
         return False

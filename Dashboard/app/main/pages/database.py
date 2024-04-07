@@ -10,9 +10,10 @@ import io
 from dash.dependencies import Input, Output, State
 import Dashboard.app.main.recources.style as style
 from Dashboard.processing.process_split import ProcessorAccessObject
+from Dashboard.data.dao.dao import DAO
 
 dash.register_page(__name__, path="/database", name="Database", title="Database", order=3)
-
+dao = DAO()
 layout = html.Div([
     html.H1('Database'),
     html.H2('All Sequences'),
@@ -21,6 +22,12 @@ layout = html.Div([
         children=html.Button("Upload File"),
         # Allow multiple files to be uploaded
         multiple=True
+    ),
+    dcc.Dropdown(
+        id="file-dropdown",
+        placeholder="-Select a file-",
+        multi=False,
+        clearable=False,
     ),
     html.Div([
 
@@ -53,6 +60,25 @@ def display_table(pathname):
     return table
 
 
+@callback(
+    Output('output-data-upload', 'children', allow_duplicate=True),
+    Input('file-dropdown', 'value'),
+    Input('url', 'pathname'),
+    prevent_initial_call=True)
+def update_selected_file(value, pathname):
+    dao.switch_current_file(value)
+    return display_table(pathname=pathname)
+
+
+@callback(
+    Output("file-dropdown", "options"),
+    Input('output-data-upload', 'children'),
+    Input('file-dropdown', 'value')
+)
+def update_options(children, value):
+    return dao.get_filenames().values.flatten().tolist()
+
+
 @callback(Output('deepcase-status-display', 'children', allow_duplicate=True),
           Input('start_deepcase_btn', 'n_clicks'),
           prevent_initial_call=True)
@@ -64,14 +90,18 @@ def run_deepcase(n_clicks):
         return "DeepCASE process is finished. You can review results on Manual Analysis page."
     return dash.no_update
 
+
 @callback(
     Output('start_deepcase_btn', 'style'),
-    Input('start_deepcase_btn', 'n_clicks')
+    Input('start_deepcase_btn', 'n_clicks'),
+    prevent_initial_call=True
+
 )
 def hide_button(n_clicks):
     if n_clicks and n_clicks > 0:
         return {'display': 'none'}
     return {}
+
 
 @callback(
     Output('deepcase-status-display', 'children'),

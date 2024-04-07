@@ -97,21 +97,19 @@ class ProcessorAccessObject(object):
         dao = DAO()
         data = dao.get_initial_table()
         self.create_sequences(data=data)
-        # self.train_context_builder()
-        # self.create_interpreter_clusters()
-        # self.manual_mode()
-        # return status_flag
+        self.train_context_builder()
+        self.create_interpreter_clusters()
+        self.manual_mode()
 
     def get_status(self):
         return self.status
 
     # Testing only
     def run_DeepCASE_dummy(self):
-        data = pd.read_csv('newalerts.csv')
+        data = pd.read_csv('alerts.csv')
         self.create_sequences(data=data)
         self.train_context_builder()
         self.create_interpreter_clusters()
-        self.status = Status.FINISHED
         self.manual_mode()
         self.run_automatic_mode()
 
