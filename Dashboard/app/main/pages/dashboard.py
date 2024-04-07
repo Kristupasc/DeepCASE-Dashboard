@@ -1,6 +1,6 @@
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.dashboard import *
-# from Dashboard.app.main.pagescallback.display_sequence import *
+from Dashboard.app.main.pagescallback.display_sequence import *
 from dash import html, dcc, dash_table
 import dash
 
