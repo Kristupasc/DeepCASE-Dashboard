@@ -213,7 +213,7 @@ tr:hover {
 }
 
 .data_table_style {
-  width: normal;
+  width: auto;
   minWidth: normal;
   maxWidth: normal;
   overflow: hidden;
@@ -281,3 +281,10 @@ tr:hover {
 /*}*/
 
 
+/*.previous-next-container{*/
+/*    display: inline-block !important;*/
+/*}*/
+
+.sidebar-button-img {
+    filter: brightness(0%);
+}
