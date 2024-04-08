@@ -3,6 +3,10 @@ from typing import Dict, Any
 from Dashboard.data.dao.dao import DAO
 import pandas as pd
 
+from Dashboard.processing.process_split import ProcessorAccessObject
+
+# from Dashboard.processing.process_split import ProcessorAccessObject
+# from Dashboard.app.main.server import
 format_time = "%H:%M:%S.%f, %d %b %Y"  # For second %s %ssss
 
 
@@ -125,8 +129,9 @@ def set_riskvalue(cluster_id, row, risk_value):
     dao = DAO()
     df = dao.get_sequences_per_cluster(cluster_id)
     event_id = df.iloc[row].at["id_sequence"]
+
     try:
-        dao.set_riskvalue(event_id, risk_value)
+        dao.set_riskvalue(int(event_id), int(risk_value))
         return True
     except (ValueError, IndexError):
         return False
@@ -158,7 +163,10 @@ def get_random_cluster():
     df = dao.get_clusters_result()
     rows = df.shape[0]
     rand = random.randrange(0, rows, 1)
-    return df.iloc[rand].at["id_cluster"]
+    try:
+        return df.iloc[rand].at["id_cluster"]
+    except (ValueError, IndexError):
+        return None
 
 
 def get_random_sequence(cluster_id):
@@ -199,3 +207,13 @@ def set_file_name(file_id, file_name):
         return True
     except (ValueError, IndexError):
         return False
+
+def start_automatic():
+    pao = ProcessorAccessObject()
+    pao.run_automatic_mode()
+    return pao
+def get_risk_cluster(cluster_id):
+    dao = DAO()
+    df = dao.get_sequences_per_cluster(cluster_id).reindex()
+    df['risk_label'] = pd.to_numeric(df['risk_label'])
+    return df['risk_label'].max()

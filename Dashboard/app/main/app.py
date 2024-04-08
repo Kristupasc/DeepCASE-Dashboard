@@ -17,18 +17,16 @@ def sidebar(active_index):
     active = [False] * 5
     # active[active_index] = True
 
-    sidebar = html.Div(
-        [
+    sidebar = html.Div( className = 'sidebar', children= [
             html.H1('DeepCASE', style={'textAlign': 'center', 'padding-bottom': 10}),
             html.Div([
+                sidebar_button("database", "Database", active[3]),
                 sidebar_button("dashboard", "Cluster view", active[0]),
                 sidebar_button("manual-analysis", "Manual Analysis", active[1]),
                 sidebar_button("semi-automatic", "Semi-auto Analysis", active[2]),
-                sidebar_button("database", "Database", active[3]),
                 sidebar_button("user-manual", "User Manual", active[4]),
             ])
-        ],
-        style=style.sidebar_style
+        ]
     )
 
     return sidebar

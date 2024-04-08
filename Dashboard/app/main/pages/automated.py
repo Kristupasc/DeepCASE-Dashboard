@@ -12,52 +12,53 @@ dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", titl
 #   Semi-automatic objects page(Makes use of the callback addition)    #
 ########################################################################
 
-layout = html.Div([
-    html.H1('Semi-automatic analysis'),
-    # Change name of file and display
-    dcc.Textarea(id='filename' + id_str, value='File not selected'),
-    html.Button('Change filename', id='change filename' + id_str, n_clicks=0),
-    dcc.Dropdown(
-        id="filename_dropdown" + id_str,
-        placeholder="-Select a file-",
-        multi=False,
-        clearable=False,
-    ),
-    html.H2('No cluster selected', id='cluster name' + id_str),
-    # drop down menu to select cluster
-    dcc.Dropdown(
-        id="filter_dropdown" + id_str,
-        options=update_options_dropdown(None),
-        value=update_values_dropdown(None),
-        placeholder="-Select a Cluster-",
-        clearable=False,
-        multi=False,
-    ),
-    html.H3('Security label cluster:'),
-    html.H3('8', id="display risk cluster" + id_str),
-    # Table - cluster data
-    dash_table.DataTable(
-        id='semi-automatic',
-        columns=[
-            {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
-            {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
-            {'name': 'Event', 'id': 'id_event' + id_str, 'type': 'numeric', 'hideable': True},
-            {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
-            {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric', 'editable': False},
-        ],
-        # data=df.to_dict('records'),
-        filter_action='native',
-        row_selectable="single",
-        style_data={
-            'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
-            'overflow': 'hidden',
-            'textOverflow': 'ellipsis',
-        },
-        page_size=10),
+layout = html.Div(className = 'content', children = [
+    html.H1('Semi-automatic'),
+    html.Div(className = 'subcontent', children=[
+        html.Div(
+            style={'display': 'flex', 'alignItems': 'center'},
+            children=[
+                html.H2('Cluster name unknown', id='cluster name' + id_str),
+                html.H3('(Security label cluster: ', style={'marginLeft': '10px'}),
+                html.H3('8', id="display risk cluster" + id_str,
+                        style={'marginLeft': '10px'}),
+                html.H3(')',
+                        style={'marginLeft': '10px'}),
+            ]),
+        # drop down menu to select cluster
+        dcc.Dropdown(
+            id="filter_dropdown" + id_str,
+            options=update_options_dropdown(0),
+            value=update_values_dropdown(0),
+            clearable=False,
+            placeholder="-Select a Cluster-",
+            multi=False,
+        ),
+
+        # Table - cluster data
+        dash_table.DataTable(
+            id='semi-automatic',
+            columns=[
+                {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
+                {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
+                {'name': 'Event', 'id': 'id_event' + id_str, 'type': 'numeric', 'hideable': True},
+                {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
+                {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric', 'editable': False},
+            ],
+            # data=df.to_dict('records'),
+            filter_action='native',
+            row_selectable="single",
+            style_data={
+                'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
+                'overflow': 'hidden',
+                'textOverflow': 'ellipsis',
+            },
+            page_size=10)
+    ]),
 
     # Context of a sequence
     html.Div(
-        className='semiauto_context',
+        className='subcontent',
         children=[
             html.H2('Context of the selected sequence', id='sequence name' + cid_str),
             dash_table.DataTable(
@@ -85,4 +86,4 @@ layout = html.Div([
         # dcc.Store stores the intermediate value
         # style=style.content_style
     ),
-], style=style.content_style)
+])

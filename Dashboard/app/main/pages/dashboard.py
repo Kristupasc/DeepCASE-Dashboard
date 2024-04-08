@@ -10,21 +10,24 @@ dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboa
 #               Cluster View page (the main dashboard).                #
 ########################################################################
 
-layout = html.Div([
+layout = html.Div(className='content', children=[
     # TOP SECTION
     html.Div(children=[
         html.H1('Cluster view'),
-        # Change name of file and display
-        dcc.Textarea(id='filename' + id_str, value='File not selected'),
-        html.Button('Change filename', id='change filename' + id_str, n_clicks=0),
-        dcc.Dropdown(
-            id="filename_dropdown" + id_str,
-            placeholder="-Select a file-",
-            multi=False,
-            clearable=False,
-        ),
-        html.H2('cluster name unknown', id='cluster name' + id_str),
-        # drop down menu to select cluster
+        html.Div(className='subcontent', children=[
+
+            html.Div(
+            style={'display': 'flex', 'alignItems': 'center'},
+            children=[
+                html.H2('Please refresh page', id='cluster name' + id_str),
+                html.H3('(Security label cluster: ', style={'marginLeft': '10px'}),
+                html.H3('8', id="display risk cluster" + id_str,
+                        style={'marginLeft': '10px'}),
+                html.H3(')',
+                        style={'marginLeft': '10px'}),
+            ]),
+
+            # drop down menu to select cluster
         dcc.Dropdown(
             id="filter_dropdown" + id_str,
             options=update_options_dropdown(None),
@@ -33,8 +36,7 @@ layout = html.Div([
             clearable=False,
             multi=False,
         ),
-        html.H3('Security label cluster:'),
-        html.H3('8', id="display risk cluster" + id_str),
+
         # data table to display the cluster
         dash_table.DataTable(
             id='dashboard',
@@ -54,6 +56,7 @@ layout = html.Div([
                 'textOverflow': 'ellipsis',
             },
             page_size=10),
+
         html.Div(className='semiauto_context', children=[
             html.H2('Context of the selected sequence', id='sequence name' + cid_str),
 
@@ -74,9 +77,8 @@ layout = html.Div([
                     'overflow': 'hidden',
                     'textOverflow': 'ellipsis',
                 },
-                page_size=10)], style={'background-color': 'red'}),
-    ], style=style.content_style
-    ),
+                page_size=10)]),
+        ]),
 
     # BOTTOM SECTION - Sequences graph
     html.Div(className='cluster_sequences_graph', children=[
@@ -105,13 +107,11 @@ layout = html.Div([
                                interval=int(5000),
                                n_intervals=0,
                            ),
-                           ],
-                 ), ]
-             ),
+       ])
+    ]),
 
     # Objects to store intermediate values, selected by the above table.
-    dcc.Store(id='selected cluster' + id_str),
-    dcc.Store(id='selected row' + id_str),
-
-],
-)
+        dcc.Store(id='selected cluster' + id_str),
+        dcc.Store(id='selected row' + id_str),
+    ])
+    ])

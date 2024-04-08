@@ -14,27 +14,31 @@ from Dashboard.data.dao.dao import DAO
 
 dash.register_page(__name__, path="/database", name="Database", title="Database", order=3)
 dao = DAO()
-layout = html.Div([
-    html.H1('Database'),
-    html.H2('All Sequences'),
-    dcc.Upload(
-        id='upload-data',
-        children=html.Button("Upload File"),
-        # Allow multiple files to be uploaded
-        multiple=True
-    ),
-    dcc.Dropdown(
-        id="file-dropdown",
-        placeholder="-Select a file-",
-        multi=False,
-        clearable=False,
-    ),
-    html.Div([
 
-        dcc.Location(id='url', refresh=False),
-        html.Div(id='output-data-upload')
+layout = html.Div(className = 'content', children=[
+    html.H1('Database'),
+    html.Div(className='subcontent', children=[
+        html.H2('All Sequences'),
+        html.Div(className='top-bar', children=[
+        dcc.Upload(
+            id='upload-data',
+            children=html.Button("Upload File"),
+            # Allow multiple files to be uploaded
+            multiple=True
+        ),
+        dcc.Dropdown(
+            id="file-dropdown",
+            placeholder="-Select a file-",
+            multi=False,
+            clearable=False,
+        ),
+        ]),
+    html.Div([
+            dcc.Location(id='url', refresh=False),
+            html.Div(id='output-data-upload')
+        ])
     ])
-], style=style.content_style)
+])
 
 
 # Called when a user uploads a new file
