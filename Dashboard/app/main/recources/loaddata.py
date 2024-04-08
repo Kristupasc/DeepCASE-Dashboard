@@ -208,7 +208,6 @@ def set_file_name(file_id, file_name):
 
 def start_automatic():
     pao = ProcessorAccessObject()
-    pao.run_DeepCASE()
     pao.run_automatic_mode()
     return pao
 def get_risk_cluster(cluster_id):

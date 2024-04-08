@@ -28,6 +28,8 @@ class ProcessorAccessObject(object):
             self.labels = torch.empty(0, 0)
             # initialise dao
             self.dao = DAO()
+            print('initialized')
+        print('pao created')
         return
 
     def get_context_tensor(self) -> torch.Tensor:
@@ -39,8 +41,23 @@ class ProcessorAccessObject(object):
     def get_labels_tensor(self) -> torch.Tensor:
         return self.labels
 
+    def set_context_tensor(self, context:torch.Tensor) -> torch.Tensor:
+        self.context = context
+        return
+
+    def set_event_tensor(self, events:torch.Tensor) -> torch.Tensor:
+        self.events = events
+        return
+
+    def set_labels_tensor(self, labels:torch.Tensor) -> torch.Tensor:
+        self.labels = labels
+        return
+
     def create_sequences(self, data: pd.DataFrame):
-        self.context, self.events, self.labels, mapping = self.processor.sequence_data(data)
+        context, events, labels, mapping = self.processor.sequence_data(data)
+        self.set_context_tensor(context)
+        self.set_event_tensor(events)
+        self.set_labels_tensor(labels)
         self.dao.save_sequencing_results(self.get_context_tensor(), self.get_event_tensor(), self.get_labels_tensor(),
                                          mapping)
         return
@@ -74,6 +91,7 @@ class ProcessorAccessObject(object):
         scores = self.processor.scoring(self.get_labels_tensor())
         self.dao.set_new_scores(scores)
         self.dao.save_cluster_scores()
+        print(self.get_context_tensor())
         return
 
     def run_automatic_mode(self):
@@ -89,10 +107,11 @@ class ProcessorAccessObject(object):
                     * -3: Closest cluster > epsilon
         """
         prediction = self.processor.predict(self.get_context_tensor(), self.get_event_tensor())
+        #todo get events from database but still need to save cluster
         self.dao.set_new_scores(prediction)
         self.dao.save_cluster_scores()
-        confidence, attention = self.processor.get_attention(self.get_context_tensor(), self.get_event_tensor())
-        # self.dao.update_attention(confidence, attention)
+        # confidence, attention = self.processor.get_attention(self.get_context_tensor(), self.get_event_tensor())
+        # # self.dao.update_attention(confidence, attention)
         return
 
     def run_DeepCASE(self):
@@ -103,16 +122,14 @@ class ProcessorAccessObject(object):
         self.create_interpreter_clusters()
         self.manual_mode()
 
-    def get_status(self):
-        return self.status
 
     # Testing only
     def run_DeepCASE_dummy(self):
         data = pd.read_csv('alerts.csv')
         self.create_sequences(data=data)
-        self.train_context_builder()
-        self.create_interpreter_clusters()
-        self.manual_mode()
+        # self.train_context_builder()
+        # self.create_interpreter_clusters()
+        # self.manual_mode()
         # self.run_automatic_mode()
 
 
