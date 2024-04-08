@@ -13,8 +13,11 @@ with open('../static/User_Manual_Interface_Usage_Guide.md', 'r') as instruction_
     instructions = instruction_file.read()
     instruction_file.close()
 
-layout = html.Div([
-    dcc.Markdown(
-        instructions
-    )
-    ], style=style.content_style)
+layout = html.Div(className = 'content', children = [
+    html.H1('User Manual: Interface Usage Guide'),
+    html.Div(className = 'subcontent user_manual', children = [
+        dcc.Markdown(
+            instructions
+        )
+    ])
+    ])
