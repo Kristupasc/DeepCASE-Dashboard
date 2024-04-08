@@ -127,10 +127,15 @@ def set_riskvalue(cluster_id, row, risk_value):
     :return: True if successful, False otherwise
     """
     dao = DAO()
+    print(1)
+    print(cluster_id)
+    print(row)
+    print(risk_value)
     df = dao.get_sequences_per_cluster(cluster_id)
     event_id = df.iloc[row].at["id_sequence"]
+    print(event_id)
     try:
-        dao.set_riskvalue(event_id, risk_value)
+        dao.set_riskvalue(int(event_id), int(risk_value))
         return True
     except (ValueError, IndexError):
         return False
