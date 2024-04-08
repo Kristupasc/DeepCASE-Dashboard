@@ -14,6 +14,7 @@ layout = html.Div(className='content', children=[
         html.Div(className="subcontent top-bar", children=[
             # Start automatic analysis.
             html.Button('Start semi-automatic analysis', id='start automatic', n_clicks=0),
+            dcc.Loading(id="loading"+id_str, type="circle"),
         ]),
 
     html.Div(className='subcontent', children=[
@@ -101,7 +102,8 @@ layout = html.Div(className='content', children=[
             page_size=10),
         # Objects to store intermediate values, selected by the above table.
         dcc.Store(id='selected cluster' + id_str),
-        dcc.Store(id='selected row' + id_str)
+        dcc.Store(id='selected row' + id_str),
+        dcc.Store(id="process of automatic"+id_str)
 
     ]),
     dmc.Modal( title="Yeeeeeeeeaaaaaaaa", id = "modal_set_cluster"+id_str),
