@@ -83,3 +83,10 @@ callback(
     Output("semi-automatic", "style_data_conditional"),
     Input("selected row" + id_str, "data")
 )(display_sequence.light_up_selected_row)
+########################################################################################
+# Find the risk value of cluster and display
+########################################################################################
+callback(
+    Output("display risk cluster"+id_str, "children"),
+    Input('selected cluster' + id_str, "data")
+)(display_sequence.display_risk_cluster)

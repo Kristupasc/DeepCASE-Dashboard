@@ -186,6 +186,11 @@ def set_risk_label(cluster, data, data_previous, active, opened):
     return opened, "Nothing to be seen"
 
 def verify_not_different_data(data, data_previous,active):
+    """
+    Verify if the cluster is changed, in a bit unconvined way.
+    It is just to make sure that the user don't experience an anoying pop-up.
+    It don't update unwanted values anyways.
+    """
     check1 = data[active['row']-1]['timestamp' + id_str] ==  data_previous[active['row']-1]['timestamp' + id_str]
     check2 = data[active['row']-1]['machine' + id_str] ==  data_previous[active['row']-1]['machine' + id_str]
     return check2 and check1
@@ -199,7 +204,7 @@ callback(
 )(display_sequence.light_up_selected_row)
 
 ########################################################################################
-# Selected file, change name file
+# Start semi-automatic phase.
 ########################################################################################
 @callback(Output("feedback start automatic"+id_str, 'opened'),
           Output("feedback start automatic"+id_str, 'title'),
@@ -207,7 +212,23 @@ callback(
           Input("feedback start automatic"+id_str, 'opened'),
           prevent_initial_call=True)
 def run_deepcase(n_clicks, opened):
+    """
+
+    This methode starts the automatic phase
+    :param n_clicks: is needed to verify a button press
+    :param opened: Makes sure that the pop-up is not already displayed.
+
+    :return:  Return pop-up with text.
+
+    """
     if 'start automatic' == ctx.triggered_id:
         pao = load.start_automatic()
         return not opened, pao.status.name
     return opened, "Not pressed button"
+########################################################################################
+# Find the risk value of cluster and display
+########################################################################################
+callback(
+    Output("display risk cluster"+id_str, "children"),
+    Input('selected cluster' + id_str, "data")
+)(display_sequence.display_risk_cluster)

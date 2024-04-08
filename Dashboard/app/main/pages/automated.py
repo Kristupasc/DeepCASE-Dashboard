@@ -15,7 +15,16 @@ dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", titl
 layout = html.Div(className = 'content', children = [
     html.H1('Semi-automatic'),
     html.Div(className = 'subcontent', children=[
-        html.H2('No cluster selected', id='cluster name' + id_str),
+        html.Div(
+            style={'display': 'flex', 'alignItems': 'center'},
+            children=[
+                html.H2('Cluster name unknown', id='cluster name' + id_str),
+                html.H3('(Security label cluster: ', style={'marginLeft': '10px'}),
+                html.H3('8', id="display risk cluster" + id_str,
+                        style={'marginLeft': '10px'}),
+                html.H3(')',
+                        style={'marginLeft': '10px'}),
+            ]),
         # drop down menu to select cluster
         dcc.Dropdown(
             id="filter_dropdown" + id_str,

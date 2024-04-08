@@ -16,8 +16,17 @@ layout = html.Div(className='content', children=[
         ]),
 
     html.Div(className='subcontent', children=[
-    html.H3('Security label cluster: Fix this & add correct value', id="display risk cluster"+id_str),
-    html.H3('8', id="display risk cluster"+id_str),
+    # Objects to display the risk value of the cluster.
+        html.Div(
+            style={'display': 'flex', 'alignItems': 'center'},
+            children=[
+                dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
+                html.H3('(Security label cluster: ', style={'marginLeft': '10px'}),
+                html.H3('8', id="display risk cluster" + id_str,
+                        style={'marginLeft': '10px'}),
+                html.H3(')',
+                        style={'marginLeft': '10px'}),
+            ]),
     html.Div(className='top-bar', children=[
         dcc.Dropdown(
             id="filter_dropdown" + id_str,
@@ -28,7 +37,6 @@ layout = html.Div(className='content', children=[
 
         # value=list([i[0] for i in set_cluster])
         ),
-        dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
         html.Button('Change cluster name', id='change cluster name', n_clicks=0),
         # Get new cluster
         html.Button('Choose random cluster', id='random' + id_str, n_clicks=0),

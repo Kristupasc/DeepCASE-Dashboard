@@ -77,3 +77,8 @@ def light_up_selected_row(row):
         return [{"if": {"row_index": row % 10}, 'backgroundColor': 'hotpink',
                  'color': 'orange', }]
     return None
+def display_risk_cluster(cluster_id):
+    try:
+        return load.get_risk_cluster(cluster_id)
+    except:
+        return "Risk value is unknown"
