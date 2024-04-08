@@ -9,40 +9,15 @@ dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", ti
 
 layout = html.Div(className='content', children=[
     html.H1('Manual analysis'),
-        # Change name of cluster and display
-        # dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
-        # html.Button('Change cluster name', id='change cluster name', n_clicks=0),
     html.P(id="set label cluster" + id_str),
-        # Get new cluster
-        # html.Button('Choose next cluster', id='random' + id_str, n_clicks=0),
-        # drop down menu to select cluster
-        # dcc.Dropdown(
-        #     id="filter_dropdown" + id_str,
-        #     # options=[{"label": i[1], "value": i[0]} for i in set_cluster],
-        #     placeholder="-Select a Cluster-",
-        #     multi=False,
-        #     # value=list([i[0] for i in set_cluster])
-        # ),
         html.Div(className="subcontent top-bar", children=[
-            # html.H1('Manual analysis'),
             # Start automatic analysis.
             html.Button('Start semi-automatic analysis', id='start automatic', n_clicks=0),
-            # Change name of file and display
-            dcc.Textarea(id='filename' + id_str, value='File not selected'),
-            html.Button('Change filename', id='change filename'+id_str, n_clicks=0),
-            dcc.Dropdown(
-                id="filename_dropdown" + id_str,
-                placeholder="-Select a file-",
-                multi=False,
-                clearable=False,
-            ),
         ]),
 
     html.Div(className='subcontent', children=[
-    # Change name of cluster and display
-    # dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
     html.H3('Security label cluster: Fix this & add correct value', id="display risk cluster"+id_str),
-    # html.H3('8', id="display risk cluster"+id_str),
+    html.H3('8', id="display risk cluster"+id_str),
     html.Div(className='top-bar', children=[
         dcc.Dropdown(
             id="filter_dropdown" + id_str,
@@ -58,32 +33,7 @@ layout = html.Div(className='content', children=[
         # Get new cluster
         html.Button('Choose random cluster', id='random' + id_str, n_clicks=0),
         html.Button('Choose random sequence', id='random' + qid_str, n_clicks=0),
-        # drop down menu to select cluster
-
-
-            # data table to display the cluster
-            # dash_table.DataTable(
-            #     id='manual',
-            #     columns=[
-            #         {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
-            #         {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
-            #         {'name': 'Event', 'id': 'id_event' + id_str, 'type': 'numeric', 'hideable': True},
-            #         {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
-            #         {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric', 'editable': True},
-            #     ],
-            #     # data=df.to_dict('records'),
-            #     filter_action='native',
-            #     row_selectable="single",
-            #     style_data={
-            #         'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
-            #         'overflow': 'hidden',
-            #         'textOverflow': 'ellipsis',
-            #     },
-            #     page_size=10),
-            ################## Editable risk values
-            # html.Button('Choose next sequence', id='random' + qid_str, n_clicks=0),
             html.H3(id='doneCluster' + qid_str),
-            # html.Button('Submit change', id='submit' + qid_str, n_clicks=0),
             html.H3(id="successful" + qid_str),
     ]),
 
@@ -149,7 +99,5 @@ layout = html.Div(className='content', children=[
     dmc.Modal( title="Yeeeeeeeeaaaaaaaa", id = "modal_set_cluster"+id_str),
     dmc.Modal( title="Noooooooo", id = "modal_set_risk"+id_str),
     ],
-    # dcc.Store stores the intermediate value
-    # style=style.content_style
     )
 ])

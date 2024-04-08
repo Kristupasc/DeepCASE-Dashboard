@@ -162,7 +162,10 @@ def get_random_cluster():
     df = dao.get_clusters_result()
     rows = df.shape[0]
     rand = random.randrange(0, rows, 1)
-    return df.iloc[rand].at["id_cluster"]
+    try:
+        return df.iloc[rand].at["id_cluster"]
+    except (ValueError, IndexError):
+        return None
 
 
 def get_random_sequence(cluster_id):
@@ -208,3 +211,5 @@ def start_automatic():
     pao = ProcessorAccessObject()
     pao.run_automatic_mode()
     return pao
+def get_risk_cluster(cluster_id):
+    pass
