@@ -18,15 +18,17 @@ class ProcessorAccessObject(object):
         return cls._instance
 
     def __init__(self):
-        # Initialise new processor
-        self.processor = Processor()
-
-        # Initialise empty tensors
-        self.context = torch.empty(0, 0)
-        self.events = torch.empty(0, 0)
-        self.labels = torch.empty(0, 0)
-        # initialise dao
-        self.dao = DAO()
+        if not hasattr(self, 'initialized'):  # Check if the instance is already initialized
+            # Initialise new processor
+            self.processor = Processor()
+            self.initialized = True  # Mark the instance as initialized
+            # Initialise empty tensors
+            self.context = torch.empty(0, 0)
+            self.events = torch.empty(0, 0)
+            self.labels = torch.empty(0, 0)
+            # initialise dao
+            self.dao = DAO()
+        return
 
     def get_context_tensor(self) -> torch.Tensor:
         return self.context
@@ -90,7 +92,7 @@ class ProcessorAccessObject(object):
         self.dao.set_new_scores(prediction)
         self.dao.save_cluster_scores()
         confidence, attention = self.processor.get_attention(self.get_context_tensor(), self.get_event_tensor())
-        self.dao.update_attention(confidence, attention)
+        # self.dao.update_attention(confidence, attention)
         return
 
     def run_DeepCASE(self):
@@ -111,7 +113,7 @@ class ProcessorAccessObject(object):
         self.train_context_builder()
         self.create_interpreter_clusters()
         self.manual_mode()
-        self.run_automatic_mode()
+        # self.run_automatic_mode()
 
 
 if __name__ == '__main__':

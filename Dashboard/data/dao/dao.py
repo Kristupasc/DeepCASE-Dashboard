@@ -118,7 +118,7 @@ class DAO(object):
     def set_clustername(self, cluster_id, cluster_name):
         self.data_object.set_cluster_name(cluster_id, cluster_name)
 
-    def set_riskvalue(self, event_id, risk_value):
+    def set_riskvalue(self, event_id: int, risk_value: int):
         return self.data_object.set_risk_value(event_id, risk_value)
 
     def set_new_filename(self, file, new_filename):
