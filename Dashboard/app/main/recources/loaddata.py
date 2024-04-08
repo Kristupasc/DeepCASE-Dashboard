@@ -129,7 +129,7 @@ def set_riskvalue(cluster_id, row, risk_value):
     dao = DAO()
     df = dao.get_sequences_per_cluster(cluster_id)
     event_id = df.iloc[row].at["id_sequence"]
-    print(event_id)
+
     try:
         dao.set_riskvalue(int(event_id), int(risk_value))
         return True
