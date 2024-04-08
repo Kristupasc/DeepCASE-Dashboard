@@ -1,4 +1,5 @@
 import Dashboard.app.main.recources.style as style
+from Dashboard.app.main.pagescallback.display_sequence import update_options_dropdown, update_values_dropdown
 from Dashboard.app.main.pagescallback.manual import *
 import dash_mantine_components as dmc
 dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", title="Manual Analysis", order=1)
@@ -30,12 +31,11 @@ layout = html.Div(className='content', children=[
     html.Div(className='top-bar', children=[
         dcc.Dropdown(
             id="filter_dropdown" + id_str,
-            # options=[{"label": i[1], "value": i[0]} for i in set_cluster],
+            options= update_options_dropdown(0),
             placeholder="-Select a Cluster-",
             clearable=False,
             multi=False,
-
-        # value=list([i[0] for i in set_cluster])
+            value=update_values_dropdown(0),
         ),
         html.Button('Change cluster name', id='change cluster name', n_clicks=0),
         # Get new cluster

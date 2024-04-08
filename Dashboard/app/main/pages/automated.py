@@ -28,8 +28,8 @@ layout = html.Div(className = 'content', children = [
         # drop down menu to select cluster
         dcc.Dropdown(
             id="filter_dropdown" + id_str,
-            options=update_options_dropdown(None),
-            value=update_values_dropdown(None),
+            options=update_options_dropdown(0),
+            value=update_values_dropdown(0),
             clearable=False,
             placeholder="-Select a Cluster-",
             multi=False,
