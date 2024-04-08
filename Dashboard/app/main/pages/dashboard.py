@@ -19,7 +19,7 @@ layout = html.Div(className='content', children=[
             html.Div(
             style={'display': 'flex', 'alignItems': 'center'},
             children=[
-                html.H2('Cluster name unknown', id='cluster name' + id_str),
+                html.H2('Please refresh page', id='cluster name' + id_str),
                 html.H3('(Security label cluster: ', style={'marginLeft': '10px'}),
                 html.H3('8', id="display risk cluster" + id_str,
                         style={'marginLeft': '10px'}),
