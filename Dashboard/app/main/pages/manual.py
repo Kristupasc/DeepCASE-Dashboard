@@ -106,6 +106,7 @@ layout = html.Div(className='content', children=[
     ]),
     dmc.Modal( title="Yeeeeeeeeaaaaaaaa", id = "modal_set_cluster"+id_str),
     dmc.Modal( title="Noooooooo", id = "modal_set_risk"+id_str),
+    dmc.Modal( title="Ahhhh", id = "feedback start automatic"+id_str),
     ],
     )
 ])
