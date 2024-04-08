@@ -23,7 +23,7 @@ class Database(object):
         if not hasattr(self, 'initialized'):  # Check if the instance is already initialized
             self.conn = sqlite3.connect(file_path, check_same_thread=False)
             self.cur = self.conn.cursor()
-            self.filename = 'defaultfilename'
+            self.filename = 'emptyfile'
             self.initialized = True  # Mark the instance as initialized
             # self.drop_database()
             # self.create_tables()
@@ -302,3 +302,5 @@ class Database(object):
 
         result = self.cur.fetchone()
         return result is None
+    def display_current_file(self) -> str:
+        return self.filename

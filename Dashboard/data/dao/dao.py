@@ -129,3 +129,6 @@ class DAO(object):
 
     def is_input_file_empty(self):
         return self.data_object.is_file_saved()
+
+    def display_selected_file(self):
+        return self.data_object.display_current_file()
