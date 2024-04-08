@@ -222,10 +222,10 @@ def run_deepcase(n_clicks, opened):
 
     """
     if 'start automatic' == ctx.triggered_id:
-        try:# TODO: check for file
+        if load.is_file_selected():
             load.start_automatic()
             return not opened, "Done"
-        except:
+        else:
             return not opened, "File not selected"
     return opened, "Not pressed button"
 ########################################################################################
