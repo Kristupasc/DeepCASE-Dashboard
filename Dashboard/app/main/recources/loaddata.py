@@ -212,4 +212,7 @@ def start_automatic():
     pao.run_automatic_mode()
     return pao
 def get_risk_cluster(cluster_id):
-    pass
+    dao = DAO()
+    df = dao.get_sequences_per_cluster(cluster_id).reindex()
+    df['risk_label'] = pd.to_numeric(df['risk_label'])
+    return df['risk_label'].max()
