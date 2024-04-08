@@ -1,8 +1,11 @@
 import sqlite3
 from datetime import datetime
 
+import numpy as np
 import pandas as pd
 import os
+
+import torch
 
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -304,3 +307,35 @@ class Database(object):
         return result is None
     def display_current_file(self) -> str:
         return self.filename
+
+    def get_context_for_automatic(self):
+        query = """
+        SELECT id_sequence, mapping_value
+        FROM context_events
+        WHERE filename = ?
+        ORDER BY id_sequence, event_position
+        """
+        # Execute the query and load the results into a pandas DataFrame
+        df = pd.read_sql_query(query, self.conn, params=[self.filename])
+        grouped = df.groupby('id_sequence')['mapping_value'].apply(lambda x: np.array(x.tolist()))
+        result_array = np.stack(grouped.values)
+        result_tensor = torch.from_numpy(result_array)
+        if torch.cuda.is_available():
+            result_tensor = result_tensor.to('cuda')
+        return result_tensor
+
+    def get_events_for_automatic(self):
+        query = """
+        SELECT id_sequence, mapping_value
+        FROM sequences
+        WHERE filename = ?
+        ORDER BY id_sequence
+        """
+
+        df = pd.read_sql_query(query, self.conn, params=[self.filename])
+        result_array = np.stack(df["mapping_value"].values)
+
+        result_tensor = torch.from_numpy(result_array)
+        if torch.cuda.is_available():
+            result_tensor = result_tensor.to('cuda')
+        return result_tensor

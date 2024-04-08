@@ -132,3 +132,8 @@ class DAO(object):
 
     def display_selected_file(self):
         return self.data_object.display_current_file()
+
+    def get_context_auto(self):
+        return self.data_object.get_context_for_automatic()
+    def get_events_auto(self):
+        return self.data_object.get_events_for_automatic()

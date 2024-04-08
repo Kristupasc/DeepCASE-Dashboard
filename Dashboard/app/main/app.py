@@ -5,7 +5,7 @@ import plotly.graph_objs as go
 import Dashboard.app.main.recources.style as style
 
 
-from server import app, pao
+from server import app
 
 from dash import Dash, html, dcc
 
