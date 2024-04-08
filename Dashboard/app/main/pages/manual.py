@@ -52,7 +52,7 @@ layout = html.Div(className='content', children=[
         dash_table.DataTable(
             id='manual',
             # renamable=True,
-            editable=True,
+            # editable=True,
             columns=[
                 {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
                 {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
