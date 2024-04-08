@@ -19,7 +19,6 @@ class Database(object):
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super(Database, cls).__new__(cls, *args, **kwargs)
-
         return cls._instance
 
     def __init__(self):
@@ -212,6 +211,22 @@ class Database(object):
         result_df.to_sql("clusters", con=self.conn, if_exists='replace', index=False)
         return
 
+    def update_cluster_table(self, ):
+        query = """SELECT sequences.id_cluster, clusters.name_cluster, MAX(risk_label) AS score  
+                        FROM sequences, clusters
+                        WHERE sequences.filename = ?
+                        AND sequences.filename = clusters.filename
+                        AND sequences.id_cluster = clusters.id_cluster
+                        GROUP BY sequences.id_cluster;
+                        """
+        clusters_df = pd.read_sql_query(query, self.conn, params=[self.filename])
+        clusters_df['filename'] = self.filename
+        other_clusters_df = pd.read_sql_query("SELECT * FROM clusters WHERE NOT filename = ?", self.conn,
+                                              params=[self.filename])
+        result_df = pd.concat([clusters_df, other_clusters_df], ignore_index=True)
+        result_df.to_sql("clusters", con=self.conn, if_exists='replace', index=False)
+        return
+
     def set_cluster_name(self, id_cluster: int, name_cluster: str):
         query = "UPDATE clusters SET name_cluster = ? WHERE id_cluster = ? AND filename = ?"
         self.cur.execute(query, (name_cluster, id_cluster, self.filename))
@@ -305,6 +320,7 @@ class Database(object):
 
         result = self.cur.fetchone()
         return result is None
+
     def display_current_file(self) -> str:
         return self.filename
 

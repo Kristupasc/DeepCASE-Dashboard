@@ -28,8 +28,6 @@ class ProcessorAccessObject(object):
             self.labels = torch.empty(0, 0)
             # initialise dao
             self.dao = DAO()
-            print('initialized')
-        print('pao created')
         return
 
     def get_context_tensor(self) -> torch.Tensor:
@@ -58,10 +56,6 @@ class ProcessorAccessObject(object):
         """
         clusters = self.processor.clustering(self.context, self.events)
         confidence, attention = self.processor.get_attention(self.context, self.events)
-        # print(type(attention))
-        # print(len(attention))
-        # print(attention[-1])
-        # print(attention.shape)
         self.dao.save_clustering_results(clusters, confidence, attention)
         return
 
@@ -73,8 +67,7 @@ class ProcessorAccessObject(object):
                 the same score.
         """
         scores = self.processor.scoring(self.labels)
-        self.dao.set_new_scores(scores)
-        self.dao.save_cluster_scores()
+        self.dao.set_new_cluster_scores(scores)
         return
 
     def run_automatic_mode(self):
@@ -93,8 +86,7 @@ class ProcessorAccessObject(object):
         cur_events = self.get_event_tensor()
         prediction = self.processor.predict(cur_context,cur_events)
         # todo get events from database but still need to save cluster
-        self.dao.set_new_scores(prediction)
-        self.dao.save_cluster_scores()
+        self.dao.update_cluster_scores(prediction)
         confidence, attention = self.processor.get_attention(cur_context, cur_events)
         self.dao.update_attention(confidence, attention)
         return
