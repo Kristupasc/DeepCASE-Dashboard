@@ -222,11 +222,11 @@ def run_deepcase(n_clicks, opened):
 
     """
     if 'start automatic' == ctx.triggered_id:
-        try:
-            pao = load.start_automatic()
-            return not opened, pao.get_status()
+        try:# TODO: check for file
+            load.start_automatic()
+            return not opened, "Done"
         except:
-            return not opened, "File not selected."
+            return not opened, "File not selected"
     return opened, "Not pressed button"
 ########################################################################################
 # Find the risk value of cluster and display
