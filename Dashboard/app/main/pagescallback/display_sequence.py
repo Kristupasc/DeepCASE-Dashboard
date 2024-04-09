@@ -1,5 +1,5 @@
 import pandas as pd
-
+from Dashboard.app.main.recources.label_tools import choose_risk
 import Dashboard.app.main.recources.loaddata as load
 
 
@@ -77,3 +77,10 @@ def light_up_selected_row(row):
         return [{"if": {"row_index": row % 10}, 'backgroundColor': 'hotpink',
                  'color': 'orange', }]
     return None
+
+
+def display_risk_cluster(cluster_id):
+    try:
+        return choose_risk(load.get_risk_cluster(cluster_id))
+    except:
+        return "Risk value is unknown"

@@ -14,57 +14,16 @@ layout = html.Div(className='content', children=[
     # TOP SECTION
     html.Div(children=[
         html.H1('Cluster view'),
-        # html.Div(className='subcontent', children=[
-            # html.H2('cluster name unknown - IDK what this is supposed to do, fix/remove?', id='cluster name' + id_str),
-            # drop down menu to select cluster
-            # dcc.Dropdown(
-            #     id="filter_dropdown" + id_str,
-            #     options=update_options_dropdown(None),
-            #     value=update_values_dropdown(None),
-            #     placeholder="-Select a Cluster-",
-            #     multi=False,
-            # ),
-
-            # data table to display the cluster
-            # dash_table.DataTable(
-            #     id='dashboard',
-            #     columns=[
-            #         {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
-            #         {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
-            #         {'name': 'Event', 'id': 'id_event' + id_str, 'type': 'numeric', 'hideable': True},
-            #         {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
-            #         {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric'},
-            #     ],
-            #     # data=df.to_dict('records'),
-            #     filter_action='native',
-            #     row_selectable="single",
-            #     style_data={
-            #         'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
-            #         'overflow': 'hidden',
-            #         'textOverflow': 'ellipsis',
-            #     },
-            #     page_size=10)
-        # ],),
-
-        html.Div(className='subcontent top-bar', children=[
-            # Change name of file and display
-            dcc.Textarea(id='filename' + id_str, value='File not selected'),
-            html.Button('Change filename', id='change filename' + id_str, n_clicks=0),
-            dcc.Dropdown(
-                id="filename_dropdown" + id_str,
-                placeholder="-Select a file-",
-                multi=False,
-                clearable=False,
-            ),
-        ]),
-
         html.Div(className='subcontent', children=[
+
             html.Div(
             style={'display': 'flex', 'alignItems': 'center'},
             children=[
-                html.H2('Cluster name unknown', id='cluster name' + id_str),
-                html.H3('(Security label cluster:', style={'marginLeft': '10px'}),
-                html.H3('8) "To be fixed/removed?"', id="display-risk-cluster" + id_str,
+                html.H2('Please refresh page', id='cluster name' + id_str),
+                html.H3('(Security label cluster: ', style={'marginLeft': '10px'}),
+                html.H3('8', id="display risk cluster" + id_str,
+                        style={'marginLeft': '10px'}),
+                html.H3(')',
                         style={'marginLeft': '10px'}),
             ]),
 

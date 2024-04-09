@@ -18,7 +18,6 @@ dao = DAO()
 layout = html.Div(className = 'content', children=[
     html.H1('Database'),
     html.Div(className='subcontent', children=[
-        html.H2('All Sequences'),
         html.Div(className='top-bar', children=[
         dcc.Upload(
             id='upload-data',

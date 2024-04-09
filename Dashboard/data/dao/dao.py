@@ -83,18 +83,24 @@ class DAO(object):
         self.data_object.store_attention(attention_melted_df)
         return
 
-    def set_new_scores(self, score: np.ndarray):
-        scores_df = pd.DataFrame(score)
-        scores_df.reset_index(inplace=True)
-        scores_df.rename(
+    def set_new_cluster_scores(self, risk_labels: np.ndarray):
+        risk_labels_df = pd.DataFrame(risk_labels)
+        risk_labels_df.reset_index(inplace=True)
+        risk_labels_df.rename(
             columns={0: 'risk_label', 'index': 'id_sequence'},
             inplace=True)
-
-        self.data_object.update_sequence_score(scores_df)
+        self.data_object.update_sequence_score(risk_labels_df)
+        self.data_object.fill_cluster_table()
         return
 
-    def save_cluster_scores(self):
-        self.data_object.fill_cluster_table()
+    def update_cluster_scores(self, risk_labels: np.ndarray):
+        risk_labels_df = pd.DataFrame(risk_labels)
+        risk_labels_df.reset_index(inplace=True)
+        risk_labels_df.rename(
+            columns={0: 'risk_label', 'index': 'id_sequence'},
+            inplace=True)
+        self.data_object.update_sequence_score(risk_labels_df)
+        self.data_object.update_cluster_table()
         return
 
     def get_initial_table(self):
@@ -118,7 +124,7 @@ class DAO(object):
     def set_clustername(self, cluster_id, cluster_name):
         self.data_object.set_cluster_name(cluster_id, cluster_name)
 
-    def set_riskvalue(self, event_id, risk_value):
+    def set_riskvalue(self, event_id: int, risk_value: int):
         return self.data_object.set_risk_value(event_id, risk_value)
 
     def set_new_filename(self, file, new_filename):
@@ -129,3 +135,12 @@ class DAO(object):
 
     def is_input_file_empty(self):
         return self.data_object.is_file_saved()
+
+    def display_selected_file(self):
+        return self.data_object.display_current_file()
+
+    def get_context_auto(self):
+        return self.data_object.get_context_for_automatic()
+
+    def get_events_auto(self):
+        return self.data_object.get_events_for_automatic()

@@ -78,14 +78,13 @@ centred = {
 }
 
 attention_frame_style = {
-    'border-color': '#201658',
-    'border-width': 105,
-    'background-color': '#DCF2F1',
+    'background-color': '#FF9800',
     'color': 'white',
     'padding': 20,
     'align': 'center',
     'border-radius': 15,
     'text-align': 'center',
+    'font-size': 20,
     'width': 'fit-content',
     'margin': 0
 }

@@ -1,8 +1,11 @@
 import sqlite3
 from datetime import datetime
 
+import numpy as np
 import pandas as pd
 import os
+
+import torch
 
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -16,14 +19,13 @@ class Database(object):
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super(Database, cls).__new__(cls, *args, **kwargs)
-
         return cls._instance
 
     def __init__(self):
         if not hasattr(self, 'initialized'):  # Check if the instance is already initialized
             self.conn = sqlite3.connect(file_path, check_same_thread=False)
             self.cur = self.conn.cursor()
-            self.filename = 'defaultfilename'
+            self.filename = 'emptyfile'
             self.initialized = True  # Mark the instance as initialized
             # self.drop_database()
             # self.create_tables()
@@ -125,7 +127,6 @@ class Database(object):
     def store_context(self, context_df: pd.DataFrame):
         # Upload to context events table
         context_df['filename'] = self.filename
-
         context_df.to_sql('context_events', con=self.conn, if_exists='append', index=False)
         self.conn.commit()
         return
@@ -201,6 +202,22 @@ class Database(object):
         WHERE filename = ?
         GROUP BY id_cluster;
         """
+        clusters_df = pd.read_sql_query(query, self.conn, params=[self.filename])
+        clusters_df['filename'] = self.filename
+        other_clusters_df = pd.read_sql_query("SELECT * FROM clusters WHERE NOT filename = ?", self.conn,
+                                              params=[self.filename])
+        result_df = pd.concat([clusters_df, other_clusters_df], ignore_index=True)
+        result_df.to_sql("clusters", con=self.conn, if_exists='replace', index=False)
+        return
+
+    def update_cluster_table(self, ):
+        query = """SELECT sequences.id_cluster, clusters.name_cluster, MAX(risk_label) AS score  
+                        FROM sequences, clusters
+                        WHERE sequences.filename = ?
+                        AND sequences.filename = clusters.filename
+                        AND sequences.id_cluster = clusters.id_cluster
+                        GROUP BY sequences.id_cluster;
+                        """
         clusters_df = pd.read_sql_query(query, self.conn, params=[self.filename])
         clusters_df['filename'] = self.filename
         other_clusters_df = pd.read_sql_query("SELECT * FROM clusters WHERE NOT filename = ?", self.conn,
@@ -302,3 +319,38 @@ class Database(object):
 
         result = self.cur.fetchone()
         return result is None
+
+    def display_current_file(self) -> str:
+        return self.filename
+
+    def get_context_for_automatic(self):
+        query = """
+        SELECT id_sequence, mapping_value
+        FROM context_events
+        WHERE filename = ?
+        ORDER BY id_sequence, event_position
+        """
+        # Execute the query and load the results into a pandas DataFrame
+        df = pd.read_sql_query(query, self.conn, params=[self.filename])
+        grouped = df.groupby('id_sequence')['mapping_value'].apply(lambda x: np.array(x.tolist()))
+        result_array = np.stack(grouped.values)
+        result_tensor = torch.from_numpy(result_array)
+        if torch.cuda.is_available():
+            result_tensor = result_tensor.to('cuda')
+        return result_tensor
+
+    def get_events_for_automatic(self):
+        query = """
+        SELECT id_sequence, mapping_value
+        FROM sequences
+        WHERE filename = ?
+        ORDER BY id_sequence
+        """
+
+        df = pd.read_sql_query(query, self.conn, params=[self.filename])
+        result_array = np.stack(df["mapping_value"].values)
+
+        result_tensor = torch.from_numpy(result_array)
+        if torch.cuda.is_available():
+            result_tensor = result_tensor.to('cuda')
+        return result_tensor
