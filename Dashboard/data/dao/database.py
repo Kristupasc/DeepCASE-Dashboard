@@ -127,7 +127,6 @@ class Database(object):
     def store_context(self, context_df: pd.DataFrame):
         # Upload to context events table
         context_df['filename'] = self.filename
-
         context_df.to_sql('context_events', con=self.conn, if_exists='append', index=False)
         self.conn.commit()
         return
