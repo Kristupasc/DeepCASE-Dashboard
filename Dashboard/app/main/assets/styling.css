@@ -30,6 +30,11 @@ table {
     color: var(--quarniary-color);
 }
 
+tbody{
+    max-width: 150px !important;
+    table-layout: auto !important;
+}
+
 tr {
     /*border-spacing: 10px !important;*/
     /*margin-bottom: 10px !important;*/

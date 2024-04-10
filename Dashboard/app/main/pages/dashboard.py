@@ -16,68 +16,70 @@ layout = html.Div(className='content', children=[
         html.H1('Cluster view'),
         html.Div(className='subcontent', children=[
 
-            html.Div(
-            style={'display': 'flex', 'alignItems': 'center'},
-            children=[
-                html.H2('Please refresh page', id='cluster name' + id_str),
-                html.H3('(Security label cluster: ', style={'marginLeft': '10px'}),
-                html.H3('8', id="display risk cluster" + id_str,
-                        style={'marginLeft': '10px'}),
-                html.H3(')',
-                        style={'marginLeft': '10px'}),
-            ]),
+            html.Div(className='subcontent', children=[
+                html.Div(
+                style={'display': 'flex', 'alignItems': 'center'},
+                children=[
+                    html.H2('Please refresh page', id='cluster name' + id_str),
+                    html.H3('(Security label cluster: ', style={'marginLeft': '10px'}),
+                    html.H3('', id="display risk cluster" + id_str,
+                            style={'marginLeft': '10px'}),
+                    html.H3(')',
+                            style={'marginLeft': '10px'}),
+                ]),
 
-            # drop down menu to select cluster
-        dcc.Dropdown(
-            id="filter_dropdown" + id_str,
-            options=update_options_dropdown(None),
-            value=update_values_dropdown(None),
-            placeholder="-Select a Cluster-",
-            clearable=False,
-            multi=False,
-        ),
+                # drop down menu to select cluster
+            dcc.Dropdown(
+                id="filter_dropdown" + id_str,
+                options=update_options_dropdown(None),
+                value=update_values_dropdown(None),
+                placeholder="-Select a Cluster-",
+                clearable=False,
+                multi=False,
+            ),
 
-        # data table to display the cluster
-        dash_table.DataTable(
-            id='dashboard',
-            columns=[
-                {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
-                {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
-                {'name': 'Event', 'id': 'id_event' + id_str, 'type': 'numeric', 'hideable': True},
-                {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
-                {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric'},
-            ],
-            # data=df.to_dict('records'),
-            filter_action='native',
-            row_selectable="single",
-            style_data={
-                'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
-            },
-            page_size=10),
-
-        html.Div(className='semiauto_context', children=[
-            html.H2('Context of the selected sequence', id='sequence name' + cid_str),
-
-            # Table to show the context of a sequence
+            # data table to display the cluster
             dash_table.DataTable(
-                id='Context information' + cid_str,
+                id='dashboard',
                 columns=[
-                    {'name': 'Position(top oldest)', 'id': 'event_position' + cid_str, 'type': 'numeric',
-                     'hideable': True},
-                    {'name': 'Event', 'id': 'event' + cid_str, 'type': 'text', 'hideable': True},
-                    {'name': 'Event_type', 'id': 'name' + cid_str, 'type': 'text', 'hideable': True},
-                    {'name': 'Attention', 'id': 'attention' + cid_str, 'type': 'text'}
+                    {'name': 'Date', 'id': 'timestamp' + id_str, 'type': 'text'},
+                    {'name': 'Source', 'id': 'machine' + id_str, 'type': 'text'},
+                    {'name': 'Event', 'id': 'id_event' + id_str, 'type': 'numeric', 'hideable': True},
+                    {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
+                    {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric'},
                 ],
                 # data=df.to_dict('records'),
                 filter_action='native',
+                row_selectable="single",
                 style_data={
                     'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
                     'overflow': 'hidden',
                     'textOverflow': 'ellipsis',
                 },
-                page_size=10)]),
+                page_size=10),
+                ]),
+
+            html.Div(className='semiauto_context subcontent', children=[
+                html.H2('Context of the selected sequence', id='sequence name' + cid_str),
+
+                # Table to show the context of a sequence
+                dash_table.DataTable(
+                    id='Context information' + cid_str,
+                    columns=[
+                        {'name': 'Position(top oldest)', 'id': 'event_position' + cid_str, 'type': 'numeric',
+                         'hideable': True},
+                        {'name': 'Event', 'id': 'event' + cid_str, 'type': 'text', 'hideable': True},
+                        {'name': 'Event_type', 'id': 'name' + cid_str, 'type': 'text', 'hideable': True},
+                        {'name': 'Attention', 'id': 'attention' + cid_str, 'type': 'text'}
+                    ],
+                    # data=df.to_dict('records'),
+                    filter_action='native',
+                    style_data={
+                        'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
+                        'overflow': 'hidden',
+                        'textOverflow': 'ellipsis',
+                    },
+                    page_size=10)]),
         ]),
 
     # BOTTOM SECTION - Sequences graph
