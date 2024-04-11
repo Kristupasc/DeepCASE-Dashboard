@@ -118,4 +118,3 @@ layout = html.Div(className='content', children=[
         dcc.Store(id='selected cluster' + id_str),
         dcc.Store(id='selected row' + id_str),
     ])
-    ])
