@@ -110,12 +110,12 @@ layout = html.Div(className='content', children=[
        ])
     ]),
     dcc.Interval(
+        # This is used for refreshing the dropdown when we enter the page.
             id='refresh-data',
             interval=500,  # in milliseconds
             n_intervals=0,  # initial value
             max_intervals=1  # maximum number of intervals to fire
-
-),
+    ),
     # Objects to store intermediate values, selected by the above table.
         dcc.Store(id='selected cluster' + id_str),
         dcc.Store(id='selected row' + id_str),
