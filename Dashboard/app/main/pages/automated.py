@@ -4,6 +4,8 @@ from dash import html, dash_table, dcc
 import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.automated import *
 from Dashboard.app.main.pagescallback.display_sequence import *
+from dash.dependencies import Input, Output, State
+
 
 dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", title="Semi-automatic", order=2)
 
@@ -26,14 +28,27 @@ layout = html.Div(className = 'content', children = [
                         style={'marginLeft': '10px'}),
             ]),
         # drop down menu to select cluster
-        dcc.Dropdown(
-            id="filter_dropdown" + id_str,
-            options=update_options_dropdown(0),
-            value=update_values_dropdown(0),
-            clearable=False,
-            placeholder="-Select a Cluster-",
-            multi=False,
-        ),
+        html.Div([
+            # Add an icon component
+            html.Img(
+                id="dropdown_icon" + id_str,
+                src='/assets/three-options-icon.svg',
+                className="icon",
+                style={"cursor": "pointer"}
+            ),
+            # Wrap the dropdown component inside another html.Div
+            html.Div([
+                dcc.Dropdown(
+                    id="filter_dropdown" + id_str,
+                    options=update_options_dropdown(0),
+                    value=update_values_dropdown(0),
+                    clearable=False,
+                    placeholder="-Select a Cluster-",
+                    multi=False,
+                )
+            ], id="dropdown_container" + id_str, style={"display": "none"})
+            # Hide only the dropdown container initially
+        ], className='button-with-icon'),
 
         # Table - cluster data
         dash_table.DataTable(

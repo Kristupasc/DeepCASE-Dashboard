@@ -7,13 +7,18 @@ dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", ti
 ########################################################################
 #   Manual objects page(Makes use of the callback addition)    #
 ########################################################################
-
 layout = html.Div(className='content', children=[
     html.H1('Manual analysis'),
     html.P(id="set label cluster" + id_str),
         html.Div(className="subcontent top-bar", children=[
             # Start automatic analysis.
-            html.Button('Start semi-automatic analysis', id='start automatic', n_clicks=0),
+            html.Button(
+                [
+                    html.Img(src='/assets/start-icon.svg', className="icon"),
+                    html.Div('Start semi-automatic analysis', id='start automatic', n_clicks=0),
+                ], className='button-with-icon'
+            ),
+            # html.Button(),
             dcc.Loading(id="loading"+id_str, type="circle"),
         ]),
 
@@ -38,10 +43,26 @@ layout = html.Div(className='content', children=[
             multi=False,
             value=update_values_dropdown(0),
         ),
-        html.Button('Change cluster name', id='change cluster name', n_clicks=0),
+
+        html.Button(
+            [
+            html.Img(src='/assets/pencil-svgrepo-com.svg',className="icon"),
+            html.Div('Change cluster name', id='change cluster name', n_clicks=0),
+            ], className='button-with-icon'
+        ),
         # Get new cluster
-        html.Button('Choose random cluster', id='random' + id_str, n_clicks=0),
-        html.Button('Choose random sequence', id='random' + qid_str, n_clicks=0),
+        html.Button(
+            [
+                html.Img(src='/assets/random-dice.svg', className="icon"),
+                html.Div('Choose random cluster', id='random' + id_str, n_clicks=0),
+            ], className='button-with-icon'
+        ),
+        html.Button(
+            [
+                html.Img(src='/assets/random-dice.svg', className="icon"),
+                html.Div('Choose random sequence', id='random' + qid_str, n_clicks=0),
+            ], className='button-with-icon'
+        ),
             html.H3(id='doneCluster' + qid_str),
             html.H3(id="successful" + qid_str),
     ]),
@@ -73,7 +94,12 @@ layout = html.Div(className='content', children=[
         ################## Editable risk values
         # html.Button('Choose random sequence', id='random' + qid_str, n_clicks=0),
         html.H3(id='doneCluster' + qid_str),
-        html.Button('Submit change', id='submit' + qid_str, n_clicks=0),
+        html.Button(
+            [
+                html.Img(src='/assets/change-icon.svg', className="icon"),
+                html.Div('Apply change', id='submit' + qid_str, n_clicks=0),
+            ], className='button-with-icon'
+        ),
         html.H3(id="successful" + qid_str),
     ],),
     # style={"display": "flex"}),
@@ -112,3 +138,4 @@ layout = html.Div(className='content', children=[
     ],
     )
 ])
+

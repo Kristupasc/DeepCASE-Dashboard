@@ -216,7 +216,8 @@ tr:hover {
     margin-left: 16px;
     margin-right: 20px;
     margin-top: 16px;
-    fill: #ff0000;
+    fill: #ffffff;;
+    /*filter: brightness(0);*/
 }
 
 .sidebar-button-arrow{
@@ -284,4 +285,36 @@ button:not(.show-hide) {
 .top-bar {
     display: flex;
     align-items: center;
+}
+
+.icon {
+    margin-right: 7px;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.button-with-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    /*background-color: blue;*/
+    /*color: white;*/
+    border: none;
+    padding: 10px 10px;
+    border-radius: 5px;
+    cursor: pointer !important;
+}
+
+.dash-dropdown {
+    width: 150px;
+    height: 100px;
+    /*display: none !important;*/
+    background-color: unset;
+}
+
+.button-with-icon .icon {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 5px !important;
 }
