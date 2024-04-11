@@ -206,28 +206,48 @@ callback(
 ########################################################################################
 # Start semi-automatic phase.
 ########################################################################################
-@callback(Output("feedback start automatic"+id_str, 'opened'),
+@callback(Output("process of automatic"+id_str, "data"),
+          Output("feedback start automatic"+id_str, 'opened'),
           Output("feedback start automatic"+id_str, 'title'),
           Input('start automatic', 'n_clicks'),
-          Input("feedback start automatic"+id_str, 'opened'),
+          State("feedback start automatic"+id_str, 'opened'),
+          State("process of automatic"+id_str, "data"),
           prevent_initial_call=True)
-def run_deepcase(n_clicks, opened):
+def start_run_deepcase(n_clicks, opened, process):
     """
 
-    This methode starts the automatic phase
+    This methode stores if the analysis need to start.
     :param n_clicks: is needed to verify a button press
     :param opened: Makes sure that the pop-up is not already displayed.
 
     :return:  Return pop-up with text.
 
     """
-    if 'start automatic' == ctx.triggered_id:
+    if 'start automatic' == ctx.triggered_id and (process is None or not process):
         if load.is_file_selected():
-            load.start_automatic()
-            return not opened, "Done"
+            return True, not opened, "Process is started"
         else:
-            return not opened, "File not selected"
-    return opened, "Not pressed button"
+            return process, not opened, "File not selected"
+    return process , opened, "Not pressed button"
+@callback(Output("process of automatic"+id_str, "data", allow_duplicate=True),
+          Output("feedback start automatic"+id_str, 'opened', allow_duplicate=True),
+          Output("feedback start automatic"+id_str, 'title', allow_duplicate=True),
+          Input("process of automatic"+id_str, "data"),
+          prevent_initial_call=True)
+def run_deepcase(process):
+    """
+
+    This methode runs the automatic. This works bc this methode gets only triggered when start_run_deepcase returns true.
+
+
+    :return:  Return pop-up with text.
+
+    """
+    if process:
+        print("start")
+        load.start_automatic()
+        return False, True, "Automatic analysis is successful done."
+    return False, False, "Not pressed button"
 ########################################################################################
 # Find the risk value of cluster and display
 ########################################################################################

@@ -51,13 +51,13 @@ layout = html.Div(className='content', children=[
         html.Button(
             [
                 html.Img(src='/assets/random-dice.svg', className="icon"),
-                html.Div('Choose random cluster', id='random' + id_str, n_clicks=0),
+                html.Div('Choose next cluster', id='random' + id_str, n_clicks=0),
             ], className='button-with-icon'
         ),
         html.Button(
             [
                 html.Img(src='/assets/random-dice.svg', className="icon"),
-                html.Div('Choose random sequence', id='random' + qid_str, n_clicks=0),
+                html.Div('Choose next sequence', id='random' + qid_str, n_clicks=0),
             ], className='button-with-icon'
         ),
             html.H3(id='doneCluster' + qid_str),
