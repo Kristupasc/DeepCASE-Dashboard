@@ -1,7 +1,7 @@
 def get_colors():
     return {
-        "background": "#FFFFFF",  # white background
-        "text": "#000000",  # black text for visibility
+        "background": "rgba(132, 213, 230, 0)",  # white background
+        "text": "#ffab40",
         "Risk Label": {
             "Info": "#45B6FE",  # blue
             "Low": "#FFD700",  # gold

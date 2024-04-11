@@ -159,11 +159,9 @@ tr:hover {
     table-layout: auto !important;
     width: auto;
     padding: 20px 10px;
-    background-color: var(--secondary-color);
+    background-color: rgba(var(--secondary-color-rgb), 0.2);
     border-radius: 20px;
     border: 2px solid rgb(0, 0, 0);
-    color: var(--tertiary-color);
-
 }
 
 #scatter-plot {
