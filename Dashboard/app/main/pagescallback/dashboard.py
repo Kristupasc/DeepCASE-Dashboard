@@ -73,7 +73,7 @@ def display_context(click_data):
 # Various callbacks for the dropdown
 @callback(
     Output("filter_dropdown" + id_str, 'options'),
-    Input('url', 'pathname')
+    Input('refresh-data', 'n_intervals')
 )(display_sequence.update_options_dropdown)
 @callback(
     Output("filter_dropdown" + id_str, 'value'),

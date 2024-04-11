@@ -19,7 +19,7 @@ layout = html.Div(className='content', children=[
             html.Div(
             style={'display': 'flex', 'alignItems': 'center'},
             children=[
-                html.H2('Please refresh page', id='cluster name' + id_str),
+                html.H2('Select a Cluster', id='cluster name' + id_str),
                 html.H3('(Security label cluster: ', style={'marginLeft': '10px'}),
                 html.H3('8', id="display risk cluster" + id_str,
                         style={'marginLeft': '10px'}),
@@ -109,7 +109,13 @@ layout = html.Div(className='content', children=[
                            ),
        ])
     ]),
+    dcc.Interval(
+            id='refresh-data',
+            interval=500,  # in milliseconds
+            n_intervals=0,  # initial value
+            max_intervals=1  # maximum number of intervals to fire
 
+),
     # Objects to store intermediate values, selected by the above table.
         dcc.Store(id='selected cluster' + id_str),
         dcc.Store(id='selected row' + id_str),
