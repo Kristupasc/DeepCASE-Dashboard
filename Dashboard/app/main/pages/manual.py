@@ -18,8 +18,6 @@ layout = html.Div(className='content', children=[
                     html.Div('Start semi-automatic analysis', id='start automatic', n_clicks=0),
                 ], className='button-with-icon'
             ),
-            # html.Button(),
-            dcc.Loading(id="loading"+id_str, type="circle"),
         ]),
 
     html.Div(className='subcontent', children=[
@@ -27,6 +25,7 @@ layout = html.Div(className='content', children=[
         html.Div(
             style={'display': 'flex', 'alignItems': 'center'},
             children=[
+                html.H2("Cluster: "),
                 dcc.Textarea(id='cluster name' + id_str, value='Cluster name unknown'),
                 html.H3('', id="display risk cluster" + id_str,
                         style={'marginLeft': '10px'}),

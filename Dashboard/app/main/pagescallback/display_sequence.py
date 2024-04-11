@@ -63,7 +63,7 @@ def get_name_cluster(data):
         k = load.possible_clusters()
         for z in k:
             if not pd.isna(z[0]) and z[0] == float(data):
-                return 'Cluster "' + str(z[1]) + '"'
+                return str(z[1]) # Don't change this this will create an easy infinity loop.
     return "Cluster not selected"
 
 

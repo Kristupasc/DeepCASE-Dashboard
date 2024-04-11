@@ -1,7 +1,7 @@
 from io import StringIO
 from math import floor
 import dash
-from dash import html, dash_table, dcc, callback, Output, Input, ctx, State
+from dash import html, dash_table, dcc, callback, Output, Input, ctx, State, no_update
 import pandas as pd
 from dash.exceptions import PreventUpdate
 import Dashboard.app.main.pagescallback.display_sequence as display_sequence
@@ -14,9 +14,8 @@ import Dashboard.app.main.recources.loaddata as load
 id_str = "_ma"
 cid_str = "_cma"
 qid_str = "-qma"
-
-# df = load.formatSequenceCluster(0, id_str)
-# set_cluster = load.possible_clusters()
+# Variables for all users
+automatic_analysis = False
 @callback(
     Output('selected cluster' + id_str, "data"),
     Input("filter_dropdown" + id_str, "value"),
@@ -206,14 +205,15 @@ callback(
 ########################################################################################
 # Start semi-automatic phase.
 ########################################################################################
-@callback(Output("process of automatic"+id_str, "data"),
+@callback(Output("process of automatic"+id_str, 'data'),
           Output("feedback start automatic"+id_str, 'opened'),
           Output("feedback start automatic"+id_str, 'title'),
           Input('start automatic', 'n_clicks'),
           State("feedback start automatic"+id_str, 'opened'),
-          State("process of automatic"+id_str, "data"),
-          prevent_initial_call=True)
-def start_run_deepcase(n_clicks, opened, process):
+          # running=[(Output('start automatic', "disabled"), True, False)],
+          prevent_initial_call=True,
+          )
+def start_run_deepcase(n_clicks, opened):
     """
 
     This methode stores if the analysis need to start.
@@ -223,31 +223,26 @@ def start_run_deepcase(n_clicks, opened, process):
     :return:  Return pop-up with text.
 
     """
-    if 'start automatic' == ctx.triggered_id and (process is None or not process):
+    # global automatic_analysis
+    if 'start automatic' == ctx.triggered_id:
         if load.is_file_selected():
-            return True, not opened, "Process is started"
+            print("joi")
+            # automatic_analysis = True
+            load.start_automatic()
+            # automatic_analysis = False
+            return True, not opened, "Automatic analysis is successful done."
         else:
-            return process, not opened, "File not selected"
-    return process , opened, "Not pressed button"
-@callback(Output("process of automatic"+id_str, "data", allow_duplicate=True),
-          Output("feedback start automatic"+id_str, 'opened', allow_duplicate=True),
-          Output("feedback start automatic"+id_str, 'title', allow_duplicate=True),
-          Input("process of automatic"+id_str, "data"),
-          prevent_initial_call=True)
-def run_deepcase(process):
-    """
+            return False, not opened, "Please select a file"
+    # No update otherwise it gets triggered again.
+    return False, opened, "Not pressed button"
+@callback( Output('start automatic', 'style'),
+           Input('start automatic', 'n_clicks'),
+        )
+def feedBack_runDeepcase(n_clicks):
+    if 'start automatic' == ctx.triggered_id:
+        return {'display': 'none'}
+    return {}
 
-    This methode runs the automatic. This works bc this methode gets only triggered when start_run_deepcase returns true.
-
-
-    :return:  Return pop-up with text.
-
-    """
-    if process:
-        print("start")
-        load.start_automatic()
-        return False, True, "Automatic analysis is successful done."
-    return False, False, "Not pressed button"
 ########################################################################################
 # Find the risk value of cluster and display
 ########################################################################################

@@ -19,6 +19,7 @@ layout = html.Div(className='content', children=[
             html.Div(
             style={'display': 'flex', 'alignItems': 'center'},
             children=[
+                html.H2("Cluster:"),
                 html.H2('Select a Cluster', id='cluster name' + id_str),
                 html.H3('', id="display risk cluster" + id_str,
                         style={'marginLeft': '10px'}),
