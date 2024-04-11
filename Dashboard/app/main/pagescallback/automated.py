@@ -64,7 +64,7 @@ def display_context(row, cluster):
 
 callback(
     Output("filter_dropdown" + id_str, 'options'),
-    Input('url', 'pathname')
+    Input('refresh-data-automatic', 'n_intervals')
 )(display_sequence.update_options_dropdown)
 
 callback(
