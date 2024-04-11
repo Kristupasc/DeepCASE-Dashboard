@@ -63,7 +63,7 @@ def get_name_cluster(data):
         k = load.possible_clusters()
         for z in k:
             if not pd.isna(z[0]) and z[0] == float(data):
-                return z[1]
+                return 'Cluster "' + str(z[1]) + '"'
     return "Cluster not selected"
 
 
@@ -81,6 +81,6 @@ def light_up_selected_row(row):
 
 def display_risk_cluster(cluster_id):
     try:
-        return choose_risk(load.get_risk_cluster(cluster_id))
+        return "Security Score: ", choose_risk(load.get_risk_cluster(cluster_id))
     except:
-        return "Risk value is unknown"
+        return ""
