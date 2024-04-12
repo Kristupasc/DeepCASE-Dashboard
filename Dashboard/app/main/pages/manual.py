@@ -1,11 +1,10 @@
-import Dashboard.app.main.recources.style as style
 from Dashboard.app.main.pagescallback.display_sequence import update_options_dropdown, update_values_dropdown
 from Dashboard.app.main.pagescallback.manual import *
 import dash_mantine_components as dmc
 dash.register_page(__name__, path="/manual-analysis", name="Manual Analysis", title="Manual Analysis", order=1)
 
 ########################################################################
-#   Manual objects page(Makes use of the callback addition)    #
+#   Manual objects page(Makes use of the callback addition)            #
 ########################################################################
 layout = html.Div(className='content', children=[
     html.H1('Manual analysis'),

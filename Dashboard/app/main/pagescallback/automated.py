@@ -1,27 +1,24 @@
 from dash import callback, Output, Input
 from dash.exceptions import PreventUpdate
 
+# Importing callback functions and data loading functions
 import Dashboard.app.main.pagescallback.display_sequence as display_sequence
 import Dashboard.app.main.recources.loaddata as load
 
-########################################################################
-#   Semi-automatic callback (All ids need to match 100%)               #
-########################################################################
-# suffix for all the ids that might be the same.
-id_str = "_sa"
-cid_str = "_cisa"
-# Setting variables
-cluster = 0
+# Setting suffixes for IDs
+id_str = "_sa"   # suffix for semi-automatic IDs
+cid_str = "_cisa"   # suffix for context information IDs
 
+# Callback to store the selected cluster
 callback(
-    Output('selected cluster' + id_str, "data"),
-    Input("filter_dropdown" + id_str, "value")
+    Output('selected cluster' + id_str, "data"),    # Output: selected cluster data
+    Input("filter_dropdown" + id_str, "value")      # Input: value of filter dropdown
 )(display_sequence.store_selected_cluster)
 
-
+# Callback to update the table based on the selected cluster
 @callback(
-    Output("semi-automatic", "data"),
-    Input('selected cluster' + id_str, "data")
+    Output("semi-automatic", "data"),   # Output: data for semi-automatic table
+    Input('selected cluster' + id_str, "data")   # Input: selected cluster data
 )
 def update_table_cluster(state):
     """
@@ -35,18 +32,18 @@ def update_table_cluster(state):
         return dff.to_dict("records")
     raise PreventUpdate
 
-
+# Callback to store the selected row
 callback(
-    Output('selected row' + id_str, "data"),
-    Input("semi-automatic", 'selected_rows'),
-    Input("selected cluster" + id_str, "data")
+    Output('selected row' + id_str, "data"),    # Output: selected row data
+    Input("semi-automatic", 'selected_rows'),   # Input: selected rows in semi-automatic table
+    Input("selected cluster" + id_str, "data")  # Input: selected cluster data
 )(display_sequence.store_context_row)
 
-
+# Callback to display context information based on the selected row and cluster
 @callback(
-    Output('Context information' + cid_str, "data"),
-    Input('selected row' + id_str, "data"),
-    Input('selected cluster' + id_str, "data")
+    Output('Context information' + cid_str, "data"),   # Output: context information data
+    Input('selected row' + id_str, "data"),           # Input: selected row data
+    Input('selected cluster' + id_str, "data")        # Input: selected cluster data
 )
 def display_context(row, cluster):
     """
@@ -61,32 +58,31 @@ def display_context(row, cluster):
         return df.to_dict("records")
     raise PreventUpdate
 
-
+# Callbacks for updating dropdown options and values
 callback(
-    Output("filter_dropdown" + id_str, 'options'),
-    Input('refresh-data-automatic', 'n_intervals')
+    Output("filter_dropdown" + id_str, 'options'),   # Output: options for filter dropdown
+    Input('refresh-data-automatic', 'n_intervals')   # Input: number of intervals for refresh
 )(display_sequence.update_options_dropdown)
 
 callback(
-    Output("filter_dropdown" + id_str, 'value'),
-    Input('url', 'pathname')
+    Output("filter_dropdown" + id_str, 'value'),   # Output: value for filter dropdown
+    Input('url', 'pathname')                      # Input: pathname from URL
 )(display_sequence.update_values_dropdown)
 
+# Callback to get the name of the selected cluster
 callback(
-    Output('cluster name' + id_str, 'children'),
-    Input('selected cluster' + id_str, "data")
+    Output('cluster name' + id_str, 'children'),    # Output: children of cluster name component
+    Input('selected cluster' + id_str, "data")      # Input: selected cluster data
 )(display_sequence.get_name_cluster)
-########################################################################################
-# Light up the selected row.
-########################################################################################
+
+# Callback to light up the selected row
 callback(
-    Output("semi-automatic", "style_data_conditional"),
-    Input("selected row" + id_str, "data")
+    Output("semi-automatic", "style_data_conditional"),   # Output: style_data_conditional for semi-automatic table
+    Input("selected row" + id_str, "data")               # Input: selected row data
 )(display_sequence.light_up_selected_row)
-########################################################################################
-# Find the risk value of cluster and display
-########################################################################################
+
+# Callback to find the risk value of cluster and display
 callback(
-    Output("display risk cluster"+id_str, "children"),
-    Input('selected cluster' + id_str, "data")
+    Output("display risk cluster"+id_str, "children"),   # Output: children of display risk cluster component
+    Input('selected cluster' + id_str, "data")           # Input: selected cluster data
 )(display_sequence.display_risk_cluster)

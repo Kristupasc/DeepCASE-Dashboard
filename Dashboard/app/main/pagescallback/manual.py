@@ -1,4 +1,3 @@
-from io import StringIO
 from math import floor
 import dash
 from dash import html, dash_table, dcc, callback, Output, Input, ctx, State, no_update
@@ -7,15 +6,15 @@ from dash.exceptions import PreventUpdate
 import Dashboard.app.main.pagescallback.display_sequence as display_sequence
 import Dashboard.app.main.recources.loaddata as load
 
-########################################################################
-#   Manual callback (All ids need to match 100%)               #
-########################################################################
-# suffix for all the ids that might be the same.
+# Suffix for all the ids that might be the same
 id_str = "_ma"
 cid_str = "_cma"
 qid_str = "-qma"
+
 # Variables for all users
 automatic_analysis = False
+
+# Function to store the selected cluster based on dropdown value or random click
 @callback(
     Output('selected cluster' + id_str, "data"),
     Input("filter_dropdown" + id_str, "value"),
@@ -35,7 +34,7 @@ def store_selected_cluster(state, click):
         return state
     raise PreventUpdate
 
-
+# Function to update the table in the manual component based on the selected cluster
 @callback(
     Output("manual", "data"),
     Input('selected cluster' + id_str, "data")
@@ -52,11 +51,11 @@ def update_table_cluster(state):
         return dff.to_dict("records")
     raise PreventUpdate
 
-
+# Function to store the context row based on user interactions and trigger events
 @callback(
     Output('selected row' + id_str, "data"),
     Output('manual', 'selected_rows'),
-    Output('manual', 'page_current'),  # this is for display the right page
+    Output('manual', 'page_current'),
     Input("manual", 'selected_rows'),
     Input('random' + qid_str, "n_clicks"),
     Input("selected cluster" + id_str, "data")
@@ -84,7 +83,7 @@ def store_context_row(state, click, cluster_id):
         raise PreventUpdate
     return None, [], None
 
-
+# Function to display the context information based on the selected row and cluster
 @callback(
     Output('Context information' + cid_str, "data"),
     Input('selected row' + id_str, "data"),
@@ -92,7 +91,7 @@ def store_context_row(state, click, cluster_id):
 )
 def display_context(row, cluster):
     """
-    This function displays the context information based on the selected row and cluster.
+    Display the context information based on the selected row and cluster.
 
     :param row: the selected row
     :param cluster: the selected cluster
@@ -103,26 +102,25 @@ def display_context(row, cluster):
         return df.to_dict("records")
     raise PreventUpdate
 
-
+# Function to update the options in the dropdown
 callback(
     Output("filter_dropdown" + id_str, 'options'),
     Input('change cluster name', 'n_clicks')
 )(display_sequence.update_options_dropdown)
+
+# Function to update the values in the dropdown
 callback(
     Output("filter_dropdown" + id_str, 'value'),
     Input('change cluster name', 'n_clicks')
 )(display_sequence.update_values_dropdown)
 
-
+# Function to get the cluster name
 callback(
     Output('cluster name' + id_str, 'value'),
     Input('selected cluster' + id_str, "data")
 )(display_sequence.get_name_cluster)
 
-########################################################################################
-# Editable callback extra functionality special for manual.
-########################################################################################
-
+# Function to set the label for the cluster based on user input and send a modal
 @callback(
     Output("modal_set_cluster"+id_str, "opened"),
     Output("modal_set_cluster"+id_str, "title"),
@@ -137,8 +135,8 @@ def set_cluster_name(cluster_id, button, cluster_name, opened):
     Set the label for the cluster based on user input and send an modal.
 
     :param cluster_id: the selected cluster ID
-    :param n_clicks: the number of clicks on the change cluster name button
-    :param value: the new value for the cluster name
+    :param button: the number of clicks on the change cluster name button
+    :param cluster_name: the new value for the cluster name
     :param opened: send feedback if the pop up is opened
     :return: a message indicating the success of the operation or unchanged status, true if pop-up need to be shown.
     """
@@ -149,8 +147,7 @@ def set_cluster_name(cluster_id, button, cluster_name, opened):
         return not opened, "Nothing changed, please provide correct input"
     return opened, "nothing"
 
-
-
+# Function to set the risk label based on user input
 @callback(
     Output("modal_set_risk"+id_str, "opened"),
     Output("modal_set_risk"+id_str, "title"),
@@ -169,14 +166,12 @@ def set_risk_label(cluster, data, data_previous, active, opened):
     :param data: is all the data of the dash table, there don't exist a better parameter
     :param data_previous: is all the data of the dash table, before change.
     :param active: is the parameter that checks which cell is edited.
-    (When you want to reconstruct to multiple cells to edit at the same time this should allow for a selection bigger.)
-    This is an state because it needs a bit more dynamically.
     :param opened: provide feedback of the modal.
     :return: a message indicating the success of the operation
     """
     if data is not None and active is not None and cluster is not None:
         value = data[active['row']-1]['risk_label' + id_str]
-        if verify_not_different_data(data, data_previous, active): # To prevent extra pop-up.
+        if verify_not_different_data(data, data_previous, active):
             if data_previous[active['row']-1]['risk_label' + id_str] != value:
                 if isinstance(active['row'], int) and isinstance(cluster, int) and isinstance(value, int):
                     if load.set_riskvalue(cluster_id=cluster, row=active['row']-1, risk_value=value):
@@ -184,27 +179,24 @@ def set_risk_label(cluster, data, data_previous, active, opened):
                 return not opened, "Please provide correct values"
     return opened, "Nothing to be seen"
 
+# Function to verify if the cluster is changed
 def verify_not_different_data(data, data_previous,active):
     """
     Verify if the cluster is changed, in a bit unconvined way.
-    It is just to make sure that the user don't experience an anoying pop-up.
+    It is just to make sure that the user don't experience an annoying pop-up.
     It don't update unwanted values anyways.
     """
     check1 = data[active['row']-1]['timestamp' + id_str] ==  data_previous[active['row']-1]['timestamp' + id_str]
     check2 = data[active['row']-1]['machine' + id_str] ==  data_previous[active['row']-1]['machine' + id_str]
     return check2 and check1
 
-########################################################################################
-# Light up the selected row.
-########################################################################################
+# Function to light up the selected row
 callback(
     Output("manual", "style_data_conditional"),
     Input("selected row" + id_str, "data")
 )(display_sequence.light_up_selected_row)
 
-########################################################################################
-# Start semi-automatic phase.
-########################################################################################
+# Function to start semi-automatic phase
 @callback(Output("process of automatic"+id_str, 'data'),
           Output("feedback start automatic"+id_str, 'opened'),
           Output("feedback start automatic"+id_str, 'title'),
@@ -214,13 +206,11 @@ callback(
           )
 def start_run_automatic(n_clicks, opened):
     """
+    This method stores if the analysis need to start.
 
-    This methode stores if the analysis need to start.
     :param n_clicks: is needed to verify a button press
     :param opened: Makes sure that the pop-up is not already displayed.
-
     :return:  Return pop-up with text.
-
     """
     if 'start automatic' == ctx.triggered_id:
         if load.is_file_selected():
@@ -230,6 +220,8 @@ def start_run_automatic(n_clicks, opened):
             return False, not opened, "Please select a file"
     # No update otherwise it gets triggered again.
     return False, opened, "Not pressed button"
+
+# Function to hide the button for running automatic phase
 @callback( Output('start automatic', 'style'),
            Input('start automatic', 'n_clicks'),
         )
@@ -237,6 +229,8 @@ def hid_btn_run_automatic(n_clicks):
     if 'start automatic' == ctx.triggered_id:
         return {'display': 'none'}
     return {}
+
+# Function to provide feedback during the automatic phase
 @callback(
     Output('feedback automatic', 'children'),
     Input('start automatic', 'n_clicks')
@@ -245,9 +239,8 @@ def feedBack_run_automatic(n_clicks):
     if 'start automatic' == ctx.triggered_id:
         return 'DeepCASE automatic phase is running.\n Please do not close this page until the process is finished. It may take several minutes.'
     return ''
-########################################################################################
-# Find the risk value of cluster and display
-########################################################################################
+
+# Function to find the risk value of cluster and display
 callback(
     Output("display risk cluster"+id_str, "children"),
     Input('selected cluster' + id_str, "data")

@@ -199,17 +199,31 @@ def start_automatic():
     This use a thread in order to keep it running in background.
     Known bug in Dash.
     :return: object ProcessorAccessObject that runs automatic analysis
-
     """
     pao = ProcessorAccessObject()
     thread = Thread(target=pao.run_automatic_mode())
     thread.start()
     return pao
+
+
 def get_risk_cluster(cluster_id):
+    """
+    Get the maximum risk label for a cluster.
+
+    :param cluster_id: cluster ID
+    :return: maximum risk label
+    """
     dao = DAO()
     df = dao.get_sequences_per_cluster(cluster_id).reindex()
     df['risk_label'] = pd.to_numeric(df['risk_label'])
     return df['risk_label'].max()
+
+
 def is_file_selected():
+    """
+    Check if a file is selected.
+
+    :return: True if a file is selected, False otherwise
+    """
     dao = DAO()
     return 'emptyfile' != dao.display_selected_file()

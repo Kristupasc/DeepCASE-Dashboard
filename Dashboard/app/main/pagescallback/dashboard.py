@@ -3,28 +3,26 @@ import plotly.graph_objs as go
 from dash import callback, Output, Input, State, callback_context
 from dash.exceptions import PreventUpdate
 
+# Importing callback functions, data loading functions, and DAO
 import Dashboard.app.main.pagescallback.display_sequence as display_sequence
 import Dashboard.app.main.recources.loaddata as load
 from Dashboard.app.main.recources.label_tools import choose_risk, get_colors
 from Dashboard.data.dao.dao import DAO
 
-########################################################################
-#   Dashboard callback (All ids need to match 100%)               #
-########################################################################
-# suffix for all the ids that might be the same.
-id_str = "_da"
-cid_str = "_cida"
+# Setting suffixes for IDs
+id_str = "_da"   # suffix for dashboard IDs
+cid_str = "_cida"   # suffix for context information IDs
 
-# The call back for the dropdown. It runs when a user selects a cluster.
+# Callback to store the selected cluster
 callback(
-    Output('selected cluster' + id_str, "data"),
-    Input("filter_dropdown" + id_str, "value")
+    Output('selected cluster' + id_str, "data"),    # Output: selected cluster data
+    Input("filter_dropdown" + id_str, "value")      # Input: value of filter dropdown
 )(display_sequence.store_selected_cluster)
 
-
+# Callback to update the table based on the selected cluster
 @callback(
-    Output("dashboard", "data"),
-    Input('selected cluster' + id_str, "data")
+    Output("dashboard", "data"),   # Output: data for dashboard table
+    Input('selected cluster' + id_str, "data")   # Input: selected cluster data
 )
 def update_table_cluster(state):
     """
@@ -38,19 +36,18 @@ def update_table_cluster(state):
         return dff.to_dict("records")
     raise PreventUpdate
 
-
-# A callback to store the selected row in the table.
+# Callback to store the selected row
 callback(
-    Output('selected row' + id_str, "data"),
-    State("dashboard", 'selected_rows'),
-    Input("selected cluster" + id_str, "data")
+    Output('selected row' + id_str, "data"),    # Output: selected row data
+    State("dashboard", 'selected_rows'),       # State: selected rows in dashboard table
+    Input("selected cluster" + id_str, "data")  # Input: selected cluster data
 )(display_sequence.store_context_row)
 
-
+# Callback to handle scatter plot click data and update page and selected rows
 @callback(
-    Output('dashboard', 'page_current'),
-    Output('dashboard', 'selected_rows'),
-    Input('scatter-plot', 'clickData'),
+    Output('dashboard', 'page_current'),    # Output: current page of dashboard
+    Output('dashboard', 'selected_rows'),   # Output: selected rows in dashboard
+    Input('scatter-plot', 'clickData'),     # Input: click data from scatter plot
 )
 def display_context(click_data):
     """
@@ -58,43 +55,44 @@ def display_context(click_data):
 
     :param click_data: the data from the click event on the scatter plot
     """
-    # we check if the graph point was clicked
+    # check if the graph point was clicked
     if click_data is not None:
-        # there was a graph click
-        # we load from what was clicked in the graph
+        # graph click detected, get the clicked point index
         point = int(click_data["points"][0]["pointIndex"])
-        # now we need to find where the data is
+        # calculate page number based on point index
         page_number = point // 10  # Assuming 10 entries per page
-        # get the last number in the point
-        return page_number, [point]  # Highlight the clicked point in the dashboard table
+        # return the page number and the clicked point as selected row
+        return page_number, [point]
     raise PreventUpdate
 
-
-# Various callbacks for the dropdown
+# Various callbacks for dropdown updates
 @callback(
-    Output("filter_dropdown" + id_str, 'options'),
-    Input('refresh-data', 'n_intervals')
+    Output("filter_dropdown" + id_str, 'options'),   # Output: options for filter dropdown
+    Input('refresh-data', 'n_intervals')             # Input: number of intervals for refresh
 )(display_sequence.update_options_dropdown)
 @callback(
-    Output("filter_dropdown" + id_str, 'value'),
-    Input('url', 'pathname')
+    Output("filter_dropdown" + id_str, 'value'),     # Output: value for filter dropdown
+    Input('url', 'pathname')                        # Input: pathname from URL
 )(display_sequence.update_values_dropdown)
-# A callback to get the cluster name and show it in the dashboard
+
+# Callback to get the cluster name and display it in the dashboard
 @callback(
-    Output('cluster name' + id_str, 'children'),
-    Input('selected cluster' + id_str, "data")
+    Output('cluster name' + id_str, 'children'),     # Output: children of cluster name component
+    Input('selected cluster' + id_str, "data")       # Input: selected cluster data
 )(display_sequence.get_name_cluster)
+
+# Callback to interact with data and update scatter plot, filter buttons, and context information
 @callback(
-    Output("scatter-plot", "figure"),
-    Output("filter-buttons", "value"),
-    Output('Context information' + cid_str, "data"),
-    [Input('selected cluster' + id_str, "data"),
-     Input('dashboard', 'selected_rows'),
-     Input("filter-buttons", "value")]
+    Output("scatter-plot", "figure"),                   # Output: figure for scatter plot
+    Output("filter-buttons", "value"),                  # Output: value for filter buttons
+    Output('Context information' + cid_str, "data"),    # Output: context information data
+    [Input('selected cluster' + id_str, "data"),       # Inputs: selected cluster data
+     Input('dashboard', 'selected_rows'),              # Inputs: selected rows in dashboard table
+     Input("filter-buttons", "value")]                # Inputs: value of filter buttons
 )
 def interact_with_data(selected_cluster, selected_row, filter_value):
     """
-    Updates the scatter plot, the table and the events table based on the user selection.
+    Updates the scatter plot, the table, and the events table based on the user selection.
     The selection can happen either in the table or in the graph.
     Once a user selects something in the graph, the point is also automatically selected in the table and vice versa.
 
@@ -102,7 +100,7 @@ def interact_with_data(selected_cluster, selected_row, filter_value):
     :param selected_row: the selected row in the table
     :param filter_value: the selected filter value
     """
-    # get the trigger, to see what made the callback happen
+    # get the trigger to determine the source of the callback
     triggered_input = callback_context.triggered[0]["prop_id"].split(".")[0]
     # if a row in a table is selected, then it's not a graph click
     if selected_row is None:
@@ -134,7 +132,7 @@ def interact_with_data(selected_cluster, selected_row, filter_value):
             colors_graph.append(colors["Risk Label"][choose_risk(int(risk_label))])
     else:
         filter_value = "All"
-    # if the trigger is the scatter plot (dashboard), we set the filter value to custom and highlight the point
+    # if the trigger is the scatter plot (dashboard), set the filter value to custom and highlight the point
     if triggered_input == "dashboard":
         filter_value = "Custom"
         # Initialize color map to grey for all points
@@ -178,18 +176,14 @@ def interact_with_data(selected_cluster, selected_row, filter_value):
         ),
     }, filter_value, events
 
-########################################################################################
-# Light up the selected row.
-########################################################################################
+# Callback to light up the selected row in the dashboard
 callback(
-    Output("dashboard", "style_data_conditional"),
-    Input("selected row" + id_str, "data")
+    Output("dashboard", "style_data_conditional"),    # Output: style_data_conditional for dashboard table
+    Input("selected row" + id_str, "data")            # Input: selected row data
 )(display_sequence.light_up_selected_row)
-########################################################################################
-# Find the risk value of cluster and display
-########################################################################################
-callback(
-    Output("display risk cluster"+id_str, "children"),
-    Input('selected cluster' + id_str, "data")
-)(display_sequence.display_risk_cluster)
 
+# Callback to find the risk value of the cluster and display it
+callback(
+    Output("display risk cluster"+id_str, "children"),    # Output: children of display risk cluster component
+    Input('selected cluster' + id_str, "data")            # Input: selected cluster data
+)(display_sequence.display_risk_cluster)
