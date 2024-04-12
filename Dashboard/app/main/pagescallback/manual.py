@@ -9,7 +9,7 @@ import Dashboard.app.main.recources.loaddata as load
 # Suffix for all the ids that might be the same
 id_str = "_ma"
 cid_str = "_cma"
-qid_str = "-qma"
+qid_str = "_qma"
 
 # Variables for all users
 automatic_analysis = False
@@ -18,9 +18,10 @@ automatic_analysis = False
 @callback(
     Output('selected cluster' + id_str, "data"),
     Input("filter_dropdown" + id_str, "value"),
-    Input('random' + id_str, "n_clicks")
+    Input('random' + id_str, "n_clicks"),
+    Input('next'+id_str, "n_clicks")
 )
-def store_selected_cluster(state, click):
+def store_selected_cluster(state, click, next):
     """
     Store the selected cluster based on dropdown value or random click.
 
@@ -30,6 +31,8 @@ def store_selected_cluster(state, click):
     """
     if 'random' + id_str == ctx.triggered_id:
         return load.get_random_cluster()
+    if 'next' + id_str == ctx.triggered_id:
+        return load.get_algorithm_cluster()
     if isinstance(state, int):
         return state
     raise PreventUpdate
@@ -58,9 +61,10 @@ def update_table_cluster(state):
     Output('manual', 'page_current'),
     Input("manual", 'selected_rows'),
     Input('random' + qid_str, "n_clicks"),
+    Input('next' + qid_str, "n_clicks"),
     Input("selected cluster" + id_str, "data")
 )
-def store_context_row(state, click, cluster_id):
+def store_context_row(state, click, next, cluster_id):
     """
     Store the context row based on user interactions and trigger events.
 
@@ -73,6 +77,9 @@ def store_context_row(state, click, cluster_id):
     if isinstance(cluster_id, int):
         if 'random' + qid_str == ctx.triggered_id and isinstance(cluster_id, int):
             state = load.get_random_sequence(cluster_id)
+            return state, [state], floor(state / 10)
+        if 'next' + qid_str == ctx.triggered_id and isinstance(cluster_id, int):
+            state = load.get_algorithm_sequence(cluster_id)
             return state, [state], floor(state / 10)
         if state is not None:
             if len(state) > 0:

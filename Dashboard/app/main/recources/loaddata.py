@@ -205,7 +205,11 @@ def get_algorithm_sequence(cluster_id):
     unique_rows = dataframe.drop_duplicates(subset=['machine', 'risk_label', 'id_event']).index.tolist()
     filtered_rows.extend(unique_rows)
     the_list = list(set(filtered_rows))
-    return random.choice(the_list)
+    try:
+        rand = random.choice(the_list)
+        return rand
+    except (ValueError, IndexError):
+        return None
 def function_risk(cluster_id):
     return choose_risk(get_risk_cluster(cluster_id))
 
@@ -219,14 +223,18 @@ def get_algorithm_cluster():
     """
     dao = DAO()
     df = dao.get_clusters_result()
-    df["risk"] = df["is_cluster"].apply(function_risk)
+    df["risk"] = df["id_cluster"].apply(function_risk)
     filter_name = ["Attack", "High", "Unlabeled"]
     # Filter rows based on 'risk' column
     filtered_rows = df[df['risk'].isin(filter_name)]
     # Extract 'id_cluster' values from filtered rows
     cluster_ids = filtered_rows['id_cluster'].tolist()
     the_list = list(set(cluster_ids))
-    return random.choice(the_list)
+    try:
+        rand = random.choice(the_list)
+        return rand
+    except (ValueError, IndexError):
+        return None
 
 def get_random_cluster():
     """
@@ -237,8 +245,8 @@ def get_random_cluster():
     dao = DAO()
     df = dao.get_clusters_result()
     rows = df.shape[0]
-    rand = random.randrange(0, rows, 1)
     try:
+        rand = random.randrange(0, rows, 1)
         return df.iloc[rand].at["id_cluster"]
     except (ValueError, IndexError):
         return None
