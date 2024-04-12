@@ -210,10 +210,9 @@ callback(
           Output("feedback start automatic"+id_str, 'title'),
           Input('start automatic', 'n_clicks'),
           State("feedback start automatic"+id_str, 'opened'),
-          # running=[(Output('start automatic', "disabled"), True, False)],
           prevent_initial_call=True,
           )
-def start_run_deepcase(n_clicks, opened):
+def start_run_automatic(n_clicks, opened):
     """
 
     This methode stores if the analysis need to start.
@@ -223,13 +222,9 @@ def start_run_deepcase(n_clicks, opened):
     :return:  Return pop-up with text.
 
     """
-    # global automatic_analysis
     if 'start automatic' == ctx.triggered_id:
         if load.is_file_selected():
-            print("joi")
-            # automatic_analysis = True
             load.start_automatic()
-            # automatic_analysis = False
             return True, not opened, "Automatic analysis is successful done."
         else:
             return False, not opened, "Please select a file"
@@ -238,11 +233,18 @@ def start_run_deepcase(n_clicks, opened):
 @callback( Output('start automatic', 'style'),
            Input('start automatic', 'n_clicks'),
         )
-def feedBack_runDeepcase(n_clicks):
+def hid_btn_run_automatic(n_clicks):
     if 'start automatic' == ctx.triggered_id:
         return {'display': 'none'}
     return {}
-
+@callback(
+    Output('feedback automatic', 'children'),
+    Input('start automatic', 'n_clicks')
+)
+def feedBack_run_automatic(n_clicks):
+    if 'start automatic' == ctx.triggered_id:
+        return 'DeepCASE automatic phase is running.\n Please do not close this page until the process is finished. It may take several minutes.'
+    return ''
 ########################################################################################
 # Find the risk value of cluster and display
 ########################################################################################

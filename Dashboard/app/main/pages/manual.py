@@ -15,6 +15,7 @@ layout = html.Div(className='content', children=[
             html.Button(
                 [
                     html.Img(src='/assets/start-icon.svg', className="icon"),
+                    html.H3(id='feedback automatic'),
                     html.Div('Start semi-automatic analysis', id='start automatic', n_clicks=0),
                 ], className='button-with-icon'
             ),

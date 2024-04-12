@@ -192,23 +192,18 @@ def get_row(cluster_id):
     rows = df.shape[0]
     return rows
 
-def set_file_name(file_id, file_name):
-    """
-
-    :param file_id:
-    :param file_name:
-    :return:
-    """
-    dao = DAO()
-    try:
-        dao.set_new_filename(file_id=file_id, new_filename=file_name)
-        return True
-    except (ValueError, IndexError):
-        return False
 
 def start_automatic():
+    """
+    Runs automatic analysis.
+    This use a thread in order to keep it running in background.
+    Known bug in Dash.
+    :return: object ProcessorAccessObject that runs automatic analysis
+
+    """
     pao = ProcessorAccessObject()
-    pao.run_automatic_mode()
+    thread = Thread(target=pao.run_automatic_mode())
+    thread.start()
     return pao
 def get_risk_cluster(cluster_id):
     dao = DAO()
