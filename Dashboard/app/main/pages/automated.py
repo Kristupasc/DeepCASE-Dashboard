@@ -25,16 +25,17 @@ layout = html.Div(className = 'content', children = [
                 html.H3('', id="display risk cluster" + id_str,
                         style={'marginLeft': '10px'}),
             ]),
+
         # drop down menu to select cluster
         html.Div([
             html.Div([
                 # Add an icon component
-                html.Img(
-                    id="dropdown_icon" + id_str,
-                    src='/assets/three-options-icon.svg',
-                    className="icon",
-                    style={"cursor": "pointer"}
-                ),
+                # html.Img(
+                #     id="dropdown_icon" + id_str,
+                #     src='/assets/three-options-icon.svg',
+                #     className="icon",
+                #     style={"cursor": "pointer"}
+                # ),
                 # Wrap the dropdown component inside another html.Div
                 html.Div([
                     dcc.Dropdown(

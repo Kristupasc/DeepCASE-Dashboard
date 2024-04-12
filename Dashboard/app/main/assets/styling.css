@@ -1,5 +1,5 @@
 * {
-    --primary-color: #ffab40;
+    --primary-color: #ff8e00;
     --primary-color-rgb: 255, 171, 64;
     --secondary-color: #84d5e6;
     --secondary-color-rgb: 132, 213, 230;
@@ -18,6 +18,10 @@
 H2 {
     text-align:center !important;
 }
+
+/*label {*/
+/*    color: black;*/
+/*}*/
 
 table {
     border-collapse: separate !important;
@@ -250,25 +254,21 @@ textarea {
     /*background-color: rgba(var(--secondary-color-rgb), 0.9);*/
     background-color: rgba(var(--primary-color-rgb), 0.9);
     /*background-color: #84d5e6;*/
-    min-width: 50px !important;
-    min-height:10px !important;
+    min-width: 100px !important;
+    min-height:15px !important;
     margin: 5px !important;
     border-radius:5px !important;
     padding:5px !important;
     border: 5px !important;
-
+    width: min-content !important;
+    /*height:auto !important;*/
+    /*resize: horizontal !important*/
 }
 
 button:not(.show-hide) {
     align-items: center !important;
     justify-content: center !important;
     height:35px !important;
-}
-
-.Select-control {
-    width: 150px !important;
-    height:10px !important;
-    background-color: rgba(var(--primary-color-rgb), 0.9);
 }
 
 .Select-menu-outer {
@@ -292,6 +292,16 @@ button:not(.show-hide) {
     object-fit: contain;
 }
 
+
+
+.dash-dropdown {
+    /*width: 10px;*/
+    /*height: 10px;*/
+    /*display: none !important;*/
+    background-color: unset;
+    /*margin-bottom: 40px;*/
+}
+
 .button-with-icon {
     display: flex !important;
     align-items: center !important;
@@ -299,20 +309,84 @@ button:not(.show-hide) {
     /*background-color: blue;*/
     /*color: white;*/
     border: none;
-    padding: 10px 10px;
+    /*padding: 7px 3px;*/
     border-radius: 5px;
     cursor: pointer !important;
-}
-
-.dash-dropdown {
-    width: 150px;
-    height: 100px;
-    /*display: none !important;*/
-    background-color: unset;
+    background-color: rgb(255, 171, 64);
 }
 
 .button-with-icon .icon {
     width: 20px !important;
     height: 20px !important;
     margin-right: 5px !important;
+}
+
+.dropdown-container {
+    /*background-color: unset;*/
+    width:20px;
+}
+
+.Select-control {
+    width: 25px !important;
+    height: 25px !important;
+    /*background-color: var(--primary-color);*/
+    background-color: transparent !important;
+    background-image: url("three-options-icon.svg") !important;
+    background-repeat: no-repeat;
+    /*background-position: center;*/
+    background-size: contain;
+    /*border: 1px solid #000;*/
+    border: none !important;
+    margin: 2px;
+}
+
+.dropdown-with-text {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: none;
+    padding-left: 4px;
+    padding-right:0px;
+    height: 35px;
+    border-radius: 5px;
+    cursor: pointer !important;
+    background-color: rgb(255, 171, 64);
+}
+
+.Select-multi-value-wrapper {
+    width: 30px;
+    height: 31px;
+    background-color: transparent;
+    /*padding-left: 4px;*/
+    /*padding-right: 4px;*/
+}
+
+.Select-value {
+    height: inherit;
+}
+
+.Select-arrow, .Select-arrow-zone {
+    display: none !important;
+}
+
+/* Select a file dropdown  */
+.dash-dropdown {
+    background-color: var(--primary-color) !important;
+    border-radius: 5px;
+    /*border-top-left-radius: 5px;*/
+    /*border-bottom-right-radius: 5px ;*/
+    /*border-top-right-radius: 5px ;*/
+}
+
+/*Select a cluster dropdown */
+.dropdown-with-text .dash-dropdown {
+    background-color: var(--primary-color) !important;
+    /*border-radius: 5px;*/
+    /*border-top-left-radius: 5px;*/
+    border-bottom-right-radius: 5px ;
+    border-top-right-radius: 5px ;
+}
+
+.Select-value-label {
+    color: transparent !important;
 }
