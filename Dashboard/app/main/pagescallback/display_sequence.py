@@ -89,5 +89,5 @@ def light_up_selected_row(row):
 def display_risk_cluster(cluster_id):
     try:
         return "Security Score: ", choose_risk(load.get_risk_cluster(cluster_id))
-    except (ValueError, IndexError):
+    except (ValueError, IndexError, TypeError):
         return ""
