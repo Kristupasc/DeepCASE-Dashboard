@@ -10,19 +10,20 @@ from Dashboard.app.main.recources.label_tools import choose_risk, get_colors
 from Dashboard.data.dao.dao import DAO
 
 # Setting suffixes for IDs
-id_str = "_da"   # suffix for dashboard IDs
-cid_str = "_cida"   # suffix for context information IDs
+id_str = "_da"  # suffix for dashboard IDs
+cid_str = "_cida"  # suffix for context information IDs
 
 # Callback to store the selected cluster
 callback(
-    Output('selected cluster' + id_str, "data"),    # Output: selected cluster data
-    Input("filter_dropdown" + id_str, "value")      # Input: value of filter dropdown
+    Output('selected cluster' + id_str, "data"),  # Output: selected cluster data
+    Input("filter_dropdown" + id_str, "value")  # Input: value of filter dropdown
 )(display_sequence.store_selected_cluster)
+
 
 # Callback to update the table based on the selected cluster
 @callback(
-    Output("dashboard", "data"),   # Output: data for dashboard table
-    Input('selected cluster' + id_str, "data")   # Input: selected cluster data
+    Output("dashboard", "data"),  # Output: data for dashboard table
+    Input('selected cluster' + id_str, "data")  # Input: selected cluster data
 )
 def update_table_cluster(state):
     """
@@ -36,18 +37,20 @@ def update_table_cluster(state):
         return dff.to_dict("records")
     raise PreventUpdate
 
+
 # Callback to store the selected row
 callback(
-    Output('selected row' + id_str, "data"),    # Output: selected row data
-    State("dashboard", 'selected_rows'),       # State: selected rows in dashboard table
+    Output('selected row' + id_str, "data"),  # Output: selected row data
+    State("dashboard", 'selected_rows'),  # State: selected rows in dashboard table
     Input("selected cluster" + id_str, "data")  # Input: selected cluster data
 )(display_sequence.store_context_row)
 
+
 # Callback to handle scatter plot click data and update page and selected rows
 @callback(
-    Output('dashboard', 'page_current'),    # Output: current page of dashboard
-    Output('dashboard', 'selected_rows'),   # Output: selected rows in dashboard
-    Input('scatter-plot', 'clickData'),     # Input: click data from scatter plot
+    Output('dashboard', 'page_current'),  # Output: current page of dashboard
+    Output('dashboard', 'selected_rows'),  # Output: selected rows in dashboard
+    Input('scatter-plot', 'clickData'),  # Input: click data from scatter plot
 )
 def display_context(click_data):
     """
@@ -65,30 +68,29 @@ def display_context(click_data):
         return page_number, [point]
     raise PreventUpdate
 
+
 # Various callbacks for dropdown updates
 @callback(
-    Output("filter_dropdown" + id_str, 'options'),   # Output: options for filter dropdown
-    Input('refresh-data', 'n_intervals')             # Input: number of intervals for refresh
+    Output("filter_dropdown" + id_str, 'options'),  # Output: options for filter dropdown
+    Input('refresh-data', 'n_intervals')  # Input: number of intervals for refresh
 )(display_sequence.update_options_dropdown)
 @callback(
-    Output("filter_dropdown" + id_str, 'value'),     # Output: value for filter dropdown
-    Input('url', 'pathname')                        # Input: pathname from URL
+    Output("filter_dropdown" + id_str, 'value'),  # Output: value for filter dropdown
+    Input('url', 'pathname')  # Input: pathname from URL
 )(display_sequence.update_values_dropdown)
-
 # Callback to get the cluster name and display it in the dashboard
 @callback(
-    Output('cluster name' + id_str, 'children'),     # Output: children of cluster name component
-    Input('selected cluster' + id_str, "data")       # Input: selected cluster data
+    Output('cluster name' + id_str, 'children'),  # Output: children of cluster name component
+    Input('selected cluster' + id_str, "data")  # Input: selected cluster data
 )(display_sequence.get_name_cluster)
-
 # Callback to interact with data and update scatter plot, filter buttons, and context information
 @callback(
-    Output("scatter-plot", "figure"),                   # Output: figure for scatter plot
-    Output("filter-buttons", "value"),                  # Output: value for filter buttons
-    Output('Context information' + cid_str, "data"),    # Output: context information data
-    [Input('selected cluster' + id_str, "data"),       # Inputs: selected cluster data
-     Input('dashboard', 'selected_rows'),              # Inputs: selected rows in dashboard table
-     Input("filter-buttons", "value")]                # Inputs: value of filter buttons
+    Output("scatter-plot", "figure"),  # Output: figure for scatter plot
+    Output("filter-buttons", "value"),  # Output: value for filter buttons
+    Output('Context information' + cid_str, "data"),  # Output: context information data
+    [Input('selected cluster' + id_str, "data"),  # Inputs: selected cluster data
+     Input('dashboard', 'selected_rows'),  # Inputs: selected rows in dashboard table
+     Input("filter-buttons", "value")]  # Inputs: value of filter buttons
 )
 def interact_with_data(selected_cluster, selected_row, filter_value):
     """
@@ -176,14 +178,15 @@ def interact_with_data(selected_cluster, selected_row, filter_value):
         ),
     }, filter_value, events
 
+
 # Callback to light up the selected row in the dashboard
 callback(
-    Output("dashboard", "style_data_conditional"),    # Output: style_data_conditional for dashboard table
-    Input("selected row" + id_str, "data")            # Input: selected row data
+    Output("dashboard", "style_data_conditional"),  # Output: style_data_conditional for dashboard table
+    Input("selected row" + id_str, "data")  # Input: selected row data
 )(display_sequence.light_up_selected_row)
 
 # Callback to find the risk value of the cluster and display it
 callback(
-    Output("display risk cluster"+id_str, "children"),    # Output: children of display risk cluster component
-    Input('selected cluster' + id_str, "data")            # Input: selected cluster data
+    Output("display risk cluster" + id_str, "children"),  # Output: children of display risk cluster component
+    Input('selected cluster' + id_str, "data")  # Input: selected cluster data
 )(display_sequence.display_risk_cluster)

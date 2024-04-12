@@ -2,6 +2,7 @@ import pandas as pd
 from Dashboard.app.main.recources.label_tools import choose_risk
 import Dashboard.app.main.recources.loaddata as load
 
+
 # Function to store the selected cluster
 def store_selected_cluster(state):
     """
@@ -13,6 +14,7 @@ def store_selected_cluster(state):
     if isinstance(state, int):
         return state
     return None
+
 
 # Function to store the selected row for context
 def store_context_row(state, cluster):
@@ -29,6 +31,7 @@ def store_context_row(state, cluster):
                 return min(state[0], load.get_row(cluster) - 1)
     return None
 
+
 # Function to update the options in the dropdown
 def update_options_dropdown(n):
     """
@@ -41,6 +44,7 @@ def update_options_dropdown(n):
                 not pd.isna(i[1]) and not pd.isna(i[0])]
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
 
+
 # Function to update the values in the dropdown
 def update_values_dropdown(n):
     """
@@ -50,6 +54,7 @@ def update_values_dropdown(n):
     if n is None:
         return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
     return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
+
 
 # Function to get the name of the selected cluster
 def get_name_cluster(data):
@@ -63,8 +68,9 @@ def get_name_cluster(data):
         k = load.possible_clusters()
         for z in k:
             if not pd.isna(z[0]) and z[0] == float(data):
-                return str(z[1]) # Don't change this this will create an easy infinity loop.
+                return str(z[1])  # Don't change this this will create an easy infinity loop.
     return "Cluster not selected"
+
 
 # Function to light up the selected row
 def light_up_selected_row(row):
@@ -78,9 +84,10 @@ def light_up_selected_row(row):
                  'color': 'orange', }]
     return None
 
+
 # Function to display the risk value of the cluster
 def display_risk_cluster(cluster_id):
     try:
         return "Security Score: ", choose_risk(load.get_risk_cluster(cluster_id))
-    except:
+    except (ValueError, IndexError):
         return ""

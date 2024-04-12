@@ -187,16 +187,19 @@ def is_file_selected():
     """
     dao = DAO()
     return 'emptyfile' != dao.display_selected_file()
+
+
 def get_algorithm_sequence(cluster_id):
     """
     Returns a list of row numbers where the value in column 'risk_label' is negative
     or where there is a unique combination['machine', 'risk_label', 'id_event'] of other specified columns.
+    From the list a random element is selected.
 
     Parameters:
     :param: cluster_id to determine which cluster to be used.
-    :return: List of row numbers that meet the conditions.
+    :return: number in the list of row numbers that meet the conditions.
     """
-    dataframe =formatSequenceCluster(cluster_id,"")
+    dataframe = formatSequenceCluster(cluster_id, "")
     filtered_rows = []
     # Rows where value in column 'x' is negative
     negative_rows = dataframe.index[dataframe["risk_label"] < 0].tolist()
@@ -210,16 +213,19 @@ def get_algorithm_sequence(cluster_id):
         return rand
     except (ValueError, IndexError):
         return None
+
+
 def function_risk(cluster_id):
     return choose_risk(get_risk_cluster(cluster_id))
 
+
 def get_algorithm_cluster():
     """
-    Returns a list of cluster_id where
+    Returns a a random cluster_id that is selected as priority.
 
     Parameters:
     :param: cluster_id to determine which cluster to be used.
-    :return: List of row numbers that meet the conditions.
+    :return: number in the list of row numbers that meet the conditions.
     """
     dao = DAO()
     df = dao.get_clusters_result()
@@ -235,6 +241,7 @@ def get_algorithm_cluster():
         return rand
     except (ValueError, IndexError):
         return None
+
 
 def get_random_cluster():
     """
@@ -264,6 +271,7 @@ def get_random_sequence(cluster_id):
     rows = df.shape[0]
     rand = random.randrange(0, rows, 1)
     return rand
+
 
 def get_row(cluster_id):
     """

@@ -1,8 +1,8 @@
-import Dashboard.app.main.recources.style as style
+import dash
+from dash import html, dcc, dash_table
+
 from Dashboard.app.main.pagescallback.dashboard import *
 from Dashboard.app.main.pagescallback.display_sequence import *
-from dash import html, dcc, dash_table
-import dash
 
 dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboard", order=0)
 
@@ -17,15 +17,15 @@ layout = html.Div(className='content', children=[
         html.Div(className='subcontent', children=[
 
             html.Div(
-            style={'display': 'flex', 'alignItems': 'center'},
-            children=[
-                html.H2("Cluster:"),
-                html.H2('Select a Cluster', id='cluster name' + id_str),
-                html.H3('', id="display risk cluster" + id_str,
-                        style={'marginLeft': '10px'}),
-            ]),
+                style={'display': 'flex', 'alignItems': 'center'},
+                children=[
+                    html.H2("Cluster:"),
+                    html.H2('Select a Cluster', id='cluster name' + id_str),
+                    html.H3('', id="display risk cluster" + id_str,
+                            style={'marginLeft': '10px'}),
+                ]),
 
-                # drop down menu to select cluster
+            # drop down menu to select cluster
             dcc.Dropdown(
                 id="filter_dropdown" + id_str,
                 options=update_options_dropdown(None),
@@ -54,30 +54,30 @@ layout = html.Div(className='content', children=[
                     'textOverflow': 'ellipsis',
                 },
                 page_size=10),
-                ]),
-
-            html.Div(className='semiauto_context subcontent', children=[
-                html.H2('Context of the selected sequence', id='sequence name' + cid_str),
-
-                # Table to show the context of a sequence
-                dash_table.DataTable(
-                    id='Context information' + cid_str,
-                    columns=[
-                        {'name': 'Position(top oldest)', 'id': 'event_position' + cid_str, 'type': 'numeric',
-                         'hideable': True},
-                        {'name': 'Event', 'id': 'event' + cid_str, 'type': 'text', 'hideable': True},
-                        {'name': 'Event_type', 'id': 'name' + cid_str, 'type': 'text', 'hideable': True},
-                        {'name': 'Attention', 'id': 'attention' + cid_str, 'type': 'text'}
-                    ],
-                    # data=df.to_dict('records'),
-                    filter_action='native',
-                    style_data={
-                        'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
-                        'overflow': 'hidden',
-                        'textOverflow': 'ellipsis',
-                    },
-                    page_size=10)]),
         ]),
+
+        html.Div(className='semiauto_context subcontent', children=[
+            html.H2('Context of the selected sequence', id='sequence name' + cid_str),
+
+            # Table to show the context of a sequence
+            dash_table.DataTable(
+                id='Context information' + cid_str,
+                columns=[
+                    {'name': 'Position(top oldest)', 'id': 'event_position' + cid_str, 'type': 'numeric',
+                     'hideable': True},
+                    {'name': 'Event', 'id': 'event' + cid_str, 'type': 'text', 'hideable': True},
+                    {'name': 'Event_type', 'id': 'name' + cid_str, 'type': 'text', 'hideable': True},
+                    {'name': 'Attention', 'id': 'attention' + cid_str, 'type': 'text'}
+                ],
+                # data=df.to_dict('records'),
+                filter_action='native',
+                style_data={
+                    'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
+                    'overflow': 'hidden',
+                    'textOverflow': 'ellipsis',
+                },
+                page_size=10)]),
+    ]),
 
     # BOTTOM SECTION - Sequences graph
     html.Div(className='cluster_sequences_graph', children=[
@@ -106,16 +106,16 @@ layout = html.Div(className='content', children=[
                                interval=int(5000),
                                n_intervals=0,
                            ),
-       ])
+                           ])
     ]),
     dcc.Interval(
         # This is used for refreshing the dropdown when we enter the page.
-            id='refresh-data',
-            interval=500,  # in milliseconds
-            n_intervals=0,  # initial value
-            max_intervals=1  # maximum number of intervals to fire
+        id='refresh-data',
+        interval=500,  # in milliseconds
+        n_intervals=0,  # initial value
+        max_intervals=1  # maximum number of intervals to fire
     ),
     # Objects to store intermediate values, selected by the above table.
-        dcc.Store(id='selected cluster' + id_str),
-        dcc.Store(id='selected row' + id_str),
-    ])
+    dcc.Store(id='selected cluster' + id_str),
+    dcc.Store(id='selected row' + id_str),
+])
