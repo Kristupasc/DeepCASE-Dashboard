@@ -122,7 +122,8 @@ td:last-child {
 }
 
 td.dash-select-cell {
-    background: rgba(var(--secondary-color-rgb), 0.2) !important;
+    background: rgb(25 60 87) !important ;
+    /*fill: rgb(25 60 87) !important;*/
 }
 
 tr:hover {
@@ -356,6 +357,7 @@ button:not(.show-hide) {
     border-radius: 5px;
     cursor: pointer !important;
     background-color: rgb(255, 171, 64);
+    margin-right: 10px;
 }
 
 .Select-multi-value-wrapper {
@@ -381,6 +383,7 @@ button:not(.show-hide) {
     /*border-top-left-radius: 5px;*/
     /*border-bottom-right-radius: 5px ;*/
     /*border-top-right-radius: 5px ;*/
+
 }
 
 /*Select a cluster dropdown */
@@ -396,4 +399,13 @@ button:not(.show-hide) {
     color: transparent !important;
 }
 
+.dash-spreadsheet-container {
+  /*width: auto !important;*/
+    overflow-x: auto;
+    padding-left: 3px;
+}
 
+/*.dash-cell {*/
+/*  width: auto !important;*/
+/*  min-width: 50px ;*/
+/*}*/

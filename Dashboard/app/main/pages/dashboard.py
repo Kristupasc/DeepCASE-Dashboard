@@ -19,8 +19,18 @@ layout = html.Div(className='content', children=[
             html.Div(
             style={'display': 'flex', 'alignItems': 'center'},
             children=[
-                # html.H2("Cluster:"),
-                # html.H2('Select a Cluster', id='cluster name' + id_str),
+                html.Div(className='dropdown-with-text', children=[
+                    html.Label("Select a Cluster:", style={"margin-right": "10px", 'color': 'black'}),
+                    dcc.Dropdown(
+                        id="filter_dropdown" + id_str,
+                        options=update_options_dropdown(None),
+                        value=update_values_dropdown(None),
+                        placeholder="-Select a Cluster-",
+                        clearable=False,
+                        multi=False,
+                    )], style={"display": "flex", "align-items": "center", "cursor": "pointer"}),
+                html.H2("Cluster:"),
+                html.H2('', id='cluster name' + id_str),
                 html.H3('', id="display risk cluster" + id_str,
                         style={'marginLeft': '10px'}),
 
@@ -34,19 +44,10 @@ layout = html.Div(className='content', children=[
                 #     multi=False,
                 # ),
 
-                html.Div(className='dropdown-with-text', children=[
-                    html.Label("Select a Cluster:", style={"margin-right": "10px", 'color': 'black'}),
-                    dcc.Dropdown(
-                        id="filter_dropdown" + id_str,
-                        options=update_options_dropdown(None),
-                        value=update_values_dropdown(None),
-                        placeholder="-Select a Cluster-",
-                        clearable=False,
-                        multi=False,
-                    )], style={"display": "flex", "align-items": "center", "cursor": "pointer"}),
 
-                html.H2('Select a Cluster', id='cluster name' + id_str),
-                html.H3('Cluster: ', id="display risk cluster" + id_str,
+
+                html.H2('', id='cluster name' + id_str),
+                html.H3('', id="display risk cluster" + id_str,
                         style={'marginLeft': '10px'}),
             ]),
 
