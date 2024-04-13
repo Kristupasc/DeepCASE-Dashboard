@@ -34,6 +34,7 @@ table {
     color: var(--quarniary-color);
 }
 
+
 tbody{
     max-width: 150px !important;
     table-layout: auto !important;
@@ -53,8 +54,12 @@ tr {
 }
 
 /*table.cell-table {*/
-/*  !*border-collapse: separate !important;*!*/
-/*    width: auto !important;*/
+/*    table-layout: fixed;*/
+/*    width: 10%;*/
+/*}*/
+
+/*th.dash-header {*/
+/*    width: 50px !important;*/
 /*}*/
 
 th {
@@ -390,3 +395,5 @@ button:not(.show-hide) {
 .Select-value-label {
     color: transparent !important;
 }
+
+
