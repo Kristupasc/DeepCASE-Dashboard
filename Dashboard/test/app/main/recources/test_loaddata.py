@@ -85,7 +85,7 @@ class Test(TestCase):
         start_automatic()  # Check for no errors.
 
     def test_get_risk_cluster(self):
-        self.assertIsInstance(get_risk_cluster(0), str)
+        self.assertIsInstance(get_risk_cluster(0), float)
 
     def test_is_file_selected(self):
         self.assertIsInstance(is_file_selected(), bool)
