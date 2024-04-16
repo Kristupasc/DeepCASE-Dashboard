@@ -35,27 +35,18 @@ layout = html.Div(className='content', children=[
                 html.H3('', id="display risk cluster" + id_str,
                         style={'marginLeft': '10px'}),
             ]),
-        # html.Div(className='top-bar', children=[
-        #     dcc.Dropdown(
-        #         id="filter_dropdown" + id_str,
-        #         options=update_options_dropdown(0),
-        #         placeholder="-Select a Cluster-",
-        #         clearable=False,
-        #         multi=False,
-        #         value=update_values_dropdown(0),
-        #     ),
-    html.Div(className='top-bar', children=[
-        html.Div(className='dropdown-with-text', children=[
-            html.Label("Select a Cluster:", style={"margin-right": "10px", 'color': 'black'}),
-            dcc.Dropdown(
-                id="filter_dropdown" + id_str,
-                options=update_options_dropdown(0),
-                # placeholder="-Select a Cluster-",
-                clearable=False,
-                multi=False,
-                value=update_values_dropdown(0),
-            ),
-        ], style={"display": "flex", "align-items": "center", "cursor": "pointer"}),
+        html.Div(className='top-bar', children=[
+            html.Div(className='dropdown-with-text', children=[
+                html.Label("Select a Cluster:", style={"margin-right": "10px", 'color': 'black'}),
+                dcc.Dropdown(
+                    id="filter_dropdown" + id_str,
+                    options=update_options_dropdown(0),
+                    # placeholder="-Select a Cluster-",
+                    clearable=False,
+                    multi=False,
+                    value=update_values_dropdown(0),
+                ),
+            ], style={"display": "flex", "align-items": "center", "cursor": "pointer"}),
 
             html.Button(
                 [

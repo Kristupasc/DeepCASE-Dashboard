@@ -4,6 +4,7 @@ from dash import html, dash_table, dcc
 # Importing styles and callback functions
 from Dashboard.app.main.pagescallback.automated import *
 from Dashboard.app.main.pagescallback.display_sequence import *
+
 # Registering the page with Dash
 dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", title="Semi-automatic", order=2)
 ########################################################################
@@ -39,7 +40,6 @@ layout = html.Div(className='content', children=[
                 # Display risk information
             ]),
 
-
         # Drop-down menu to select cluster
         # html.Div([
         #     html.Div(className='top-bar', children=[
@@ -71,7 +71,6 @@ layout = html.Div(className='content', children=[
         #     ]),
         # ], className='button-with-icon'),
 
-
         # Table to display cluster data
         dash_table.DataTable(
             id='semi-automatic',
@@ -91,8 +90,6 @@ layout = html.Div(className='content', children=[
             },
             page_size=10)
     ]),
-
-
 
     # Context information of selected sequence
     html.Div(
@@ -133,5 +130,4 @@ layout = html.Div(className='content', children=[
         ],
     ),
 ])
-    # ])
-
+# ])
