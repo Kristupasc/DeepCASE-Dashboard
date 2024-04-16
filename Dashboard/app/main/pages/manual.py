@@ -107,16 +107,6 @@ layout = html.Div(className='content', children=[
                     'textOverflow': 'ellipsis',
                 },
                 page_size=10),
-            ################## Editable risk values
-            # html.Button('Choose random sequence', id='random' + qid_str, n_clicks=0),
-            html.H3(id='doneCluster' + qid_str),
-            html.Button(
-                [
-                    html.Img(src='/assets/change-icon.svg', className="icon"),
-                    html.Div('Apply change', id='submit' + qid_str, n_clicks=0),
-                ], className='button-with-icon'
-            ),
-            html.H3(id="successful" + qid_str),
         ], ),
         # style={"display": "flex"}),
 
