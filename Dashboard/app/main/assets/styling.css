@@ -126,6 +126,10 @@ td.dash-select-cell {
     /*fill: rgb(25 60 87) !important;*/
 }
 
+#manual .dash-select-cell {
+    background: rgb(46 90 116) !important;
+}
+
 tr:hover {
     background: rgba(var(--primary-color-rgb), 0.5) !important;
 }
@@ -353,6 +357,7 @@ button:not(.show-hide) {
     border: none;
     padding-left: 4px;
     padding-right:0px;
+    width:149px;
     height: 35px;
     border-radius: 5px;
     cursor: pointer !important;

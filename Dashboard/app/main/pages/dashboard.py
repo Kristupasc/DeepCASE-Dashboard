@@ -15,7 +15,6 @@ layout = html.Div(className='content', children=[
     html.Div(children=[
         html.H1('Cluster view'),
         html.Div(className='subcontent', children=[
-
             html.Div(
             style={'display': 'flex', 'alignItems': 'center'},
             children=[

@@ -21,34 +21,25 @@ layout = html.Div(className = 'content', children = [
             style={'display': 'flex', 'alignItems': 'center'},
             children=[
                 # html.H2("Cluster:"),
-                html.H2('Cluster name unknown', id='cluster name' + id_str),
-                html.H3('', id="display risk cluster" + id_str,
-                        style={'marginLeft': '10px'}),
-            ]),
-
-        # drop down menu to select cluster
-        html.Div([
-            html.Div([
-                # Add an icon component
-                # html.Img(
-                #     id="dropdown_icon" + id_str,
-                #     src='/assets/three-options-icon.svg',
-                #     className="icon",
-                #     style={"cursor": "pointer"}
-                # ),
-                # Wrap the dropdown component inside another html.Div
-                html.Div([
+                html.Div(className='dropdown-with-text', children=[
+                    html.Label("Select a Cluster:", style={"margin-right": "10px", 'color': 'black'}),
                     dcc.Dropdown(
                         id="filter_dropdown" + id_str,
                         options=update_options_dropdown(0),
                         value=update_values_dropdown(0),
                         clearable=False,
                         placeholder="-Select a Cluster-",
-                        multi=False,
-                    )
-                ], id="dropdown_container" + id_str, className="dropdown-container")
-            ], className="dropdown-wrapper")
-        ], className='button-with-icon'),
+                        multi=False),
+                ], id="dropdown_container" + id_str,
+                         style={"display": "flex", "align-items": "center", "cursor": "pointer"}
+                         ),
+                html.H2('Cluster name unknown', id='cluster name' + id_str),
+                html.H3('', id="display risk cluster" + id_str,
+                        style={'marginLeft': '10px'}),
+            ]),
+
+
+        # ], className='button-with-icon'),
 
         # Table - cluster data
         dash_table.DataTable(
@@ -68,8 +59,9 @@ layout = html.Div(className = 'content', children = [
                 'overflow': 'hidden',
                 'textOverflow': 'ellipsis',
             },
-            page_size=10)
-    ]),
+            page_size=10)],
+    ),
+    #          )],
 
     # Context of a sequence
     html.Div(
@@ -108,4 +100,5 @@ layout = html.Div(className = 'content', children = [
         # dcc.Store stores the intermediate value
         # style=style.content_style
     ),
-])
+]),
+    # ])
