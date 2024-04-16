@@ -1,10 +1,10 @@
 import random
 from threading import Thread
-from typing import Dict, Any
+
+import pandas as pd
 
 from Dashboard.app.main.recources.label_tools import choose_risk
 from Dashboard.data.dao.dao import DAO
-import pandas as pd
 from Dashboard.processing.process_split import ProcessorAccessObject
 
 format_time = "%H:%M:%S.%f, %d %b %Y"  # For second %s %ssss
@@ -58,7 +58,7 @@ def formatContext(cluster: int, index: int, id_str: str) -> pd.DataFrame:
     Format the context DataFrame.
 
     :param cluster: the cluster ID
-    :param index: index
+    :param index: index of the row
     :param id_str: ID string to uniquely identify the table
     :return: formatted DataFrame
     """
@@ -67,33 +67,6 @@ def formatContext(cluster: int, index: int, id_str: str) -> pd.DataFrame:
     id_sequence = df.iloc[index].at["id_sequence"]
     df = dao.get_context_per_sequence(int(id_sequence))
     df["event"] = df["name"].apply(get_event_id)
-    dict_id: dict[str, str] = dict()
-    for i in df.columns:
-        dict_id[i] = i + id_str
-    df = df.rename(columns=dict_id)
-    return df
-
-
-def selectEventFormatted(cluster: int, index: int, id_str: str) -> pd.DataFrame:
-    """
-    Select and format an event DataFrame.
-
-    :param cluster: the cluster ID
-    :param index: index
-    :param id_str: ID string to uniquely identify the table.
-    :return: formatted DataFrame
-    """
-    dao = DAO()
-    df = dao.get_sequences_per_cluster(cluster).reindex()
-    df = df.loc[[index]]
-    df = df[['machine', 'timestamp', 'name', 'id_cluster', 'risk_label']]
-    df['timestamp'] = pd.DatetimeIndex(pd.to_datetime(df['timestamp'], unit='s')).strftime(format_time)
-    df['risk_label'] = pd.to_numeric(df['risk_label'])
-    df['machine'] = pd.Series(df['machine'], dtype="string")
-    df['name'] = pd.Series(df['name'], dtype="string")
-    df['timestamp'] = pd.Series(df['timestamp'], dtype="string")
-    df["id_event"] = df["name"].apply(get_event_id)
-    df['id_event'] = pd.Series(df['id_event'], dtype="string")
     dict_id: dict[str, str] = dict()
     for i in df.columns:
         dict_id[i] = i + id_str
@@ -215,13 +188,20 @@ def get_algorithm_sequence(cluster_id):
         return None
 
 
-def function_risk(cluster_id):
+def function_risk(cluster_id) -> str:
+    """
+    Helper function, to get risk value
+    :param cluster_id: the id of the cluster, where to get the risk value.
+
+    :return: str representing the risk label.
+
+    """
     return choose_risk(get_risk_cluster(cluster_id))
 
 
 def get_algorithm_cluster():
     """
-    Returns a a random cluster_id that is selected as priority.
+    Returns a random cluster_id that is selected as priority.
 
     Parameters:
     :param: cluster_id to determine which cluster to be used.
