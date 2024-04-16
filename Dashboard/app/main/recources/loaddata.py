@@ -1,6 +1,8 @@
 import random
 from threading import Thread
 from typing import Dict, Any
+
+from Dashboard.app.main.recources.label_tools import choose_risk
 from Dashboard.data.dao.dao import DAO
 import pandas as pd
 from Dashboard.processing.process_split import ProcessorAccessObject
@@ -151,6 +153,96 @@ def set_cluster_name(cluster_id, cluster_name):
         return False
 
 
+def start_automatic():
+    """
+    Runs automatic analysis.
+    This use a thread in order to keep it running in background.
+    Known bug in Dash.
+    :return: object ProcessorAccessObject that runs automatic analysis
+    """
+    pao = ProcessorAccessObject()
+    thread = Thread(target=pao.run_automatic_mode())
+    thread.start()
+    return pao
+
+
+def get_risk_cluster(cluster_id):
+    """
+    Get the maximum risk label for a cluster.
+
+    :param cluster_id: cluster ID
+    :return: maximum risk label
+    """
+    dao = DAO()
+    df = dao.get_sequences_per_cluster(cluster_id).reindex()
+    df['risk_label'] = pd.to_numeric(df['risk_label'])
+    return df['risk_label'].max()
+
+
+def is_file_selected():
+    """
+    Check if a file is selected.
+
+    :return: True if a file is selected, False otherwise
+    """
+    dao = DAO()
+    return 'emptyfile' != dao.display_selected_file()
+
+
+def get_algorithm_sequence(cluster_id):
+    """
+    Returns a list of row numbers where the value in column 'risk_label' is negative
+    or where there is a unique combination['machine', 'risk_label', 'id_event'] of other specified columns.
+    From the list a random element is selected.
+
+    Parameters:
+    :param: cluster_id to determine which cluster to be used.
+    :return: number in the list of row numbers that meet the conditions.
+    """
+    dataframe = formatSequenceCluster(cluster_id, "")
+    filtered_rows = []
+    # Rows where value in column 'x' is negative
+    negative_rows = dataframe.index[dataframe["risk_label"] < 0].tolist()
+    filtered_rows.extend(negative_rows)
+    # Rows with unique combinations of other specified columns
+    unique_rows = dataframe.drop_duplicates(subset=['machine', 'risk_label', 'id_event']).index.tolist()
+    filtered_rows.extend(unique_rows)
+    the_list = list(set(filtered_rows))
+    try:
+        rand = random.choice(the_list)
+        return rand
+    except (ValueError, IndexError):
+        return None
+
+
+def function_risk(cluster_id):
+    return choose_risk(get_risk_cluster(cluster_id))
+
+
+def get_algorithm_cluster():
+    """
+    Returns a a random cluster_id that is selected as priority.
+
+    Parameters:
+    :param: cluster_id to determine which cluster to be used.
+    :return: number in the list of row numbers that meet the conditions.
+    """
+    dao = DAO()
+    df = dao.get_clusters_result()
+    df["risk"] = df["id_cluster"].apply(function_risk)
+    filter_name = ["Attack", "High", "Unlabeled"]
+    # Filter rows based on 'risk' column
+    filtered_rows = df[df['risk'].isin(filter_name)]
+    # Extract 'id_cluster' values from filtered rows
+    cluster_ids = filtered_rows['id_cluster'].tolist()
+    the_list = list(set(cluster_ids))
+    try:
+        rand = random.choice(the_list)
+        return rand
+    except (ValueError, IndexError):
+        return None
+
+
 def get_random_cluster():
     """
     Get a random cluster.
@@ -160,8 +252,8 @@ def get_random_cluster():
     dao = DAO()
     df = dao.get_clusters_result()
     rows = df.shape[0]
-    rand = random.randrange(0, rows, 1)
     try:
+        rand = random.randrange(0, rows, 1)
         return df.iloc[rand].at["id_cluster"]
     except (ValueError, IndexError):
         return None
@@ -180,6 +272,7 @@ def get_random_sequence(cluster_id):
     rand = random.randrange(0, rows, 1)
     return rand
 
+
 def get_row(cluster_id):
     """
     Get the max row number
@@ -191,30 +284,3 @@ def get_row(cluster_id):
     df = dao.get_sequences_per_cluster(cluster_id)
     rows = df.shape[0]
     return rows
-
-def set_file_name(file_id, file_name):
-    """
-
-    :param file_id:
-    :param file_name:
-    :return:
-    """
-    dao = DAO()
-    try:
-        dao.set_new_filename(file_id=file_id, new_filename=file_name)
-        return True
-    except (ValueError, IndexError):
-        return False
-
-def start_automatic():
-    pao = ProcessorAccessObject()
-    pao.run_automatic_mode()
-    return pao
-def get_risk_cluster(cluster_id):
-    dao = DAO()
-    df = dao.get_sequences_per_cluster(cluster_id).reindex()
-    df['risk_label'] = pd.to_numeric(df['risk_label'])
-    return df['risk_label'].max()
-def is_file_selected():
-    dao = DAO()
-    return 'emptyfile' != dao.display_selected_file()

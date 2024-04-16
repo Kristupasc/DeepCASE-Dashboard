@@ -3,6 +3,7 @@ from Dashboard.app.main.recources.label_tools import choose_risk
 import Dashboard.app.main.recources.loaddata as load
 
 
+# Function to store the selected cluster
 def store_selected_cluster(state):
     """
     Store the selected cluster
@@ -15,6 +16,7 @@ def store_selected_cluster(state):
     return None
 
 
+# Function to store the selected row for context
 def store_context_row(state, cluster):
     """
     Store the selected row for context.
@@ -30,6 +32,7 @@ def store_context_row(state, cluster):
     return None
 
 
+# Function to update the options in the dropdown
 def update_options_dropdown(n):
     """
     Update the options in the dropdown.
@@ -42,6 +45,7 @@ def update_options_dropdown(n):
     return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
 
 
+# Function to update the values in the dropdown
 def update_values_dropdown(n):
     """
     Update the values in the dropdown.
@@ -52,6 +56,7 @@ def update_values_dropdown(n):
     return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
 
 
+# Function to get the name of the selected cluster
 def get_name_cluster(data):
     """
     Get the name of the selected cluster based on the cluster ID.
@@ -63,10 +68,11 @@ def get_name_cluster(data):
         k = load.possible_clusters()
         for z in k:
             if not pd.isna(z[0]) and z[0] == float(data):
-                return str(z[1]) # Don't change this this will create an easy infinity loop.
+                return str(z[1])  # Don't change this this will create an easy infinity loop.
     return "Cluster not selected"
 
 
+# Function to light up the selected row
 def light_up_selected_row(row):
     """
     Light up the selected event.
@@ -79,8 +85,9 @@ def light_up_selected_row(row):
     return None
 
 
+# Function to display the risk value of the cluster
 def display_risk_cluster(cluster_id):
     try:
         return "Security Score: ", choose_risk(load.get_risk_cluster(cluster_id))
-    except:
+    except (ValueError, IndexError, TypeError):
         return ""
