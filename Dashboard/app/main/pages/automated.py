@@ -1,41 +1,77 @@
 import dash
 from dash import html, dash_table, dcc
 
-import Dashboard.app.main.recources.style as style
+# Importing styles and callback functions
 from Dashboard.app.main.pagescallback.automated import *
 from Dashboard.app.main.pagescallback.display_sequence import *
 
+# Registering the page with Dash
 dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", title="Semi-automatic", order=2)
-
-
 ########################################################################
-#   Semi-automatic objects page(Makes use of the callback addition)    #
+#               Automatic page, for after manual                       #
 ########################################################################
+# Layout definition for the semi-automatic dashboard page
+layout = html.Div(className='content', children=[
+    html.H1('Semi-automatic'),  # Main heading of the page
 
-layout = html.Div(className = 'content', children = [
-    html.H1('Semi-automatic'),
-    html.Div(className = 'subcontent', children=[
+    # Sub-content division containing components
+    html.Div(className='subcontent', children=[
+        # Division for displaying cluster information
+
         html.Div(
             style={'display': 'flex', 'alignItems': 'center'},
             children=[
-                html.H2('Cluster name unknown', id='cluster name' + id_str),
-                html.H3('(Security label cluster: ', style={'marginLeft': '10px'}),
-                html.H3('8', id="display risk cluster" + id_str,
-                        style={'marginLeft': '10px'}),
-                html.H3(')',
-                        style={'marginLeft': '10px'}),
-            ]),
-        # drop down menu to select cluster
-        dcc.Dropdown(
-            id="filter_dropdown" + id_str,
-            options=update_options_dropdown(0),
-            value=update_values_dropdown(0),
-            clearable=False,
-            placeholder="-Select a Cluster-",
-            multi=False,
-        ),
+                # html.H2("Cluster:"),
+                #     html.Label("Select a Cluster:", style={"margin-right": "10px", 'color': 'black'}),
+                html.Div(className='dropdown-with-text', children=[
+                    html.Label("Select a Cluster:", style={"margin-right": "10px", 'color': 'black'}),
+                    dcc.Dropdown(
+                        id="filter_dropdown" + id_str,
+                        options=update_options_dropdown(0),
+                        clearable=False,
+                        multi=False,
+                        value=update_values_dropdown(0),
+                    ),
+                ], style={"display": "flex", "align-items": "center", "cursor": "pointer"}),
 
-        # Table - cluster data
+                html.H2("Cluster:"),  # Heading for cluster information
+                html.H2('Cluster name unknown', id='cluster name' + id_str),  # Display cluster name
+                html.H3('', id="display risk cluster" + id_str, style={'marginLeft': '10px'}),
+                # Display risk information
+            ]),
+
+        # Drop-down menu to select cluster
+        # html.Div([
+        #     html.Div(className='top-bar', children=[
+        #         # Add an icon component
+        #         html.Img(
+        #             id="dropdown_icon" + id_str,
+        #             src='/assets/three-options-icon.svg',
+        #             className="icon",
+        #             style={"cursor": "pointer"}
+        #         ),
+        #         # Wrap the dropdown component inside another html.Div
+        #         html.Div(id="dropdown_container" + id_str,
+        #             style={"display": "flex", "align-items": "center", "cursor": "pointer"},
+        #             children=[
+        #                 dcc.Dropdown(
+        #                     id="filter_dropdown" + id_str,
+        #                     options=update_options_dropdown(0),
+        #                     value=update_values_dropdown(0),
+        #                     clearable=False,
+        #                     placeholder="-Select a Cluster-",
+        #                     multi=False
+        #                 )],
+        #         ),
+        #         # html.H2('Cluster name unknown', id='cluster name' + id_str),
+        #         # html.H3('', id="display risk cluster" + id_str,
+        #         #         style={'marginLeft': '10px'}),
+        #         # ],
+        #         ]),
+        #     ]),
+        # ], className='button-with-icon'),
+
+        # Table to display cluster data
         dash_table.DataTable(
             id='semi-automatic',
             columns=[
@@ -45,7 +81,6 @@ layout = html.Div(className = 'content', children = [
                 {'name': 'Event_text', 'id': 'name' + id_str, 'type': 'text', 'hideable': True},
                 {'name': 'Risk', 'id': 'risk_label' + id_str, 'type': 'numeric', 'editable': False},
             ],
-            # data=df.to_dict('records'),
             filter_action='native',
             row_selectable="single",
             style_data={
@@ -56,11 +91,14 @@ layout = html.Div(className = 'content', children = [
             page_size=10)
     ]),
 
-    # Context of a sequence
+    # Context information of selected sequence
     html.Div(
         className='subcontent',
         children=[
             html.H2('Context of the selected sequence', id='sequence name' + cid_str),
+            # Heading for context information
+
+            # Table to display context information
             dash_table.DataTable(
                 id='Context information' + cid_str,
                 columns=[
@@ -70,20 +108,26 @@ layout = html.Div(className = 'content', children = [
                     {'name': 'Event_name', 'id': 'name' + cid_str, 'type': 'text', 'hideable': True},
                     {'name': 'Attention', 'id': 'attention' + cid_str, 'type': 'text'}
                 ],
-                # data=df.to_dict('records'),
                 filter_action='native',
                 style_data={
                     'width': 'normal', 'minWidth': 'normal', 'maxWidth': 'normal',
                     'overflow': 'hidden',
                     'textOverflow': 'ellipsis',
                 },
-
                 page_size=10),
-            # Objects to store intermediate values, selected by the above table.
+
+            # Interval component for refreshing dropdown
+            dcc.Interval(
+                id='refresh-data-automatic',
+                interval=500,  # in milliseconds
+                n_intervals=0,  # initial value
+                max_intervals=1  # maximum number of intervals to fire
+            ),
+
+            # Objects to store intermediate values selected by the above table
             dcc.Store(id='selected cluster' + id_str),
             dcc.Store(id='selected row' + id_str)
         ],
-        # dcc.Store stores the intermediate value
-        # style=style.content_style
     ),
 ])
+# ])

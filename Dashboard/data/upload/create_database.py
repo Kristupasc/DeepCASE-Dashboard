@@ -50,5 +50,12 @@ def displayDataFile():
     return dash.dash_table.DataTable(
         # Return a table from data file
         df.to_dict('records'),
-        [{'name': i, 'id': i} for i in df.columns]
+        [{'name': i, 'id': i} for i in df.columns],
+        style_data={
+            'width': '0px', 'minWidth': 'normal',
+            'overflow': 'hidden',
+            'textOverflow': 'ellipsis',
+            'table-layout': 'auto',
+            'font-size': '11px',
+        }
     )

@@ -62,7 +62,6 @@ app.layout = html.Div([
     style=style.wrapper_style)
 
 
-
 if __name__ == '__main__':
     app.run_server(debug=True)
 

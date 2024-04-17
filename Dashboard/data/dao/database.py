@@ -291,7 +291,7 @@ class Database(object):
         return result
 
     def get_sequences_per_cluster(self, cluster_id: int) -> pd.DataFrame:
-        query = """SELECT events.id_event, sequences.id_sequence, mapping.name, events.timestamp, events.machine, 
+        query = """SELECT mapping.id as id_event, sequences.id_sequence, mapping.name, events.timestamp, events.machine, 
                 sequences.id_cluster, sequences.risk_label
                 FROM mapping, sequences, events 
                 WHERE sequences.mapping_value = mapping.id 
