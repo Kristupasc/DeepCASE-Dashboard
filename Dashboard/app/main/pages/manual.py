@@ -21,7 +21,14 @@ layout = html.Div(className='content', children=[
                 html.Img(src='/assets/start-icon.svg', className="icon"),
                 html.H3(id='feedback automatic'),
                 html.Div('Start semi-automatic analysis', id='start automatic', n_clicks=0),
+                dcc.Loading(
+                    id="loading start automatic",
+                    children=[html.Div([html.Div(id="loading output start automatic")])],
+                    type="circle",
+                    fullscreen=True
+                ),
             ], className='button-with-icon'
+
         ),
     ]),
 
