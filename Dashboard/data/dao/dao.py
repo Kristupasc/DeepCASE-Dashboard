@@ -8,7 +8,19 @@ class DAO(object):
     def __init__(self):
         self.data_object = Database()
 
+
+
     def switch_current_file(self, filename):
+        """Call to database to switch the current file.
+
+              Parameters
+              ----------
+              filename : name of the file to set as current file
+
+              Returns
+              -------
+              True : if filename is changed successfully
+              """
         return self.data_object.switch_current_file(filename)
 
     def get_filenames(self):

@@ -115,12 +115,4 @@ def hide_button(n_clicks):
         return 'DeepCASE is running. Please do not close this page until the process is finished. It may take several minutes.'
     return dash.no_update
 
-# @callback(
-#     Output('deepcase-status-display', 'children'),
-#     Input('status-interval', 'n_intervals')
-# )
-# def update_status(n_intervals):
-#     pao = ProcessorAccessObject()
-#     status = pao.status
-#     print(pao.status)
-#     return html.P(status.name)
+

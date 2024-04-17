@@ -8,7 +8,7 @@ from DeepCase.deepcase.preprocessing import Preprocessor
 from DeepCase.deepcase.context_builder import ContextBuilder
 from DeepCase.deepcase.interpreter import Interpreter
 
-
+#class of main functionality of DeepCASE
 class Processor(object):
 
     def __init__(self):
@@ -42,6 +42,26 @@ class Processor(object):
     ########################################################################
 
     def sequence_data(self, data: pandas.DataFrame):
+        """
+        Processes input data to generate context, events, labels, and a mapping.
+
+        This method takes a DataFrame as input and uses the DeepCASE preprocessor to transform this data
+        into sequences of context and events, along with generating labels and a mapping. If no labels
+        are generated, a default label of -1 is assigned to all events.
+
+        Parameters
+        ----------
+        data : pd.DataFrame
+            The input data to be sequenced.
+
+        Returns
+        -------
+        context (torch.Tensor): The context tensor.
+        events (torch.Tensor): The events tensor.
+        labels (numpy.ndarray): An array of labels for the events. Defaults to -1 if not provided.
+        mapping (dict): A dictionary representing the mapping of events generated during the sequencing process.
+        """
+
         context, events, labels, mapping = self.preprocessor.sequence(data=data, verbose=True)
 
         if labels is None:
@@ -58,6 +78,21 @@ class Processor(object):
     ########################################################################
 
     def train_context_builder(self, context_train, events_train):
+        """
+               Trains the model on context and events via Context Builder.
+
+               Parameters
+               ----------
+               context_train : torch.Tensor
+                   The input data of context events.
+
+               events_train: torch.Tensor
+                    The input data of main sequence events.
+
+               Returns
+               -------
+                None
+               """
         self.context_builder.fit(
             X=context_train,  # Context to train with
             y=events_train.reshape(-1, 1),  # Events to train with, note that these should be of shape=(n_events, 1)
@@ -66,12 +101,28 @@ class Processor(object):
             learning_rate=0.01,  # Learning rate to train with, in paper this was 0.01
             verbose=True,  # If True, prints progress
         )
+        return
 
     ########################################################################
     #                          Using Interpreter                           #
     ########################################################################
 
     def clustering(self, context_train, events_train):
+        """
+           Clusters the sequences based on context events and main sequence event.
+
+           Parameters
+           ----------
+           context_train : torch.Tensor
+                   The input data of context events.
+
+           events_train: torch.Tensor
+                The input data of main sequence events.
+
+           Returns
+           -------
+           clusters (numpy.ndarray): array of cluster values assigned to sequences.
+       """
         clusters = self.interpreter.cluster(
             X=context_train,  # Context to train with
             y=events_train.reshape(-1, 1),  # Events to train with, note that these should be of shape=(n_events, 1)
@@ -82,7 +133,22 @@ class Processor(object):
         return clusters
 
     def get_attention(self, context, events):
+        """
+           Attention and confidence level is assigned to each context event
 
+           Parameters
+           ----------
+           context : torch.Tensor
+                   The input data of context events.
+
+           events: torch.Tensor
+                The input data of main sequence events.
+
+           Returns
+           -------
+           confidence (torch.Tensor): confidence  level of context event in regards to sequence
+           attention (torch.Tensor): attention vector for all context events
+       """
         confidence, attention, inverse = self.context_builder.query(
             X=context,  # Context to train with
             y=events.reshape(-1, 1),  # Events to train with, note that these should be of shape=(n_events, 1)
@@ -100,6 +166,18 @@ class Processor(object):
     ########################################################################
 
     def scoring(self, labels_train):
+        """
+           Each sequence gets a security score to further be analyzed in manual mode
+
+           Parameters
+           ----------
+           labels_train: torch.Tensor
+                The input labels of main sequence events.
+
+           Returns
+           -------
+           scores (torch.Tensor): tensor of all the score values per sequence
+       """
         scores = self.interpreter.score_clusters(
             scores=labels_train,
             # Labels used to compute score (either as loaded by Preprocessor, or put your own labels here)
@@ -120,6 +198,21 @@ class Processor(object):
     ########################################################################
 
     def predict(self, context_test, events_test):
+        """
+          Semi-automatic mode predicts new risk labels based on Manual mode results
+
+           Parameters
+           ----------
+           context_test : torch.Tensor
+                   The input data of context events.
+
+           events_test: torch.Tensor
+                The input data of main sequence events.
+
+           Returns
+           -------
+           prediction (torch.Tensor): tensor with predicted scores per sequence
+       """
         prediction = self.interpreter.predict(
             X=context_test,  # Context to predict
             y=events_test.reshape(-1, 1),  # Events to predict, note that these should be of shape=(n_events, 1)
