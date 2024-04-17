@@ -32,40 +32,10 @@ layout = html.Div(className='content', children=[
                     html.H2('', id='cluster name' + id_str),
                     html.H3('', id="display risk cluster" + id_str,
                             style={'marginLeft': '10px'}),
-
-                    # # drop down menu to select cluster
-                    # dcc.Dropdown(
-                    #     id="filter_dropdown" + id_str,
-                    #     options=update_options_dropdown(None),
-                    #     value=update_values_dropdown(None),
-                    #     placeholder="-Select a Cluster-",
-                    #     clearable=False,
-                    #     multi=False,
-                    # ),
-
                     html.H2('', id='cluster name' + id_str),
                     html.H3('', id="display risk cluster" + id_str,
                             style={'marginLeft': '10px'}),
                 ]),
-            #
-            #     style={'display': 'flex', 'alignItems': 'center'},
-            #     children=[
-            #         html.H2("Cluster:"),
-            #         html.H2('Select a Cluster', id='cluster name' + id_str),
-            #         html.H3('', id="display risk cluster" + id_str,
-            #                 style={'marginLeft': '10px'}),
-            #     ]),
-            #
-            # # drop down menu to select cluster
-            # dcc.Dropdown(
-            #     id="filter_dropdown" + id_str,
-            #     options=update_options_dropdown(None),
-            #     value=update_values_dropdown(None),
-            #     placeholder="-Select a Cluster-",
-            #     clearable=False,
-            #     multi=False,
-            # ),
-
             # data table to display the cluster
             dash_table.DataTable(
                 id='dashboard',
