@@ -10,7 +10,8 @@ def start_deepcase():
     pao = ProcessorAccessObject()
     thread = Thread(target=pao.run_DeepCASE())
     thread.start()
-    check_thread_alive(thread)
+    thread2 = Thread(target=check_thread_alive(thread))
+    thread2.start()
 
 def start_automatic():
     """
