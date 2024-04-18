@@ -74,7 +74,7 @@ def run_deepcase(n_clicks, opened):
 def feedback_run_deepcase(n_clicks, opened):
     global progress_going_on
     if 'start_deepcase_btn' + id_str == ctx.triggered_id and not load.process_going_on and load.is_file_selected():
-        return not opened  # TODO why is this needed to be interchanged.
+        return not opened
     return opened
 
 
