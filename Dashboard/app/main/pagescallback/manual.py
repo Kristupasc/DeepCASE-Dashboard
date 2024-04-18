@@ -254,7 +254,7 @@ def start_run_automatic(n_clicks, opened):
     State("feedback start automatic" + id_str, "opened")
 )
 def feedBack_run_automatic(n_clicks, opened):
-    if 'start automatic' == ctx.triggered_id and not load.process_going_on:
+    if 'start automatic' == ctx.triggered_id and not load.process_going_on and not load.is_file_selected():
         return not opened
     return opened
 

@@ -52,6 +52,13 @@ layout = html.Div(className='content', children=[
         ])
     ]),
     dmc.Modal(title="Yeeeeeeeeaaaaaaaa", id="feedback_deepcase" + id_str),
+    dmc.Modal(title="DeepCASE is running.\n\n This might take 20 minutes.\n\n Enjoy a cup of tea in the meantime.", id="feedback_start_deepcase" + id_str,
+              children=[dcc.Loading(
+                      id="loading start deepcase",
+                      children=[html.Div([html.Div(id="loading output start deepcase")])],
+                      type="circle",
+                      fullscreen=False
+                  )]),
     dmc.Modal(title="Yeeeeeeeeaaaaaaaa", id="feedback_save_file" + id_str),
     dmc.Modal(title="noo", id="feedback_switch" + id_str),
 ])
