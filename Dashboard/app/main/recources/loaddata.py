@@ -1,4 +1,5 @@
 import random
+import time
 from threading import Thread
 
 import pandas as pd
@@ -9,7 +10,7 @@ from Dashboard.processing.process_split import ProcessorAccessObject
 
 format_time = "%H:%M:%S.%f, %d %b %Y"  # For second %s %ssss
 
-
+process_going_on = False
 def formatSequenceCluster(cluster: int, id_str: str) -> pd.DataFrame:
     """
     Format the sequence cluster DataFrame.
@@ -133,10 +134,19 @@ def start_automatic():
     Known bug in Dash.
     :return: object ProcessorAccessObject that runs automatic analysis
     """
+    global process_going_on
+    process_going_on = True
     pao = ProcessorAccessObject()
     thread = Thread(target=pao.run_automatic_mode())
     thread.start()
+    thread2 = Thread(target=check_thread_alive(thread))
+    thread2.start()
     return pao
+def check_thread_alive(thread):
+    global process_going_on
+    while(thread.is_alive()):
+        time.sleep(2)
+    process_going_on = False
 
 
 def get_risk_cluster(cluster_id):

@@ -21,12 +21,7 @@ layout = html.Div(className='content', children=[
                 html.Img(src='/assets/start-icon.svg', className="icon"),
                 html.H3(id='feedback automatic'),
                 html.Div('Start semi-automatic analysis', id='start automatic', n_clicks=0),
-                dcc.Loading(
-                    id="loading start automatic",
-                    children=[html.Div([html.Div(id="loading output start automatic")])],
-                    type="circle",
-                    fullscreen=True
-                ),
+
             ], className='button-with-icon'
 
         ),
@@ -147,7 +142,19 @@ layout = html.Div(className='content', children=[
         ]),
         dmc.Modal(title="Yeeeeeeeeaaaaaaaa", id="modal_set_cluster" + id_str),
         dmc.Modal(title="Noooooooo", id="modal_set_risk" + id_str),
-        dmc.Modal(title="Ahhhh", id="feedback start automatic" + id_str),
+        dmc.Modal(title='DeepCASE automatic phase is running.\n ' \
+                        'Please do not close this page\n until the process is finished. It may take several minutes.'
+                        'Additionaly if you don\'t see the loading bar\n'
+                        'the process is done',
+                  id="feedback start automatic" + id_str,
+                  children=[dcc.Loading(
+                      id="loading start automatic",
+                      children=[html.Div([html.Div(id="loading output start automatic")])],
+                      type="circle",
+                      fullscreen=False
+                  )]
+                  ),
+        dmc.Modal(title="Arggg", id="feedback finish automatic" + id_str),
     ],
              )
 ])
