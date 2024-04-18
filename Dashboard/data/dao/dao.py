@@ -10,6 +10,7 @@ class DAO(object):
 
 
 
+
     def switch_current_file(self, filename):
         """Call to database to switch the current file.
 
@@ -113,6 +114,9 @@ class DAO(object):
             inplace=True)
         self.data_object.update_sequence_score(risk_labels_df)
         self.data_object.update_cluster_table()
+        return
+    def set_run_status(self):
+        self.data_object.set_run_flag()
         return
 
     def get_initial_table(self):

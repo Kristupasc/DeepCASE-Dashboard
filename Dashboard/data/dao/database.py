@@ -27,13 +27,13 @@ class Database(object):
             self.cur = self.conn.cursor()
             self.filename = 'emptyfile'
             self.initialized = True  # Mark the instance as initialized
-            # self.drop_database()
-            # self.create_tables()
+            self.drop_database()
+            self.create_tables()
         return
 
     def create_tables(self):
         self.cur.execute('''CREATE TABLE IF NOT EXISTS files
-                                (filename TEXT PRIMARY KEY, custom_name TEXT)''')
+                                (filename TEXT PRIMARY KEY, custom_name TEXT, run BOOLEAN NOT NULL)''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS events
                                 (id_event INTEGER, filename TEXT, timestamp REAL, machine TEXT, event TEXT, label INT, 
                                 PRIMARY KEY(id_event, filename),
@@ -92,7 +92,7 @@ class Database(object):
         now = datetime.now()
         # Append current datetime to the filename
         self.filename = filename + '_' + now.strftime("%Y-%m-%d %H:%M:%S")
-        self.cur.execute("INSERT  INTO files (filename, custom_name) VALUES (?, ?)", (self.filename, self.filename))
+        self.cur.execute("INSERT  INTO files (filename, custom_name, run) VALUES (?, ?, ?)", (self.filename, self.filename, 0))
         self.conn.commit()
 
         input_file_df['filename'] = self.filename
@@ -243,7 +243,11 @@ class Database(object):
         self.cur.execute(query, (new_name, filename))
         self.conn.commit()
         return
-
+    def set_run_flag(self):
+        query = "UPDATE files SET run = 1 WHERE filename = ?"
+        self.cur.execute(query, [self.filename])
+        self.conn.commit()
+        return
     ########################################################################
     #                         Data aggregation                             #
     ########################################################################

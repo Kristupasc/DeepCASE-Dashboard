@@ -145,5 +145,21 @@ class ProcessorAccessObject(object):
         self.train_context_builder()
         self.create_interpreter_clusters()
         self.manual_mode()
+        self.dao.set_run_status()
 
 
+ # Testing only
+    def run_DeepCASE_dummy(self):
+        data = pd.read_csv('alerts.csv')
+        self.dao.save_input(data, "alerts.csv")
+        self.dao.set_run_status()
+        self.create_sequences(data=data)
+        # self.train_context_builder()
+        # self.create_interpreter_clusters()
+        # self.manual_mode()
+        # self.run_automatic_mode()
+
+
+if __name__ == '__main__':
+    pao = ProcessorAccessObject()
+    pao.run_DeepCASE_dummy()
