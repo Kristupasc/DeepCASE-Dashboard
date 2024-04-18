@@ -51,12 +51,14 @@ def update_selected_file(value, opened):
           State("feedback_deepcase" + id_str, 'opened'),
           prevent_initial_call=True)
 def run_deepcase(n_clicks, opened):
+    global process_going_on
     dao = time.sleep(0)
     if len((load.get_files()).values.flatten().tolist()) == 0 and 'start_deepcase_btn' + id_str == ctx.triggered_id:
         return not opened, "please upload a file", dao
     if 'start_deepcase_btn' + id_str == ctx.triggered_id and not load.is_file_selected():
         return not opened, "file is not selected", dao
     if 'start_deepcase_btn' + id_str == ctx.triggered_id and not load.process_going_on:
+        load.process_going_on = True
         load.start_deepcase()
         return not opened, "DeepCASE process is finished. You can review results on Manual Analysis page.", dao
     elif 'start_deepcase_btn' + id_str == ctx.triggered_id:
@@ -70,9 +72,10 @@ def run_deepcase(n_clicks, opened):
           prevent_initial_call=True
           )
 def feedback_run_deepcase(n_clicks, opened):
-    if 'start_deepcase_btn' + id_str == ctx.triggered_id and not load.process_going_on and not load.is_file_selected():
-        return opened  # TODO why is this needed to be interchanged.
-    return not opened
+    global progress_going_on
+    if 'start_deepcase_btn' + id_str == ctx.triggered_id and not load.process_going_on and load.is_file_selected():
+        return not opened  # TODO why is this needed to be interchanged.
+    return opened
 
 
 @callback(
