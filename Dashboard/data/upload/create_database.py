@@ -19,43 +19,16 @@ def parse_contents(contents, filename, date):
             input_df.to_csv('input_data.csv', mode='w')
         # TODO add other possible inputs (e.g. xlsx)
         else:
-            raise Exception('This file type is not supported')
+            return 'This file type is not supported'
         from_csv_df = pd.read_csv('input_data.csv')
         from_csv_df.drop(columns='Unnamed: 0', inplace=True)
         dao.save_input(from_csv_df, filename)  # fills events table
 
     except Exception as e:
         print(e)
-        return html.Div([
-            'An error occurred when processing this file. Check the required format of file: csv'
-        ])
-
-    return html.Div([
-        html.H5('File Uploaded Successfully: ' + filename),
-        html.Div(
-            html.Div('Press "Start Security Analysis" button to run DeepCASE.', id='deepcase-status-display',
-                     style=style.attention_frame_style),
-            style=style.centred
-        ),
-        html.Button('Start Security Analysis', id='start_deepcase_btn'),
-        html.Hr(),
-        displayDataFile()
-    ])
+        return 'An error occurred when processing this file.\n Check the required format of file: csv'
+    return 'File Uploaded Successfully: ' + filename+'' \
+                                                     '\n\n\nPress "Start Security Analysis" button to run DeepCASE.'
 
 
-# Returns dash table with all stored data
-def displayDataFile():
-    dao = DAO()
-    df = dao.get_initial_table()
-    return dash.dash_table.DataTable(
-        # Return a table from data file
-        df.to_dict('records'),
-        [{'name': i, 'id': i} for i in df.columns],
-        style_data={
-            'width': '0px', 'minWidth': 'normal',
-            'overflow': 'hidden',
-            'textOverflow': 'ellipsis',
-            'table-layout': 'auto',
-            'font-size': '11px',
-        }
-    )
+
