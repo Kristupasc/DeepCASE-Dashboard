@@ -1,3 +1,4 @@
+import time
 from math import floor
 
 from dash import callback, Output, Input, ctx, State
@@ -217,10 +218,11 @@ callback(
 
 # Function to start semi-automatic phase
 @callback(Output("process of automatic" + id_str, 'data'),
-          Output("feedback start automatic" + id_str, 'opened'),
-          Output("feedback start automatic" + id_str, 'title'),
+          Output("feedback finish automatic" + id_str, 'opened'),
+          Output("feedback finish automatic" + id_str, 'title'),
+          Output("loading output start automatic", "children"),
           Input('start automatic', 'n_clicks'),
-          State("feedback start automatic" + id_str, 'opened'),
+          State("feedback finish automatic" + id_str, 'opened'),
           prevent_initial_call=True,
           )
 def start_run_automatic(n_clicks, opened):
@@ -231,36 +233,31 @@ def start_run_automatic(n_clicks, opened):
     :param opened: Makes sure that the pop-up is not already displayed.
     :return:  Return pop-up with text.
     """
-    if 'start automatic' == ctx.triggered_id:
+    global process_going_on
+    dao = time.sleep(0)
+    if 'start automatic' == ctx.triggered_id and not load.process_going_on:
         if load.is_file_selected():
+            load.process_going_on = True
             load.start_automatic()
-            return True, not opened, "Automatic analysis is successful done."
+            # load.process_going_on = False
+            return True, not opened, "Automatic analysis is successful done.", dao
         else:
-            return False, not opened, "Please select a file"
+            return False, not opened, "Please select a file", dao
+    elif 'start automatic' == ctx.triggered_id:
+        return False, not opened, "Please wait the server is busy", dao
     # No update otherwise it gets triggered again.
-    return False, opened, "Not pressed button"
+    return False, opened, "Not pressed button", dao
 
-
-# Function to hide the button for running automatic phase
-@callback(Output('start automatic', 'style'),
-          Input('start automatic', 'n_clicks'),
-          )
-def hid_btn_run_automatic(n_clicks):
-    if 'start automatic' == ctx.triggered_id:
-        return {'display': 'none'}
-    return {}
-
-
-# Function to provide feedback during the automatic phase
 @callback(
-    Output('feedback automatic', 'children'),
-    Input('start automatic', 'n_clicks')
+    Output("feedback start automatic" + id_str, 'opened'),
+    Input('start automatic', 'n_clicks'),
+    State("feedback start automatic" + id_str, "opened")
 )
-def feedBack_run_automatic(n_clicks):
-    if 'start automatic' == ctx.triggered_id:
-        return 'DeepCASE automatic phase is running.\n ' \
-               'Please do not close this page until the process is finished. It may take several minutes.'
-    return ''
+def feedBack_run_automatic(n_clicks, opened):
+    global progress_going_on
+    if 'start automatic' == ctx.triggered_id and not load.process_going_on and not load.is_file_selected():
+        return not opened
+    return opened
 
 
 # Function to find the risk value of cluster and display

@@ -1,6 +1,7 @@
 import random
+import time
 from threading import Thread
-
+from Dashboard.app.main.recources.run_deepcase import  *
 import pandas as pd
 
 from Dashboard.app.main.recources.label_tools import choose_risk
@@ -126,17 +127,7 @@ def set_cluster_name(cluster_id, cluster_name):
         return False
 
 
-def start_automatic():
-    """
-    Runs automatic analysis.
-    This use a thread in order to keep it running in background.
-    Known bug in Dash.
-    :return: object ProcessorAccessObject that runs automatic analysis
-    """
-    pao = ProcessorAccessObject()
-    thread = Thread(target=pao.run_automatic_mode())
-    thread.start()
-    return pao
+
 
 
 def get_risk_cluster(cluster_id):
