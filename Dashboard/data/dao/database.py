@@ -27,8 +27,8 @@ class Database(object):
             self.cur = self.conn.cursor()
             self.filename = 'emptyfile'
             self.initialized = True  # Mark the instance as initialized
-            self.drop_database()
-            self.create_tables()
+            # self.drop_database()
+            # self.create_tables()
         return
 
     def create_tables(self):
@@ -358,3 +358,7 @@ class Database(object):
         if torch.cuda.is_available():
             result_tensor = result_tensor.to('cuda')
         return result_tensor
+    def get_run_flag(self):
+        query = "SELECT run FROM files WHERE filename = ?"
+        status_df = pd.read_sql_query(query, self.conn, params=[self.filename])
+        return status_df.iloc[0]['run']

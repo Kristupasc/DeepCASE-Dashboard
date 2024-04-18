@@ -160,3 +160,6 @@ class DAO(object):
 
     def get_events_auto(self):
         return self.data_object.get_events_for_automatic()
+
+    def get_run_status(self):
+        return self.data_object.get_run_flag()
