@@ -234,7 +234,7 @@ def start_run_automatic(n_clicks, opened):
     :return:  Return pop-up with text.
     """
     global process_going_on
-    dao = time.sleep(1)
+    dao = time.sleep(0)
     if 'start automatic' == ctx.triggered_id and not load.process_going_on:
         if load.is_file_selected():
             load.process_going_on = True

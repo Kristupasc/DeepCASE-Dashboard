@@ -143,6 +143,13 @@ def start_automatic():
     thread2.start()
     return pao
 def check_thread_alive(thread):
+    """
+    Methode that should be run on a separate thread.
+    It simply checks if thread alive and does a final action.
+    :param thread: Is the thread where we check on if it is alive.
+    When it is dead we signal that it is done.
+    :return: is void because the signal is the last thing.
+    """
     global process_going_on
     while(thread.is_alive()):
         time.sleep(2)
