@@ -90,7 +90,10 @@ def feedback_run_deepcase(n_clicks, opened):
     State("feedback_save_file" + id_str, 'opened')
 )
 def store_file(list_of_contents, list_of_names, list_of_dates, opened):
+    global progress_going_on
     if list_of_contents is not None:
+        if load.process_going_on:
+            return not opened, "Please try again later, the server is busy."
         text = [create_database.parse_contents(c, n, d) for c, n, d in
                 zip(list_of_contents, list_of_names, list_of_dates)]
         return not opened, text
