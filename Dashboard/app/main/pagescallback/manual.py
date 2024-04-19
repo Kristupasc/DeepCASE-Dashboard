@@ -1,6 +1,7 @@
 import time
 from math import floor
 
+import dash
 from dash import callback, Output, Input, ctx, State
 from dash.exceptions import PreventUpdate
 
@@ -132,7 +133,7 @@ callback(
 # Function to get the cluster name
 callback(
     Output('cluster name' + id_str, 'value'),
-    Input('selected cluster' + id_str, "data")
+    Input('selected cluster' + id_str, "data"),
 )(display_sequence.get_name_cluster)
 
 
@@ -240,7 +241,6 @@ def start_run_automatic(n_clicks, opened):
     """
     global process_going_on
     dao = time.sleep(0)
-    print(load.process_going_on)
     if 'start automatic' == ctx.triggered_id and not load.process_going_on:
         if load.is_file_selected():
             load.process_going_on = True
