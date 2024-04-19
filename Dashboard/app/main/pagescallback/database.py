@@ -101,8 +101,22 @@ def store_file(list_of_contents, list_of_names, list_of_dates, opened):
     # New file saved
     Input("feedback_save_file" + id_str, 'opened'),
     # New file selected
-    Input("feedback_switch" + id_str, 'opened'),
-    prevent_initial_call=True
+    Input("feedback_switch" + id_str, 'opened')
 )
 def update_table_input(url, input1, input2):
     return load.get_initial_table().to_dict('records')
+
+@callback(
+    Output('start_deepcase_btn' + id_str, 'disabled'),
+    # Loading page
+    Input('url' + id_str, 'pathname'),
+    # New file saved
+    Input("feedback_save_file" + id_str, 'opened'),
+    # New file selected
+    Input("feedback_switch" + id_str, 'opened'),
+)
+def disable_button_security(in1, in2, in3):
+    if load.is_file_selected():
+        return bool(load.get_status_file())
+    return True
+

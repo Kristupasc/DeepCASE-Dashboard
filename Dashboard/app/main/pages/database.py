@@ -28,7 +28,7 @@ layout = html.Div(className='content', children=[
         ]),
         html.Div([
             dcc.Location(id='url' + id_str, refresh=False),
-            html.Button('Start Security Analysis', id='start_deepcase_btn' + id_str),
+            html.Button('Start Security Analysis', id='start_deepcase_btn' + id_str, disabled =True),
             dash_table.DataTable(
                 id="uploaded data" + id_str,
                 columns=[
