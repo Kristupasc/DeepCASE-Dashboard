@@ -235,11 +235,12 @@ def start_run_automatic(n_clicks, opened):
     """
     global process_going_on
     dao = time.sleep(0)
+    print(load.process_going_on)
     if 'start automatic' == ctx.triggered_id and not load.process_going_on:
         if load.is_file_selected():
             load.process_going_on = True
             load.start_automatic()
-            # load.process_going_on = False
+            load.process_going_on = False
             return True, not opened, "Automatic analysis is successful done.", dao
         else:
             return False, not opened, "Please select a file", dao
@@ -255,7 +256,7 @@ def start_run_automatic(n_clicks, opened):
 )
 def feedBack_run_automatic(n_clicks, opened):
     global progress_going_on
-    if 'start automatic' == ctx.triggered_id and not load.process_going_on and not load.is_file_selected():
+    if 'start automatic' == ctx.triggered_id:
         return not opened
     return opened
 

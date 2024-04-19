@@ -63,6 +63,7 @@ def run_deepcase(n_clicks, opened):
     if 'start_deepcase_btn' + id_str == ctx.triggered_id and not load.process_going_on:
         load.process_going_on = True
         load.start_deepcase()
+        load.process_going_on = False
         return not opened, "DeepCASE process is finished. You can review results on Manual Analysis page.", dao
     elif 'start_deepcase_btn' + id_str == ctx.triggered_id:
         return not opened, "Server is busy", dao
