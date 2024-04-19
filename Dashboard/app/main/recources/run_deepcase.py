@@ -5,6 +5,14 @@ from Dashboard.processing.process_split import ProcessorAccessObject
 process_going_on = False
 
 def start_deepcase():
+    """
+    Methode that runs deepcase on a different thread.
+    Another thread takes care of the terminations.
+    This design fix a bug in Dash, that appear on multiple pages.
+    Returns
+    -------
+    void
+    """
     global process_going_on
     process_going_on = True
     pao = ProcessorAccessObject()
@@ -18,7 +26,9 @@ def start_automatic():
     Runs automatic analysis.
     This use a thread in order to keep it running in background.
     Known bug in Dash.
-    :return: object ProcessorAccessObject that runs automatic analysis
+    Returns
+    -------
+    object ProcessorAccessObject that runs automatic analysis
     """
     global process_going_on
     process_going_on = True
@@ -32,9 +42,15 @@ def check_thread_alive(thread):
     """
     Methode that should be run on a separate thread.
     It simply checks if thread alive and does a final action.
-    :param thread: Is the thread where we check on if it is alive.
+    Parameters
+    ----------
+    thread Is the thread where we check on if it is alive.
     When it is dead we signal that it is done.
-    :return: is void because the signal is the last thing.
+
+    Returns
+    -------
+    is void because the signal is the last thing.
+
     """
     global process_going_on
     while(thread.is_alive()):
