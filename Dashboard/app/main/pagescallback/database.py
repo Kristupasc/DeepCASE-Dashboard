@@ -121,8 +121,10 @@ def update_table_input(url, input1, input2):
     Input("feedback_save_file" + id_str, 'opened'),
     # New file selected
     Input("feedback_switch" + id_str, 'opened'),
+    # When deepcase is done.
+    Input("feedback_deepcase" + id_str, 'opened'),
 )
-def disable_button_security(in1, in2, in3):
+def disable_button_security(in1, in2, in3, in4):
     if load.is_file_selected():
         return bool(load.get_status_file())
     return True
