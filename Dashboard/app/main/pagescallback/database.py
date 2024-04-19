@@ -38,9 +38,12 @@ def update_options_drop_files(in1, in2, in3):
     State("feedback_switch" + id_str, 'opened'),
     prevent_initial_call=True)
 def update_selected_file(value, opened):
-    if value is not None:
+    global progress_going_on
+    if value is not None and not load.process_going_on:
         load.switch_file(value)
         return None, not opened, "File is changed"
+    if load.process_going_on:
+        return None, not opened, "Server is going on,\n\n please don't interrupted"
     return None, opened, "File unchanged"
 
 
