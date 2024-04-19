@@ -11,7 +11,7 @@ id_str = "_data"  # suffix for database IDs
 
 @callback(
     Output("file-dropdown" + id_str, "options"),
-    Input('url' + id_str, 'pathname'),
+    Input('url', 'pathname'),
     # New file saved
     Input("feedback_save_file" + id_str, 'opened'),
     # New file selected
@@ -97,11 +97,12 @@ def store_file(list_of_contents, list_of_names, list_of_dates, opened):
 @callback(
     Output("uploaded data" + id_str, "data"),
     # Loading page
-    Input('url' + id_str, 'pathname'),
+    Input('url', 'pathname'),
     # New file saved
     Input("feedback_save_file" + id_str, 'opened'),
     # New file selected
-    Input("feedback_switch" + id_str, 'opened')
+    Input("feedback_switch" + id_str, 'opened'),
+prevent_initial_call=True
 )
 def update_table_input(url, input1, input2):
     return load.get_initial_table().to_dict('records')
@@ -109,7 +110,7 @@ def update_table_input(url, input1, input2):
 @callback(
     Output('start_deepcase_btn' + id_str, 'disabled'),
     # Loading page
-    Input('url' + id_str, 'pathname'),
+    Input('url', 'pathname'),
     # New file saved
     Input("feedback_save_file" + id_str, 'opened'),
     # New file selected
