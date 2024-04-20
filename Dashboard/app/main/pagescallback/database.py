@@ -11,7 +11,7 @@ id_str = "_data"  # suffix for database IDs
 
 @callback(
     Output("file-dropdown" + id_str, "options"),
-    Input('url' + id_str, 'pathname'),
+    Input('url', 'pathname'),
     # New file saved
     Input("feedback_save_file" + id_str, 'opened'),
     # New file selected
@@ -38,9 +38,12 @@ def update_options_drop_files(in1, in2, in3):
     State("feedback_switch" + id_str, 'opened'),
     prevent_initial_call=True)
 def update_selected_file(value, opened):
-    if value is not None:
+    global progress_going_on
+    if value is not None and not load.process_going_on:
         load.switch_file(value)
         return None, not opened, "File is changed"
+    if load.process_going_on:
+        return None, not opened, "Server is going on,\n\n please don't interrupted"
     return None, opened, "File unchanged"
 
 
@@ -60,6 +63,7 @@ def run_deepcase(n_clicks, opened):
     if 'start_deepcase_btn' + id_str == ctx.triggered_id and not load.process_going_on:
         load.process_going_on = True
         load.start_deepcase()
+        load.process_going_on = False
         return not opened, "DeepCASE process is finished. You can review results on Manual Analysis page.", dao
     elif 'start_deepcase_btn' + id_str == ctx.triggered_id:
         return not opened, "Server is busy", dao
@@ -87,7 +91,10 @@ def feedback_run_deepcase(n_clicks, opened):
     State("feedback_save_file" + id_str, 'opened')
 )
 def store_file(list_of_contents, list_of_names, list_of_dates, opened):
+    global progress_going_on
     if list_of_contents is not None:
+        if load.process_going_on:
+            return not opened, "Please try again later, the server is busy."
         text = [create_database.parse_contents(c, n, d) for c, n, d in
                 zip(list_of_contents, list_of_names, list_of_dates)]
         return not opened, text
@@ -97,12 +104,29 @@ def store_file(list_of_contents, list_of_names, list_of_dates, opened):
 @callback(
     Output("uploaded data" + id_str, "data"),
     # Loading page
-    Input('url' + id_str, 'pathname'),
+    Input('url', 'pathname'),
     # New file saved
     Input("feedback_save_file" + id_str, 'opened'),
     # New file selected
     Input("feedback_switch" + id_str, 'opened'),
-    prevent_initial_call=True
+prevent_initial_call=True
 )
 def update_table_input(url, input1, input2):
     return load.get_initial_table().to_dict('records')
+
+@callback(
+    Output('start_deepcase_btn' + id_str, 'disabled'),
+    # Loading page
+    Input('url', 'pathname'),
+    # New file saved
+    Input("feedback_save_file" + id_str, 'opened'),
+    # New file selected
+    Input("feedback_switch" + id_str, 'opened'),
+    # When deepcase is done.
+    Input("feedback_deepcase" + id_str, 'opened'),
+)
+def disable_button_security(in1, in2, in3, in4):
+    if load.is_file_selected():
+        return bool(load.get_status_file())
+    return True
+

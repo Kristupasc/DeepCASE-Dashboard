@@ -1,6 +1,7 @@
 import time
 from math import floor
 
+import dash
 from dash import callback, Output, Input, ctx, State
 from dash.exceptions import PreventUpdate
 
@@ -132,7 +133,7 @@ callback(
 # Function to get the cluster name
 callback(
     Output('cluster name' + id_str, 'value'),
-    Input('selected cluster' + id_str, "data")
+    Input('selected cluster' + id_str, "data"),
 )(display_sequence.get_name_cluster)
 
 
@@ -142,7 +143,7 @@ callback(
     Output("modal_set_cluster" + id_str, "title"),
     Input('selected cluster' + id_str, "data"),
     Input('change cluster name', 'n_clicks'),
-    State('cluster name' + id_str, 'value'),
+    Input('cluster name' + id_str, 'value'),
     State("modal_set_cluster" + id_str, "opened"),
     prevent_initial_call=True,
 )
@@ -153,13 +154,14 @@ def set_cluster_name(cluster_id, button, cluster_name, opened):
     :param cluster_id: the selected cluster ID
     :param button: the number of clicks on the change cluster name button
     :param cluster_name: the new value for the cluster name
-    :param opened: send feedback if the pop up is opened
+    :param opened: send feedback if the pop-up is opened
     :return: a message indicating the success of the operation or unchanged status, true if pop-up need to be shown.
     """
-    if 'change cluster name' == ctx.triggered_id:
+    if 'change cluster name' == ctx.triggered_id or "\n" in cluster_name:
+        cluster_name = cluster_name.split("\n", 1)[0]
         if isinstance(cluster_id, int) and isinstance(cluster_name, str):
             if load.set_cluster_name(cluster_id, cluster_name):
-                return not opened, "Succesfully changed to: " + cluster_name
+                return not opened, "Successfully changed to: " + cluster_name
         return not opened, "Nothing changed, please provide correct input"
     return opened, "nothing"
 
@@ -186,23 +188,27 @@ def set_risk_label(cluster, data, data_previous, active, opened):
     :param opened: provide feedback of the modal.
     :return: a message indicating the success of the operation
     """
-    if data is not None and active is not None and cluster is not None:
-        value = data[active['row'] - 1]['risk_label' + id_str]
-        if verify_not_different_data(data, data_previous, active):
-            if data_previous[active['row'] - 1]['risk_label' + id_str] != value:
-                if isinstance(active['row'], int) and isinstance(cluster, int) and isinstance(value, int):
-                    if load.set_riskvalue(cluster_id=cluster, row=active['row'] - 1, risk_value=value):
-                        return not opened, "Successful, saved the row."
-                return not opened, "Please provide correct values"
+    global process_going_on
+    try:
+        if data is not None and active is not None and cluster is not None and load.process_going_on:
+            value = data[active['row'] - 1]['risk_label' + id_str]
+            if verify_not_different_data(data, data_previous, active):
+                if data_previous[active['row'] - 1]['risk_label' + id_str] != value:
+                    if isinstance(active['row'], int) and isinstance(cluster, int) and isinstance(value, int):
+                        if load.set_riskvalue(cluster_id=cluster, row=active['row'] - 1, risk_value=value):
+                            return not opened, "Successful, saved the row."
+                    return not opened, "Please provide correct values"
+    except IndexError:
+        return opened, "It failed to update"
     return opened, "Nothing to be seen"
 
 
 # Function to verify if the cluster is changed
 def verify_not_different_data(data, data_previous, active):
     """
-    Verify if the cluster is changed, in a bit unconvined way.
+    Verify if the cluster is changed, in a bit unconvinced way.
     It is just to make sure that the user don't experience an annoying pop-up.
-    It don't update unwanted values anyways.
+    It doesn't update unwanted values anyway.
     """
     check1 = data[active['row'] - 1]['timestamp' + id_str] == data_previous[active['row'] - 1]['timestamp' + id_str]
     check2 = data[active['row'] - 1]['machine' + id_str] == data_previous[active['row'] - 1]['machine' + id_str]
@@ -239,7 +245,7 @@ def start_run_automatic(n_clicks, opened):
         if load.is_file_selected():
             load.process_going_on = True
             load.start_automatic()
-            # load.process_going_on = False
+            load.process_going_on = False
             return True, not opened, "Automatic analysis is successful done.", dao
         else:
             return False, not opened, "Please select a file", dao
@@ -255,7 +261,7 @@ def start_run_automatic(n_clicks, opened):
 )
 def feedBack_run_automatic(n_clicks, opened):
     global progress_going_on
-    if 'start automatic' == ctx.triggered_id and not load.process_going_on and not load.is_file_selected():
+    if 'start automatic' == ctx.triggered_id:
         return not opened
     return opened
 

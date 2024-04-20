@@ -61,8 +61,12 @@ def get_name_cluster(data):
     """
     Get the name of the selected cluster based on the cluster ID.
 
-    :param data: the selected cluster ID
-    :return: the name of the selected cluster or a default message if no cluster is selected
+    Parameters
+    ----------
+    data: the selected cluster ID
+    Returns
+    -------
+    the name of the selected cluster or a default message if no cluster is selected
     """
     if isinstance(data, int):
         k = load.possible_clusters()
@@ -76,8 +80,12 @@ def get_name_cluster(data):
 def light_up_selected_row(row):
     """
     Light up the selected event.
-    :param row: the row selected
-    :return: the adjusted layout
+    Parameters
+    ----------
+    row the row selected
+    Returns
+    -------
+    The adjusted layout
     """
     if isinstance(row, int):
         return [{"if": {"row_index": row % 10}, 'backgroundColor': 'hotpink',
