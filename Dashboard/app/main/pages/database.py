@@ -25,10 +25,10 @@ layout = html.Div(className='content', children=[
                 multi=False,
                 clearable=False,
             ),
+            html.Button('Start Security Analysis', id='start_deepcase_btn' + id_str, disabled=True),
         ]),
         html.Div([
             dcc.Location(id='url' + id_str, refresh=False),
-            html.Button('Start Security Analysis', id='start_deepcase_btn' + id_str, disabled =True),
             dash_table.DataTable(
                 id="uploaded data" + id_str,
                 columns=[
