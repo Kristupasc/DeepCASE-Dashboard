@@ -82,7 +82,7 @@ th {
 
 button {
     padding: 5px;
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     border-radius: 5px;
     margin: 5px;
     border: none;
@@ -383,7 +383,7 @@ button:not(.show-hide) {
 
 /* Select a file dropdown  */
 .dash-dropdown {
-    background-color: var(--primary-color) !important;
+    background-color: var(--secondary-color);
     border-radius: 5px;
     /*border-top-left-radius: 5px;*/
     /*border-bottom-right-radius: 5px ;*/
@@ -393,7 +393,7 @@ button:not(.show-hide) {
 
 /*Select a cluster dropdown */
 .dropdown-with-text .dash-dropdown {
-    background-color: var(--primary-color) !important;
+    background-color: var(--secondary-color);
     /*border-radius: 5px;*/
     /*border-top-left-radius: 5px;*/
     border-bottom-right-radius: 5px ;
@@ -410,25 +410,25 @@ button:not(.show-hide) {
     padding-left: 3px;
 }
 
-/*.dash-cell {*/
-/*  width: auto !important;*/
-/*  min-width: 50px ;*/
-/*}*/
-
 button:hover {
     cursor: pointer;
-    background-color: #e0e0e0 !important;
-
+    /*background-color: #e0e0e0 !important;*/
+    background-color: var(--primary-color);
 }
 
 div.dash-dropdown:hover {
     cursor: pointer;
-    background-color: #e0e0e0 !important;
+    background-color: var(--primary-color);
 }
 
 .Select-control:hover {
     cursor: pointer;
-    background-color: #e0e0e0 !important;
+    background-color: var(--primary-color);
+}
+
+.sidebar-button:hover {
+    cursor: pointer;
+    background-color: var(--primary-color);
 }
 
 /* non-disabled button */
@@ -440,5 +440,5 @@ div.dash-dropdown:hover {
 /* disabled button */
 #start_deepcase_btn_data[disabled] {
     cursor: default;
-    opacity: 0.6;
+    opacity: 0.7;
 }
