@@ -414,3 +414,31 @@ button:not(.show-hide) {
 /*  width: auto !important;*/
 /*  min-width: 50px ;*/
 /*}*/
+
+button:hover {
+    cursor: pointer;
+    background-color: #e0e0e0 !important;
+
+}
+
+div.dash-dropdown:hover {
+    cursor: pointer;
+    background-color: #e0e0e0 !important;
+}
+
+.Select-control:hover {
+    cursor: pointer;
+    background-color: #e0e0e0 !important;
+}
+
+/* non-disabled button */
+#start_deepcase_btn_data:not([disabled]):hover {
+    cursor: pointer;
+    background-color: #e0e0e0;
+}
+
+/* disabled button */
+#start_deepcase_btn_data[disabled] {
+    cursor: default;
+    opacity: 0.6;
+}
