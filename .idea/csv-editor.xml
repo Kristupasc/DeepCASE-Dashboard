@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Dashboard\data\alerts - Copy.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\Dashboard\data\alerts.csv">
           <value>
             <Attribute>
