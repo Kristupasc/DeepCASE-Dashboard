@@ -65,7 +65,7 @@ class Database(object):
                                FOREIGN KEY (filename) REFERENCES files(filename)
                                )''')
         self.cur.execute('''CREATE TABLE IF NOT EXISTS sequences
-                               (id_sequence INTEGER, filename TEXT, id_cluster INTEGER, mapping_value INT, risk_label TEXT,
+                               (id_sequence INTEGER, filename TEXT, id_cluster INTEGER, mapping_value INT, risk_label INT,
                                PRIMARY KEY(id_sequence, filename),
                                FOREIGN KEY (filename) REFERENCES files(filename), 
                                FOREIGN KEY (id_cluster) REFERENCES clusters(id_cluster),
@@ -120,7 +120,7 @@ class Database(object):
     ########################################################################
     #                         Data insertion                               #
     ########################################################################
-    def store_input_file(self, input_file_df: pd.DataFrame, filename):
+    def store_input_file(self, input_file_df: pd.DataFrame, filename) -> bool:
         """
         Saves input_file_df dataframe generated from input csv file into events table under corresponding filename.
         Also saves name of the input file into files table.
@@ -131,28 +131,35 @@ class Database(object):
             filename (str) : name of the file DeepCase should perform analysis onto
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        now = datetime.now()
-        # Append current datetime to the filename
-        self.filename = filename + '_' + now.strftime("%Y-%m-%d %H:%M:%S")
-        self.cur.execute("INSERT  INTO files (filename, custom_name, run) VALUES (?, ?, ?)",
-                         (self.filename, self.filename, 0))
-        self.conn.commit()
+        # print("store_input_file")
+        # print(input_file_df.head(2))
+        # print(input_file_df.head(2).to_dict())
+        try:
+            now = datetime.now()
+            # Append current datetime to the filename
+            self.filename = filename + '_' + now.strftime("%Y-%m-%d %H:%M:%S")
+            self.cur.execute("INSERT  INTO files (filename, custom_name, run) VALUES (?, ?, ?)",
+                             (self.filename, self.filename, 0))
+            self.conn.commit()
 
-        input_file_df['filename'] = self.filename
-        input_file_df.to_sql('events', self.conn, if_exists='append', index=False, dtype={
-            'id_event': 'INTEGER',
-            'filename': 'TEXT',
-            'timestamp': 'REAL',
-            'machine': 'TEXT',
-            'event': 'TEXT',
-            'label': 'INT'
-        })
-        self.conn.commit()
-        return
+            input_file_df['filename'] = self.filename
+            input_file_df.to_sql('events', self.conn, if_exists='append', index=False, dtype={
+                'id_event': 'INTEGER',
+                'filename': 'TEXT',
+                'timestamp': 'REAL',
+                'machine': 'TEXT',
+                'event': 'TEXT',
+                'label': 'INT'
+            })
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
-    def store_sequences(self, sequence_df: pd.DataFrame):
+    def store_sequences(self, sequence_df: pd.DataFrame) -> bool:
         """
         Saves sequence_df dataframe produced by DeepCase sequencing function into sequence table under corresponding filename.
 
@@ -161,17 +168,24 @@ class Database(object):
             sequence_df (pd.DataFrame) : contains data about main events of the sequences
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        # Upload to sequence table
-        sequence_df['filename'] = self.filename
-        sequence_df.reset_index(inplace=True)
-        sequence_df.rename(columns={'index': 'id_sequence'}, inplace=True)
-        sequence_df.to_sql('sequences', con=self.conn, if_exists='append', index=False)
-        self.conn.commit()
-        return
+        print("store_sequences")
+        print(sequence_df.head(2))
+        print(sequence_df.head(2).to_dict())
+        try:
+            # Upload to sequence table
+            sequence_df['filename'] = self.filename
+            sequence_df.reset_index(inplace=True)
+            sequence_df.rename(columns={'index': 'id_sequence'}, inplace=True)
+            sequence_df.to_sql('sequences', con=self.conn, if_exists='append', index=False)
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
-    def store_mapping(self, mapping):
+    def store_mapping(self, mapping) -> bool:
         """
         Saves mapping of events codes to events names produced by DeepCase sequencing function into mapping table under corresponding filename.
 
@@ -180,16 +194,22 @@ class Database(object):
             mapping (dict) : dictionary where key is the unique id of event, and value is the name of the corresponding events
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
+        print("store_mapping")
+        print(mapping)
+        try:
+            for key, value in mapping.items():
+                self.cur.execute("INSERT OR REPLACE INTO mapping (id, name, filename) VALUES (?, ?, ?)",
+                                 (key, value, self.filename))
+                self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
         # Iterate through dict and upload to mapping table
-        for key, value in mapping.items():
-            self.cur.execute("INSERT OR REPLACE INTO mapping (id, name, filename) VALUES (?, ?, ?)",
-                             (key, value, self.filename))
-            self.conn.commit()
-        return
 
-    def store_context(self, context_df: pd.DataFrame):
+    def store_context(self, context_df: pd.DataFrame) -> bool:
         """
         Saves dataframe with context events of the sequence produced by DeepCase sequencing function
         into context_events table under corresponding filename. The dataframe rows correspond to the sequence already
@@ -201,15 +221,21 @@ class Database(object):
             context_df (pd.DataFrame) : contains data about ten context events of the sequence
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        # Upload to context events table
-        context_df['filename'] = self.filename
-        context_df.to_sql('context_events', con=self.conn, if_exists='append', index=False)
-        self.conn.commit()
-        return
+        print("store_context")
+        print(context_df.head(2))
+        print(context_df.head(2).to_dict())
+        try:
+            context_df['filename'] = self.filename
+            context_df.to_sql('context_events', con=self.conn, if_exists='append', index=False)
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
-    def store_clusters(self, clusters_df: pd.DataFrame):
+    def store_clusters(self, clusters_df: pd.DataFrame) -> bool:
         """
         Saves clusters_df dataframe produced by DeepCase clustering function into sequence table under corresponding filename.
         Each of the clusters id aligns to a unique per-file sequence id.
@@ -219,28 +245,35 @@ class Database(object):
             clusters_df (pd.DataFrame) : contains the ids of clusters for each sequence
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        clusters_old_df = pd.read_sql_query('''SELECT * FROM sequences WHERE filename = ?''', self.conn,
-                                            params=[self.filename])
-        other_clusters_df = pd.read_sql_query('''SELECT * FROM sequences WHERE NOT filename = ?''', self.conn,
-                                              params=[self.filename])
-        clusters_df['id_sequence'] = clusters_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
-        clusters_old_df['id_sequence'] = clusters_old_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
-        # Append updated attention column to the old attention dataframe
-        merged_df = clusters_old_df.merge(clusters_df, on='id_sequence', how='left', suffixes=('', '_updated'))
+        print("store_clusters")
+        print(clusters_df.head(2))
+        print(clusters_df.head(2).to_dict())
+        try:
+            clusters_old_df = pd.read_sql_query('''SELECT * FROM sequences WHERE filename = ?''', self.conn,
+                                                params=[self.filename])
+            other_clusters_df = pd.read_sql_query('''SELECT * FROM sequences WHERE NOT filename = ?''', self.conn,
+                                                  params=[self.filename])
+            clusters_df['id_sequence'] = clusters_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
+            clusters_old_df['id_sequence'] = clusters_old_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
+            # Append updated attention column to the old attention dataframe
+            merged_df = clusters_old_df.merge(clusters_df, on='id_sequence', how='left', suffixes=('', '_updated'))
 
-        merged_df.drop(columns='id_cluster', inplace=True)
-        merged_df.rename(columns={'id_cluster_updated': 'id_cluster'}, inplace=True)
+            merged_df.drop(columns='id_cluster', inplace=True)
+            merged_df.rename(columns={'id_cluster_updated': 'id_cluster'}, inplace=True)
 
-        merged_df['filename'] = self.filename
-        result_df = pd.concat([merged_df, other_clusters_df], ignore_index=True)
-        result_df.to_sql('sequences', con=self.conn, if_exists='replace', index=False)
+            merged_df['filename'] = self.filename
+            result_df = pd.concat([merged_df, other_clusters_df], ignore_index=True)
+            result_df.to_sql('sequences', con=self.conn, if_exists='replace', index=False)
 
-        self.conn.commit()
-        return
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
-    def store_attention(self, attention_df: pd.DataFrame):
+    def store_attention(self, attention_df: pd.DataFrame) -> bool:
         """
         Stores attention vector produced by DeepCase into context_events table under corresponding filename.
         Input dataframe contains attention to all the context events already stored in the databasae. The function
@@ -251,53 +284,64 @@ class Database(object):
             attention_df (pd.DataFrame) : attention vector of context events
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        attention_old_df = pd.read_sql_query('''SELECT * FROM context_events WHERE filename = ?''', self.conn,
-                                             params=[self.filename])
-        other_attention_df = pd.read_sql_query('''SELECT * FROM context_events WHERE NOT filename = ?''', self.conn,
-                                               params=[self.filename])
+        print("store_attention")
+        print(attention_df.head(2))
+        print(attention_df.head(2).to_dict())
+        try:
+            attention_old_df = pd.read_sql_query('''SELECT * FROM context_events WHERE filename = ?''', self.conn,
+                                                 params=[self.filename])
+            other_attention_df = pd.read_sql_query('''SELECT * FROM context_events WHERE NOT filename = ?''', self.conn,
+                                                   params=[self.filename])
 
-        attention_df['id_sequence'] = attention_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
-        attention_old_df['id_sequence'] = attention_old_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
-        # Append updated attention column to the old attention dataframe
-        merged_df = attention_old_df.merge(attention_df, on=['id_sequence', 'event_position'], how='left',
-                                           suffixes=('', '_updated'))
+            attention_df['id_sequence'] = attention_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
+            attention_old_df['id_sequence'] = attention_old_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
+            # Append updated attention column to the old attention dataframe
+            merged_df = attention_old_df.merge(attention_df, on=['id_sequence', 'event_position'], how='left',
+                                               suffixes=('', '_updated'))
 
-        merged_df.drop(columns='attention', inplace=True)
-        merged_df.rename(columns={'attention_updated': 'attention'}, inplace=True)
+            merged_df.drop(columns='attention', inplace=True)
+            merged_df.rename(columns={'attention_updated': 'attention'}, inplace=True)
 
-        merged_df['filename'] = self.filename
-        # Remove old records
-        result_df = pd.concat([merged_df, other_attention_df], ignore_index=True)
+            merged_df['filename'] = self.filename
+            # Remove old records
+            result_df = pd.concat([merged_df, other_attention_df], ignore_index=True)
 
-        result_df.to_sql('context_events', con=self.conn, if_exists='replace', index=False)
-        self.conn.commit()
-        return
+            result_df.to_sql('context_events', con=self.conn, if_exists='replace', index=False)
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
-    def fill_cluster_table(self):
+    def fill_cluster_table(self) -> bool:
         """
         Fills in clusters table by extracting unique cluster_ids form sequencing table and assigning them
         risk label that is max risk label among all sequences in the cluster.
 
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
         query = """SELECT id_cluster, id_cluster AS name_cluster, MAX(risk_label) AS score  
         FROM sequences 
         WHERE filename = ?
         GROUP BY id_cluster;
         """
-        clusters_df = pd.read_sql_query(query, self.conn, params=[self.filename])
-        clusters_df['filename'] = self.filename
-        other_clusters_df = pd.read_sql_query("SELECT * FROM clusters WHERE NOT filename = ?", self.conn,
-                                              params=[self.filename])
-        result_df = pd.concat([clusters_df, other_clusters_df], ignore_index=True)
-        result_df.to_sql("clusters", con=self.conn, if_exists='replace', index=False)
-        return
+        try:
+            clusters_df = pd.read_sql_query(query, self.conn, params=[self.filename])
+            clusters_df['filename'] = self.filename
+            other_clusters_df = pd.read_sql_query("SELECT * FROM clusters WHERE NOT filename = ?", self.conn,
+                                                  params=[self.filename])
+            result_df = pd.concat([clusters_df, other_clusters_df], ignore_index=True)
+            result_df.to_sql("clusters", con=self.conn, if_exists='replace', index=False)
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
-    def set_cluster_name(self, id_cluster: int, name_cluster: str):
+    def set_cluster_name(self, id_cluster: int, name_cluster: str) -> bool:
         """
         Updates the name of the existing cluster into the custom one.
 
@@ -307,14 +351,18 @@ class Database(object):
             name_cluster (str) : new name to be assigned to a selected cluster
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        query = "UPDATE clusters SET name_cluster = ? WHERE id_cluster = ? AND filename = ?"
-        self.cur.execute(query, (name_cluster, id_cluster, self.filename))
-        self.conn.commit()
-        return
+        try:
+            query = "UPDATE clusters SET name_cluster = ? WHERE id_cluster = ? AND filename = ?"
+            self.cur.execute(query, (name_cluster, id_cluster, self.filename))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
-    def set_risk_value(self, event_id, risk_value):
+    def set_risk_value(self, event_id, risk_value) -> bool:
         """
         Updates the risk label of the selected sequence.
 
@@ -324,14 +372,18 @@ class Database(object):
             risk_value (int) : new risk value to set to selected event
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        query = "UPDATE sequences SET risk_label = ? WHERE id_sequence = ? AND filename = ?"
-        self.cur.execute(query, (risk_value, event_id, self.filename))
-        self.conn.commit()
-        return
+        try:
+            query = "UPDATE sequences SET risk_label = ? WHERE id_sequence = ? AND filename = ?"
+            self.cur.execute(query, (risk_value, event_id, self.filename))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
-    def set_file_name(self, filename: str, new_name: str):
+    def set_file_name(self, filename: str, new_name: str) -> bool:
         """
         Updates the file name of the selected file.
 
@@ -341,25 +393,33 @@ class Database(object):
             new_name (str) : custom filename to set to selected file
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        query = "UPDATE files SET custom_name = ? WHERE filename = ?"
-        self.cur.execute(query, (new_name, filename))
-        self.conn.commit()
-        return
+        try:
+            query = "UPDATE files SET custom_name = ? WHERE filename = ?"
+            self.cur.execute(query, (new_name, filename))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
-    def set_run_flag(self):
+    def set_run_flag(self) -> bool:
         """
         Changes run status to True when DeepCase finishes its analysis on the selected file.
 
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        query = "UPDATE files SET run = 1 WHERE filename = ?"
-        self.cur.execute(query, [self.filename])
-        self.conn.commit()
-        return
+        try:
+            query = "UPDATE files SET run = 1 WHERE filename = ?"
+            self.cur.execute(query, [self.filename])
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
     ########################################################################
     #                         Data update                                  #
@@ -448,6 +508,9 @@ class Database(object):
                                         AND sequences.filename = ?
                                         AND events.filename = sequences.filename
                                         AND mapping.filename = sequences.filename''', self.conn, params=[self.filename])
+        print("get_sequences")
+        print(result.head(2))
+        print(result.head(2).to_dict())
         return result
 
     def get_sequence_by_id(self, sequence_id: int) -> pd.DataFrame:
@@ -464,10 +527,14 @@ class Database(object):
                 FROM mapping, sequences, events 
                 WHERE sequences.mapping_value = mapping.id 
                 AND events.id_event = ?
+                AND sequences.id_sequence = ?
                 AND sequences.filename = ?
                 AND mapping.filename = sequences.filename
                 AND events.filename = sequences.filename"""
-        result = pd.read_sql_query(query, self.conn, params=[sequence_id, self.filename])
+        result = pd.read_sql_query(query, self.conn, params=[sequence_id,sequence_id, self.filename])
+        print("get_sequence_by_id")
+        print(result.head(2))
+        print(result.head(2).to_dict())
         return result
 
     def get_context_by_sequence_id(self, sequence_id: int) -> pd.DataFrame:

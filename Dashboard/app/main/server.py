@@ -1,5 +1,4 @@
 from dash import Dash
-from Dashboard.processing.process_split import ProcessorAccessObject
 from Dashboard.data.dao.database import Database
 
 #initialize database
