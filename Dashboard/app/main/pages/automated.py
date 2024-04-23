@@ -8,7 +8,7 @@ from Dashboard.app.main.pagescallback.display_sequence import *
 # Registering the page with Dash
 dash.register_page(__name__, path="/semi-automatic", name="Semi-automatic", title="Semi-automatic", order=2)
 ########################################################################
-#               Automatic page, for after manual                       #
+#               Automatic analysis page                                #
 ########################################################################
 # Layout definition for the semi-automatic dashboard page
 layout = html.Div(className='content', children=[

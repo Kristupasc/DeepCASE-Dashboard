@@ -5,7 +5,7 @@ import dash
 from dash import callback, Output, Input, ctx, State
 from dash.exceptions import PreventUpdate
 
-import Dashboard.app.main.pagescallback.display_sequence as display_sequence
+import Dashboard.app.main.pagescallback.common as display_sequence
 import Dashboard.app.main.recources.loaddata as load
 
 # Suffix for all the ids that might be the same
@@ -24,14 +24,22 @@ automatic_analysis = False
     Input('random' + id_str, "n_clicks"),
     Input('next' + id_str, "n_clicks")
 )
-def store_selected_cluster(state, click, nbtn):
+def store_selected_cluster(state: int, click: int, nbtn: int) -> int:
     """
-    Store the selected cluster based on dropdown value or random click.
 
-    :param state: the value from the filter dropdown
-    :param click: the number of clicks on the random button
-    :param nbtn: for next cluster triggered.
-    :return: the selected cluster or trigger a PreventUpdate exception
+    Parameters
+    ----------
+    state: int
+      the value from the filter dropdown
+    click: int
+      the number of clicks on the random button
+    nbtn: int
+      for next cluster triggered.
+
+    Returns
+    -------
+    the selected cluster or trigger a PreventUpdate exception
+
     """
     if 'random' + id_str == ctx.triggered_id:
         return load.get_random_cluster()
@@ -47,12 +55,18 @@ def store_selected_cluster(state, click, nbtn):
     Output("manual", "data"),
     Input('selected cluster' + id_str, "data")
 )
-def update_table_cluster(state):
+def update_table_cluster(state: int)-> dict:
     """
     Update the table in the manual component based on the selected cluster.
+    Parameters
+    ----------
+    state: int
+     the selected cluster ID
 
-    :param state: the selected cluster ID
-    :return: the formatted data for the table as a dictionary of records
+    Returns
+    -------
+    the formatted data for the table as a dictionary of records
+
     """
     if isinstance(state, int):
         dff = load.formatSequenceCluster(state, id_str)
@@ -70,16 +84,24 @@ def update_table_cluster(state):
     Input('next' + qid_str, "n_clicks"),
     Input("selected cluster" + id_str, "data")
 )
-def store_context_row(state, click, nbtn, cluster_id):
+def store_context_row(state: int, click: int, nbtn:int, cluster_id:int) -> (int, [int], int):
     """
     Store the context row based on user interactions and trigger events.
+    Parameters
+    ----------
+    state : int
+     the selected rows in the manual component
+    click: int
+     the number of clicks on the random button for sequence
+    nbtn : int
+     the number of clicks on the next sequence button.
+    cluster_id : int
+     the number representing the cluster.
 
-    :param state: the selected rows in the manual component
-    :param click: the number of clicks on the random button
-    :param nbtn: the triggered next button.
-    :param cluster_id: the selected cluster ID
-    :return: the stored context row or trigger a PreventUpdate exception,
-    as well the updated row selected, page current.
+    Returns
+    -------
+    The row selected, the selected row in array, the page number belongs to the selected cluster.
+
     """
     if isinstance(cluster_id, int):
         if 'random' + qid_str == ctx.triggered_id and isinstance(cluster_id, int):
@@ -104,13 +126,19 @@ def store_context_row(state, click, nbtn, cluster_id):
     Input('selected row' + id_str, "data"),
     Input('selected cluster' + id_str, "data")
 )
-def display_context(row, cluster):
+def display_context(row: int, cluster: int)-> dict:
     """
-    Display the context information based on the selected row and cluster.
+     Display the context information based on the selected row and cluster.
+    Parameters
+    ----------
+    row : int
+    Represent the selected row in the tabel.
+    cluster: int
+    Represent the selected cluster
 
-    :param row: the selected row
-    :param cluster: the selected cluster
-    :return: the context frame as a dictionary of records
+    Returns
+    -------
+    The context frame as a dictionary.
     """
     if isinstance(row, int) and isinstance(cluster, int) and row <= load.get_row(cluster):
         df = load.formatContext(cluster, row, cid_str)

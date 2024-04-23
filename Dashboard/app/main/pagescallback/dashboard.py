@@ -4,7 +4,7 @@ from dash import callback, Output, Input, State, callback_context
 from dash.exceptions import PreventUpdate
 
 # Importing callback functions, data loading functions, and DAO
-import Dashboard.app.main.pagescallback.display_sequence as display_sequence
+import Dashboard.app.main.pagescallback.common as display_sequence
 import Dashboard.app.main.recources.loaddata as load
 from Dashboard.app.main.recources.label_tools import choose_risk, get_colors
 from Dashboard.data.dao.dao import DAO

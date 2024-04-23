@@ -51,6 +51,7 @@ layout = html.Div(className='content', children=[
             ),
         ])
     ]),
+    # modals for pop-up
     dmc.Modal(title="Yeeeeeeeeaaaaaaaa", id="feedback_deepcase" + id_str),
     dmc.Modal(title="DeepCASE is running.\n\n This might take 20 minutes.\n\n Enjoy a cup of tea in the meantime.", id="feedback_start_deepcase" + id_str,
               children=[dcc.Loading(

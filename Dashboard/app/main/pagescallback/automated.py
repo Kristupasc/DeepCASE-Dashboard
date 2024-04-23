@@ -2,7 +2,7 @@ from dash import callback, Output, Input
 from dash.exceptions import PreventUpdate
 
 # Importing callback functions and data loading functions
-import Dashboard.app.main.pagescallback.display_sequence as display_sequence
+import Dashboard.app.main.pagescallback.common as display_sequence
 import Dashboard.app.main.recources.loaddata as load
 
 # Setting suffixes for IDs
