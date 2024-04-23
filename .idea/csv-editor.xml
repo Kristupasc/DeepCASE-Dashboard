@@ -59,13 +59,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\Dashboard\test\process\alerts.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Dashboard\test\process\test_alerts.csv">
           <value>
             <Attribute>

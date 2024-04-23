@@ -30,7 +30,7 @@ class Database(object):
             self.filename = 'emptyfile'
             self.initialized = True  # Mark the instance as initialized
             # self.drop_database()
-        self.create_tables()
+            self.create_tables()
         return
 
     @classmethod
