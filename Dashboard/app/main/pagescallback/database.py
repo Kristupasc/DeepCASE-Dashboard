@@ -4,7 +4,7 @@ from dash import callback, no_update, ctx
 from dash.dependencies import Input, Output, State
 
 import Dashboard.app.main.recources.database_data as load
-from Dashboard.data.upload import create_database
+from Dashboard.app.main.recources import create_database
 
 id_str = "_data"  # suffix for database IDs
 
