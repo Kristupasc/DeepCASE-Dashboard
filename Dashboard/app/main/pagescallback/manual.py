@@ -175,15 +175,25 @@ callback(
     State("modal_set_cluster" + id_str, "opened"),
     prevent_initial_call=True,
 )
-def set_cluster_name(cluster_id, button, cluster_name, opened):
+def set_cluster_name(cluster_id: int, button: int, cluster_name: str, opened: bool)-> (bool, str):
     """
     Set the label for the cluster based on user input and send an modal.
 
-    :param cluster_id: the selected cluster ID
-    :param button: the number of clicks on the change cluster name button
-    :param cluster_name: the new value for the cluster name
-    :param opened: send feedback if the pop-up is opened
-    :return: a message indicating the success of the operation or unchanged status, true if pop-up need to be shown.
+    Parameters
+    ----------
+    cluster_id : int
+    the selected cluster ID
+    button : int
+    the number of clicks on the change cluster name button
+    cluster_name : str
+    the new value for the cluster name
+    opened : bool
+    send feedback if the pop-up is opened
+
+    Returns
+    -------
+    A message indicating the success of the operation or unchanged status, true if pop-up need to be shown.
+
     """
     if 'change cluster name' == ctx.triggered_id or "\n" in cluster_name:
         cluster_name = cluster_name.split("\n", 1)[0]
@@ -205,16 +215,24 @@ def set_cluster_name(cluster_id, button, cluster_name, opened):
     State("modal_set_risk" + id_str, "opened"),
     prevent_initial_call=True
 )
-def set_risk_label(cluster, data, data_previous, active, opened):
+def set_risk_label(cluster: int, data: [[]], data_previous: [[]], active: dict, opened:bool)-> (bool, str):
     """
     Set the risk label based on user input.
 
-    :param cluster: is the cluster selected.
-    :param data: is all the data of the dash table, there don't exist a better parameter
-    :param data_previous: is all the data of the dash table, before change.
-    :param active: is the parameter that checks which cell is edited.
-    :param opened: provide feedback of the modal.
-    :return: a message indicating the success of the operation
+    Parameters
+    ----------
+    cluster : int
+    data : [[]]
+    A table with all information
+    data_previous: [[]]
+    The data of the previous time the function is called.
+    active : dict
+    A dict with the cells that are selected by the user.
+    opened : bool
+    If the modal(pop-up) is opened.
+    Returns
+    -------
+    A message indicating the success of the operation
     """
     global process_going_on
     try:
@@ -234,9 +252,24 @@ def set_risk_label(cluster, data, data_previous, active, opened):
 # Function to verify if the cluster is changed
 def verify_not_different_data(data, data_previous, active):
     """
+    This methode is there to reduce the previous methode length.
     Verify if the cluster is changed, in a bit unconvinced way.
     It is just to make sure that the user don't experience an annoying pop-up.
     It doesn't update unwanted values anyway.
+    Parameters
+    ----------
+    data : [[]]
+    table of data
+    data_previous : [[]]
+    table as it was previously
+    active: dict
+    the cell that was active
+
+    Returns
+    -------
+    True if it looks different it might not.
+    False if it is definitely different.
+
     """
     check1 = data[active['row'] - 1]['timestamp' + id_str] == data_previous[active['row'] - 1]['timestamp' + id_str]
     check2 = data[active['row'] - 1]['machine' + id_str] == data_previous[active['row'] - 1]['machine' + id_str]
@@ -259,13 +292,19 @@ callback(
           State("feedback finish automatic" + id_str, 'opened'),
           prevent_initial_call=True,
           )
-def start_run_automatic(n_clicks, opened):
+def start_run_automatic(n_clicks: int, opened: bool)-> (bool, bool, str, object):
     """
     This method stores if the analysis need to start.
+    Parameters
+    ----------
+    n_clicks : int
+    is needed to verify a button press
+    opened : bool
+    Makes sure that the pop-up is not already displayed.
+    Returns
+    -------
+    Return pop-up with text and  send signal id process going on as well signal to load.
 
-    :param n_clicks: is needed to verify a button press
-    :param opened: Makes sure that the pop-up is not already displayed.
-    :return:  Return pop-up with text.
     """
     global process_going_on
     dao = time.sleep(0)
@@ -287,7 +326,21 @@ def start_run_automatic(n_clicks, opened):
     Input('start automatic', 'n_clicks'),
     State("feedback start automatic" + id_str, "opened")
 )
-def feedBack_run_automatic(n_clicks, opened):
+def feedBack_run_automatic(n_clicks : int, opened : bool) -> bool:
+    """
+    Runs the automatic analysis
+    Parameters
+    ----------
+    n_clicks : int
+    the amount of clicks
+    opened : bool
+    State if pop-up is opened
+
+    Returns
+    -------
+    Signal to show pop-up
+
+    """
     global progress_going_on
     if 'start automatic' == ctx.triggered_id:
         return not opened
