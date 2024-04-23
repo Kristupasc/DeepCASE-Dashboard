@@ -2,7 +2,7 @@ import dash
 from dash import html, dcc, dash_table
 
 from Dashboard.app.main.pagescallback.dashboard import *
-from Dashboard.app.main.pagescallback.display_sequence import *
+from Dashboard.app.main.pagescallback.common import *
 
 dash.register_page(__name__, path="/dashboard", name="Dashboard", title="Dashboard", order=0)
 
