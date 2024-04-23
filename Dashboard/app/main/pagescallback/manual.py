@@ -190,7 +190,7 @@ def set_risk_label(cluster, data, data_previous, active, opened):
     """
     global process_going_on
     try:
-        if data is not None and active is not None and cluster is not None and load.process_going_on:
+        if data is not None and active is not None and cluster is not None and not load.process_going_on:
             value = data[active['row'] - 1]['risk_label' + id_str]
             if verify_not_different_data(data, data_previous, active):
                 if data_previous[active['row'] - 1]['risk_label' + id_str] != value:

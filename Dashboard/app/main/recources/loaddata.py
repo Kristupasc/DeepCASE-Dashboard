@@ -4,7 +4,7 @@ import pandas as pd
 
 from Dashboard.app.main.recources.label_tools import choose_risk
 from Dashboard.data.dao.dao import DAO
-
+from Dashboard.app.main.recources.run_deepcase import *
 format_time = "%H:%M:%S.%f, %d %b %Y"  # For second %s %ssss
 
 
