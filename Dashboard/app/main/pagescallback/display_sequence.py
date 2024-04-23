@@ -1,6 +1,9 @@
 import pandas as pd
+from dash.exceptions import PreventUpdate
+
 from Dashboard.app.main.recources.label_tools import choose_risk
 import Dashboard.app.main.recources.loaddata as load
+from Dashboard.data.dao.dao import DAO
 
 
 # Function to store the selected cluster
@@ -95,7 +98,16 @@ def light_up_selected_row(row):
 
 # Function to display the risk value of the cluster
 def display_risk_cluster(cluster_id):
-    try:
-        return "Security Score: ", choose_risk(load.get_risk_cluster(cluster_id))
-    except (ValueError, IndexError, TypeError):
+    if cluster_id is None or not isinstance(cluster_id, int):
         return ""
+    dao = DAO()
+    data = dao.get_sequences_per_cluster(cluster_id)
+    # if the cluster was just selected, we check for the label of the cluster
+    # set the risk label to the first sequence in the cluster
+    cluster_risk_label = "Security Score: " + str(choose_risk(data.iloc[0]["risk_label"]))
+    # iterate through the sequences and check if all have the same label
+    for sequence in data.to_dict('records'):
+        if sequence["risk_label"] != data.iloc[0]["risk_label"]:
+            cluster_risk_label = "Security Score: Suspicious"
+            break
+    return cluster_risk_label

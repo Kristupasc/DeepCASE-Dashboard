@@ -71,6 +71,10 @@ def display_context(click_data):
 
 # Various callbacks for dropdown updates
 @callback(
+    Output("display risk cluster" + id_str, "children"),  # Output: Risk label of cluster
+    Input('selected cluster' + id_str, "data")  # Inputs: selected cluster data
+)(display_sequence.display_risk_cluster)
+@callback(
     Output("filter_dropdown" + id_str, 'options'),  # Output: options for filter dropdown
     Input('refresh-data', 'n_intervals')  # Input: number of intervals for refresh
 )(display_sequence.update_options_dropdown)
@@ -184,9 +188,3 @@ callback(
     Output("dashboard", "style_data_conditional"),  # Output: style_data_conditional for dashboard table
     Input("selected row" + id_str, "data")  # Input: selected row data
 )(display_sequence.light_up_selected_row)
-
-# Callback to find the risk value of the cluster and display it
-callback(
-    Output("display risk cluster" + id_str, "children"),  # Output: children of display risk cluster component
-    Input('selected cluster' + id_str, "data")  # Input: selected cluster data
-)(display_sequence.display_risk_cluster)
