@@ -22,8 +22,10 @@ class Database(object):
         return cls._instance
 
     def __init__(self):
-        if not hasattr(self, 'initialized'):  # Check if the instance is already initialized
+        if not hasattr(self, 'initialized'):
+        # Check if the instance is already initialized
             self.conn = sqlite3.connect(file_path, check_same_thread=False)
+
             self.cur = self.conn.cursor()
             self.filename = 'emptyfile'
             self.initialized = True  # Mark the instance as initialized
@@ -33,7 +35,10 @@ class Database(object):
 
     @classmethod
     def reset(cls):
+        if cls._instance:
+            cls._instance.conn.close()
         cls._instance = None
+
 
     ########################################################################
     #                         Database manipulation                        #
@@ -80,7 +85,7 @@ class Database(object):
                                FOREIGN KEY (mapping_value) REFERENCES mapping(id)
                                )''')
         self.conn.commit()
-        return
+        return True
 
     def drop_database(self):
         """
@@ -133,9 +138,6 @@ class Database(object):
         -------
             (bool) : False if execution failed, true otherwise
         """
-        # print("store_input_file")
-        # print(input_file_df.head(2))
-        # print(input_file_df.head(2).to_dict())
         try:
             now = datetime.now()
             # Append current datetime to the filename
@@ -170,9 +172,6 @@ class Database(object):
         -------
             (bool) : False if execution failed, true otherwise
         """
-        print("store_sequences")
-        print(sequence_df.head(2))
-        print(sequence_df.head(2).to_dict())
         try:
             # Upload to sequence table
             sequence_df['filename'] = self.filename
@@ -196,8 +195,6 @@ class Database(object):
         -------
             (bool) : False if execution failed, true otherwise
         """
-        print("store_mapping")
-        print(mapping)
         try:
             for key, value in mapping.items():
                 self.cur.execute("INSERT OR REPLACE INTO mapping (id, name, filename) VALUES (?, ?, ?)",
@@ -223,9 +220,6 @@ class Database(object):
         -------
             (bool) : False if execution failed, true otherwise
         """
-        print("store_context")
-        print(context_df.head(2))
-        print(context_df.head(2).to_dict())
         try:
             context_df['filename'] = self.filename
             context_df.to_sql('context_events', con=self.conn, if_exists='append', index=False)
@@ -247,9 +241,7 @@ class Database(object):
         -------
             (bool) : False if execution failed, true otherwise
         """
-        print("store_clusters")
-        print(clusters_df.head(2))
-        print(clusters_df.head(2).to_dict())
+
         try:
             clusters_old_df = pd.read_sql_query('''SELECT * FROM sequences WHERE filename = ?''', self.conn,
                                                 params=[self.filename])
@@ -286,9 +278,7 @@ class Database(object):
         -------
             (bool) : False if execution failed, true otherwise
         """
-        print("store_attention")
-        print(attention_df.head(2))
-        print(attention_df.head(2).to_dict())
+
         try:
             attention_old_df = pd.read_sql_query('''SELECT * FROM context_events WHERE filename = ?''', self.conn,
                                                  params=[self.filename])
@@ -430,22 +420,26 @@ class Database(object):
 
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        query = """SELECT sequences.id_cluster, clusters.name_cluster, MAX(risk_label) AS score  
-                        FROM sequences, clusters
-                        WHERE sequences.filename = ?
-                        AND sequences.filename = clusters.filename
-                        AND sequences.id_cluster = clusters.id_cluster
-                        GROUP BY sequences.id_cluster;
-                        """
-        clusters_df = pd.read_sql_query(query, self.conn, params=[self.filename])
-        clusters_df['filename'] = self.filename
-        other_clusters_df = pd.read_sql_query("SELECT * FROM clusters WHERE NOT filename = ?", self.conn,
-                                              params=[self.filename])
-        result_df = pd.concat([clusters_df, other_clusters_df], ignore_index=True)
-        result_df.to_sql("clusters", con=self.conn, if_exists='replace', index=False)
-        return
+        try:
+            query = """SELECT sequences.id_cluster, clusters.name_cluster, MAX(risk_label) AS score  
+                            FROM sequences, clusters
+                            WHERE sequences.filename = ?
+                            AND sequences.filename = clusters.filename
+                            AND sequences.id_cluster = clusters.id_cluster
+                            GROUP BY sequences.id_cluster;
+                            """
+            clusters_df = pd.read_sql_query(query, self.conn, params=[self.filename])
+            clusters_df['filename'] = self.filename
+            other_clusters_df = pd.read_sql_query("SELECT * FROM clusters WHERE NOT filename = ?", self.conn,
+                                                  params=[self.filename])
+            result_df = pd.concat([clusters_df, other_clusters_df], ignore_index=True)
+            result_df.to_sql("clusters", con=self.conn, if_exists='replace', index=False)
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
     def update_sequence_score(self, score_df: pd.DataFrame):
         """
@@ -456,27 +450,31 @@ class Database(object):
             score_df (pd.DataFrame) : dataframe containing all the new scores for each sequence
         Returns
         -------
-            None
+            (bool) : False if execution failed, true otherwise
         """
-        score_old_df = pd.read_sql_query('''SELECT * FROM sequences WHERE filename = ?''', self.conn,
-                                         params=[self.filename])
-        others_score_df = pd.read_sql_query('''SELECT * FROM sequences WHERE NOT filename = ?''', self.conn,
-                                            params=[self.filename])
+        try:
+            score_old_df = pd.read_sql_query('''SELECT * FROM sequences WHERE filename = ?''', self.conn,
+                                             params=[self.filename])
+            others_score_df = pd.read_sql_query('''SELECT * FROM sequences WHERE NOT filename = ?''', self.conn,
+                                                params=[self.filename])
 
-        score_df['id_sequence'] = score_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
-        score_old_df['id_sequence'] = score_old_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
-        # Append updated score column to the old score dataframe
-        merged_df = score_old_df.merge(score_df, on=['id_sequence'], how='left',
-                                       suffixes=('', '_updated'))
-        # Ensure 'score' and 'score_updated' columns are of a numeric type
+            score_df['id_sequence'] = score_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
+            score_old_df['id_sequence'] = score_old_df['id_sequence'].apply(pd.to_numeric, errors='coerce')
+            # Append updated score column to the old score dataframe
+            merged_df = score_old_df.merge(score_df, on=['id_sequence'], how='left',
+                                           suffixes=('', '_updated'))
+            # Ensure 'score' and 'score_updated' columns are of a numeric type
 
-        merged_df.drop(columns='risk_label', inplace=True)
-        merged_df.rename(columns={'risk_label_updated': 'risk_label'}, inplace=True)
-        merged_df['filename'] = self.filename
-        result_df = pd.concat([merged_df, others_score_df], ignore_index=True)
-        result_df.to_sql('sequences', con=self.conn, if_exists='replace', index=False)
-        self.conn.commit()
-        return
+            merged_df.drop(columns='risk_label', inplace=True)
+            merged_df.rename(columns={'risk_label_updated': 'risk_label'}, inplace=True)
+            merged_df['filename'] = self.filename
+            result_df = pd.concat([merged_df, others_score_df], ignore_index=True)
+            result_df.to_sql('sequences', con=self.conn, if_exists='replace', index=False)
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
 
     ########################################################################
     #                         Data aggregation                             #
@@ -508,9 +506,7 @@ class Database(object):
                                         AND sequences.filename = ?
                                         AND events.filename = sequences.filename
                                         AND mapping.filename = sequences.filename''', self.conn, params=[self.filename])
-        print("get_sequences")
-        print(result.head(2))
-        print(result.head(2).to_dict())
+
         return result
 
     def get_sequence_by_id(self, sequence_id: int) -> pd.DataFrame:
@@ -532,9 +528,7 @@ class Database(object):
                 AND mapping.filename = sequences.filename
                 AND events.filename = sequences.filename"""
         result = pd.read_sql_query(query, self.conn, params=[sequence_id,sequence_id, self.filename])
-        print("get_sequence_by_id")
-        print(result.head(2))
-        print(result.head(2).to_dict())
+
         return result
 
     def get_context_by_sequence_id(self, sequence_id: int) -> pd.DataFrame:
@@ -631,7 +625,7 @@ class Database(object):
         self.cur.execute("SELECT * FROM events WHERE filename = ?", (self.filename,))
         self.conn.commit()
         result = self.cur.fetchone()
-        return result is None
+        return result is not None  # may be revisited
 
     def display_current_file(self) -> str:
         """

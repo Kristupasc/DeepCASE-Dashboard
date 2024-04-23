@@ -6,7 +6,6 @@ import torch
 # DeepCASE Imports
 from Dashboard.processing.processor import Processor
 from Dashboard.data.dao.dao import DAO
-from Dashboard.processing.status import Status
 
 
 class ProcessorAccessObject(object):
