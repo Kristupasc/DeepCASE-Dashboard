@@ -1,12 +1,9 @@
 import random
-import time
-from threading import Thread
-from Dashboard.app.main.recources.run_deepcase import  *
+
 import pandas as pd
 
 from Dashboard.app.main.recources.label_tools import choose_risk
 from Dashboard.data.dao.dao import DAO
-from Dashboard.processing.process_split import ProcessorAccessObject
 
 format_time = "%H:%M:%S.%f, %d %b %Y"  # For second %s %ssss
 
@@ -125,9 +122,6 @@ def set_cluster_name(cluster_id, cluster_name):
         return True
     except (ValueError, IndexError):
         return False
-
-
-
 
 
 def get_risk_cluster(cluster_id):
