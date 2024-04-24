@@ -141,7 +141,7 @@ def display_context(row: int, cluster: int) -> dict:
     The context frame as a dictionary.
     """
     if isinstance(row, int) and isinstance(cluster, int) and row <= load.get_row(cluster):
-        df = load.formatContext(cluster, row, cid_str)
+        df = load.get_context_table(cluster, row, cid_str)
         return df.to_dict("records")
     raise PreventUpdate
 

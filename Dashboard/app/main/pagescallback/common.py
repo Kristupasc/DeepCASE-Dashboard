@@ -63,9 +63,9 @@ def update_options_dropdown(n):
         A list of options for the dropdown based on possible clusters with labels and values
     """
     if n is None:
-        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if
+        return [{"label": i[1], "value": i[0]} for i in load.get_clusters_tuple() if
                 not pd.isna(i[1]) and not pd.isna(i[0])]
-    return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+    return [{"label": i[1], "value": i[0]} for i in load.get_clusters_tuple() if not pd.isna(i[1]) and not pd.isna(i[0])]
 
 
 # Function to update the values in the dropdown
@@ -84,8 +84,8 @@ def update_values_dropdown(n):
         A list of values for the dropdown based on possible clusters
     """
     if n is None:
-        return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
-    return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
+        return list([i[0] for i in load.get_clusters_tuple() if not pd.isna(i[0])])
+    return list([i[0] for i in load.get_clusters_tuple() if not pd.isna(i[0])])
 
 
 # Function to get the name of the selected cluster
@@ -104,7 +104,7 @@ def get_name_cluster(data):
         The name of the selected cluster or a default message if no cluster is selected
     """
     if isinstance(data, int):
-        k = load.possible_clusters()
+        k = load.get_clusters_tuple()
         for z in k:
             if not pd.isna(z[0]) and z[0] == float(data):
                 return str(z[1])  # Don't change this this will create an easy infinity loop.

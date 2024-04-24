@@ -1,5 +1,5 @@
 from Dashboard.data.dao.dao import DAO
-from Dashboard.app.main.recources.loaddata import *
+from Dashboard.app.main.recources.setters_getters_cluster import *
 
 
 def get_files():
@@ -39,3 +39,15 @@ def get_status_file():
     """
     dao = DAO()
     return dao.get_run_status()
+def is_file_selected():
+    """
+    Check if a file is selected.
+
+    Returns
+    -------
+    bool
+        True if a file is selected, False otherwise.
+    """
+    dao = DAO()
+    return 'emptyfile' != dao.display_selected_file()
+

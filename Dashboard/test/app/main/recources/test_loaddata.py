@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from Dashboard.app.main.recources.loaddata import *
+from Dashboard.app.main.recources.setters_getters_cluster import *
 from Dashboard.data.dao.dao import DAO
 
 
@@ -34,7 +34,7 @@ class Test(TestCase):
             assert False, "Some values are not int, when expected."
 
     def test_possible_clusters(self):
-        tuples = possible_clusters()
+        tuples = get_clusters_tuple()
 
         # Assert the result
         self.assertIsInstance(tuples, list)
@@ -46,7 +46,7 @@ class Test(TestCase):
 
     def test_format_context(self):
         # Call the function without DAO input
-        formatted_df = formatContext(cluster=1, index=0, id_str='_test_')
+        formatted_df = get_context_table(cluster=1, index=0, id_str='_test_')
 
         # Assert the result
         self.assertIsInstance(formatted_df, pd.DataFrame)

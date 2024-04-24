@@ -130,7 +130,7 @@ def interact_with_data(selected_cluster, selected_row, filter_value):
     else:
         # it's a graph click
         click_data = {"points": [{"pointIndex": selected_row[0]}]}
-        df = load.formatContext(selected_cluster, selected_row[0], cid_str)
+        df = load.get_context_table(selected_cluster, selected_row[0], cid_str)
         events = df.to_dict("records")
     # start generating values for the scatter plot
     traces = []
