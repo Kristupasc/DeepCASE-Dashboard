@@ -10,6 +10,23 @@ import Dashboard.app.main.recources.style as style
 
 
 def parse_contents(contents, filename, date):
+    """
+    Parse the contents of the uploaded file.
+
+    Parameters
+    ----------
+    contents : str
+        The content of the uploaded file.
+    filename : str
+        The name of the uploaded file.
+    date : str
+        The last modified date.
+
+    Returns
+    -------
+    str
+        A message indicating the success or failure of file processing.
+    """
     dao = DAO()
     content_type, content_string = contents.split(',')
     decoded = base64.b64decode(content_string)

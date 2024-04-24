@@ -1,4 +1,12 @@
 def get_colors():
+    """
+        Get the color palette used for visualization.
+
+        Returns
+        -------
+        dict
+            A dictionary containing color codes for different components.
+        """
     return {
         "background": "rgba(132, 213, 230, 0)",  # white background
         "text": "#ffab40",
@@ -16,6 +24,19 @@ def get_colors():
 
 
 def choose_risk(weight):
+    """
+    Choose the risk label based on the weight.
+
+    Parameters
+    ----------
+    weight : int
+        The weight value representing the risk.
+
+    Returns
+    -------
+    str
+        The risk label.
+    """
     # TODO: change it to accept a different format than 0-10
     if weight <= 0:
         return "Unlabeled"
