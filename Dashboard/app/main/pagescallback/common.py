@@ -5,6 +5,7 @@ from Dashboard.app.main.recources.label_tools import choose_risk
 import Dashboard.app.main.recources.loaddata as load
 from Dashboard.data.dao.dao import DAO
 
+
 # Function to store the selected cluster
 def store_selected_cluster(state):
     """
