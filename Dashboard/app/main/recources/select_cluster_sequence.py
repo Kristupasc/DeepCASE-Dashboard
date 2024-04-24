@@ -1,4 +1,4 @@
-from random import random
+import random
 
 from Dashboard.app.main.recources.get_tables import get_cluster_table
 from Dashboard.app.main.recources.label_tools import function_risk
