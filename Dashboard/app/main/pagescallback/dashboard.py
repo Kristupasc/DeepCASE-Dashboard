@@ -20,13 +20,12 @@ callback(
 )(display_sequence.store_selected_cluster)
 
 
-
 # Callback to update the table based on the selected cluster
 @callback(
     Output("dashboard", "data"),  # Output: data for dashboard table
     Input('selected cluster' + id_str, "data")  # Input: selected cluster data
 )
-def update_table_cluster(state : int) -> dict or None:
+def update_table_cluster(state: int) -> dict or None:
     """
     Update the dashboard table based on the selected cluster.
 
@@ -52,7 +51,6 @@ callback(
     State("dashboard", 'selected_rows'),  # State: selected rows in dashboard table
     Input("selected cluster" + id_str, "data")  # Input: selected cluster data
 )(display_sequence.store_context_row)
-
 
 
 # Callback to handle scatter plot click data and update page and selected rows

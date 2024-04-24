@@ -55,7 +55,7 @@ def store_selected_cluster(state: int, click: int, nbtn: int) -> int:
     Output("manual", "data"),
     Input('selected cluster' + id_str, "data")
 )
-def update_table_cluster(state: int)-> dict:
+def update_table_cluster(state: int) -> dict:
     """
     Update the table in the manual component based on the selected cluster.
     Parameters
@@ -84,7 +84,7 @@ def update_table_cluster(state: int)-> dict:
     Input('next' + qid_str, "n_clicks"),
     Input("selected cluster" + id_str, "data")
 )
-def store_context_row(state: int, click: int, nbtn:int, cluster_id:int) -> (int, [int], int):
+def store_context_row(state: int, click: int, nbtn: int, cluster_id: int) -> (int, [int], int):
     """
     Store the context row based on user interactions and trigger events.
     Parameters
@@ -126,7 +126,7 @@ def store_context_row(state: int, click: int, nbtn:int, cluster_id:int) -> (int,
     Input('selected row' + id_str, "data"),
     Input('selected cluster' + id_str, "data")
 )
-def display_context(row: int, cluster: int)-> dict:
+def display_context(row: int, cluster: int) -> dict:
     """
      Display the context information based on the selected row and cluster.
     Parameters
@@ -175,7 +175,7 @@ callback(
     State("modal_set_cluster" + id_str, "opened"),
     prevent_initial_call=True,
 )
-def set_cluster_name(cluster_id: int, button: int, cluster_name: str, opened: bool)-> (bool, str):
+def set_cluster_name(cluster_id: int, button: int, cluster_name: str, opened: bool) -> (bool, str):
     """
     Set the label for the cluster based on user input and send an modal.
 
@@ -215,7 +215,7 @@ def set_cluster_name(cluster_id: int, button: int, cluster_name: str, opened: bo
     State("modal_set_risk" + id_str, "opened"),
     prevent_initial_call=True
 )
-def set_risk_label(cluster: int, data: [[]], data_previous: [[]], active: dict, opened:bool)-> (bool, str):
+def set_risk_label(cluster: int, data: [[]], data_previous: [[]], active: dict, opened: bool) -> (bool, str):
     """
     Set the risk label based on user input.
 
@@ -292,7 +292,7 @@ callback(
           State("feedback finish automatic" + id_str, 'opened'),
           prevent_initial_call=True,
           )
-def start_run_automatic(n_clicks: int, opened: bool)-> (bool, bool, str, object):
+def start_run_automatic(n_clicks: int, opened: bool) -> (bool, bool, str, object):
     """
     This method stores if the analysis need to start.
     Parameters
@@ -321,12 +321,13 @@ def start_run_automatic(n_clicks: int, opened: bool)-> (bool, bool, str, object)
     # No update otherwise it gets triggered again.
     return False, opened, "Not pressed button", dao
 
+
 @callback(
     Output("feedback start automatic" + id_str, 'opened'),
     Input('start automatic', 'n_clicks'),
     State("feedback start automatic" + id_str, "opened")
 )
-def feedBack_run_automatic(n_clicks : int, opened : bool) -> bool:
+def feedBack_run_automatic(n_clicks: int, opened: bool) -> bool:
     """
     Runs the automatic analysis
     Parameters
