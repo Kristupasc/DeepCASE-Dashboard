@@ -40,7 +40,7 @@ def update_table_cluster(state: int) -> dict or None:
         The updated table data if the cluster is an integer, else None
     """
     if isinstance(state, int):
-        dff = load.formatSequenceCluster(state, id_str)
+        dff = load.get_cluster_table(state, id_str)
         return dff.to_dict("records")
     raise PreventUpdate
 
