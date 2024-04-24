@@ -9,17 +9,17 @@ from Dashboard.data.dao.dao import DAO
 import Dashboard.app.main.recources.style as style
 
 
-def parse_contents(contents, filename, date):
+def parse_contents(contents: str, filename: str, date: float):
     """
     Parse the contents of the uploaded file.
 
     Parameters
     ----------
     contents : str
-        The content of the uploaded file.
+        The content of the uploaded file in base64.
     filename : str
         The name of the uploaded file.
-    date : str
+    date : float
         The last modified date.
 
     Returns
