@@ -15,7 +15,7 @@ id_str = "_data"  # suffix for database IDs
     Input("feedback_save_file" + id_str, 'opened'),
     Input("feedback_switch" + id_str, 'opened'),
 )
-def update_options_drop_files(in1, in2, in3):
+def update_options_drop_files(in1: str, in2: int, in3: int)-> list:
     """
     Update the file dropdown options.
 
@@ -36,7 +36,7 @@ def update_options_drop_files(in1, in2, in3):
     Input('file-dropdown' + id_str, 'value'),
     State("feedback_switch" + id_str, 'opened'),
     prevent_initial_call=True)
-def update_selected_file(value, opened):
+def update_selected_file(value : int, opened: bool)->(int, bool, str):
     """
     Update the selected file.
 
@@ -67,7 +67,7 @@ def update_selected_file(value, opened):
           Input('start_deepcase_btn' + id_str, 'n_clicks'),
           State("feedback_deepcase" + id_str, 'opened'),
           prevent_initial_call=True)
-def run_deepcase(n_clicks, opened):
+def run_deepcase(n_clicks: int, opened: bool)-> (bool, str):
     """
     Run the DeepCASE process.
 
@@ -104,7 +104,7 @@ def run_deepcase(n_clicks, opened):
           State("feedback_start_deepcase" + id_str, 'opened'),
           prevent_initial_call=True
           )
-def feedback_run_deepcase(n_clicks, opened):
+def feedback_run_deepcase(n_clicks: int, opened: bool) -> bool:
     """
     Provide feedback for DeepCASE process.
 
@@ -134,7 +134,7 @@ def feedback_run_deepcase(n_clicks, opened):
     State('upload-data' + id_str, 'last_modified'),
     State("feedback_save_file" + id_str, 'opened')
 )
-def store_file(list_of_contents, list_of_names, list_of_dates, opened):
+def store_file(list_of_contents: [], list_of_names: [], list_of_dates: [], opened: bool) -> (bool, str):
     """
     Store the uploaded file.
 
@@ -171,7 +171,7 @@ def store_file(list_of_contents, list_of_names, list_of_dates, opened):
     Input("feedback_switch" + id_str, 'opened'),
     prevent_initial_call=True
 )
-def update_table_input(url, input1, input2):
+def update_table_input(url: str, input1: bool, input2: bool) -> dict:
     """
     Update the table with uploaded data.
 
@@ -199,7 +199,7 @@ def update_table_input(url, input1, input2):
     Input("feedback_switch" + id_str, 'opened'),
     Input("feedback_deepcase" + id_str, 'opened'),
 )
-def disable_button_security(in1, in2, in3, in4):
+def disable_button_security(in1: str, in2: int, in3: int, in4: int)-> bool:
     """
     Disable the DeepCASE start button based on conditions.
 
@@ -217,7 +217,7 @@ def disable_button_security(in1, in2, in3, in4):
     Returns
     -------
     bool
-        The state of the button.
+        The state of the button to be disabled.
     """
     if load.is_file_selected():
         return bool(load.get_status_file())
