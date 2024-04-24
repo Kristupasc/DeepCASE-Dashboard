@@ -20,17 +20,25 @@ callback(
 )(display_sequence.store_selected_cluster)
 
 
+
 # Callback to update the table based on the selected cluster
 @callback(
     Output("dashboard", "data"),  # Output: data for dashboard table
     Input('selected cluster' + id_str, "data")  # Input: selected cluster data
 )
-def update_table_cluster(state):
+def update_table_cluster(state : int) -> dict or None:
     """
     Update the dashboard table based on the selected cluster.
 
-    :param state: the selected cluster
-    :return: the updated table data if the cluster is an integer
+    Parameters
+    ----------
+    state : int
+        The selected cluster
+
+    Returns
+    -------
+    dict or None
+        The updated table data if the cluster is an integer, else None
     """
     if isinstance(state, int):
         dff = load.formatSequenceCluster(state, id_str)
@@ -46,17 +54,21 @@ callback(
 )(display_sequence.store_context_row)
 
 
+
 # Callback to handle scatter plot click data and update page and selected rows
 @callback(
     Output('dashboard', 'page_current'),  # Output: current page of dashboard
     Output('dashboard', 'selected_rows'),  # Output: selected rows in dashboard
-    Input('scatter-plot', 'clickData'),  # Input: click data from scatter plot
+    Input('scatter-plot', 'clickData')  # Input: click data from scatter plot
 )
 def display_context(click_data):
     """
     Display the context information based on the selected row and cluster.
 
-    :param click_data: the data from the click event on the scatter plot
+    Parameters
+    ----------
+    click_data : dict
+        The data from the click event on the scatter plot
     """
     # check if the graph point was clicked
     if click_data is not None:
@@ -102,9 +114,14 @@ def interact_with_data(selected_cluster, selected_row, filter_value):
     The selection can happen either in the table or in the graph.
     Once a user selects something in the graph, the point is also automatically selected in the table and vice versa.
 
-    :param selected_cluster: the selected cluster
-    :param selected_row: the selected row in the table
-    :param filter_value: the selected filter value
+    Parameters
+    ----------
+    selected_cluster : int
+        The selected cluster
+    selected_row : int
+        The selected row in the table
+    filter_value : str
+        The selected filter value
     """
     # get the trigger to determine the source of the callback
     triggered_input = callback_context.triggered[0]["prop_id"].split(".")[0]

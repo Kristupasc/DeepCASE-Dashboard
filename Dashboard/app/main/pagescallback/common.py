@@ -5,14 +5,20 @@ from Dashboard.app.main.recources.label_tools import choose_risk
 import Dashboard.app.main.recources.loaddata as load
 from Dashboard.data.dao.dao import DAO
 
-
 # Function to store the selected cluster
 def store_selected_cluster(state):
     """
-    Store the selected cluster
+    Store the selected cluster.
 
-    :param state: the selected value from the filter dropdown
-    :return: the selected cluster
+    Parameters
+    ----------
+    state :
+        The selected value from the filter dropdown
+
+    Returns
+    -------
+    int or None
+        The selected cluster or None if state is not an integer
     """
     if isinstance(state, int):
         return state
@@ -24,9 +30,17 @@ def store_context_row(state, cluster):
     """
     Store the selected row for context.
 
-    :param state: the selected rows from the dashboard
-    :param cluster: the cluster id, and a way to trigger this methode. To prevent an outbound.
-    :return: the selected row if it's an integer
+    Parameters
+    ----------
+    state :
+        The selected rows from the dashboard
+    cluster :
+        The cluster id, and a way to trigger this method. To prevent an outbound.
+
+    Returns
+    -------
+    int or None
+        The selected row if it's an integer, else None
     """
     if state is not None:
         if len(state) > 0 and isinstance(cluster, int):
@@ -40,7 +54,15 @@ def update_options_dropdown(n):
     """
     Update the options in the dropdown.
 
-    :return: a list of options for the dropdown based on possible clusters with labels and values
+    Parameters
+    ----------
+    n :
+        A dummy parameter to ensure callback execution
+
+    Returns
+    -------
+    list of dict
+        A list of options for the dropdown based on possible clusters with labels and values
     """
     if n is None:
         return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if
@@ -52,7 +74,16 @@ def update_options_dropdown(n):
 def update_values_dropdown(n):
     """
     Update the values in the dropdown.
-    :return: a list of values for the dropdown based on possible clusters
+
+    Parameters
+    ----------
+    n :
+        A dummy parameter to ensure callback execution
+
+    Returns
+    -------
+    list
+        A list of values for the dropdown based on possible clusters
     """
     if n is None:
         return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
@@ -66,10 +97,13 @@ def get_name_cluster(data):
 
     Parameters
     ----------
-    data: the selected cluster ID
+    data :
+        The selected cluster ID
+
     Returns
     -------
-    the name of the selected cluster or a default message if no cluster is selected
+    str
+        The name of the selected cluster or a default message if no cluster is selected
     """
     if isinstance(data, int):
         k = load.possible_clusters()
@@ -83,12 +117,16 @@ def get_name_cluster(data):
 def light_up_selected_row(row):
     """
     Light up the selected event.
+
     Parameters
     ----------
-    row the row selected
+    row :
+        The row selected
+
     Returns
     -------
-    The adjusted layout
+    list of dict or None
+        The adjusted layout or None if row is not an integer
     """
     if isinstance(row, int):
         return [{"if": {"row_index": row % 10}, 'backgroundColor': 'hotpink',
@@ -98,6 +136,19 @@ def light_up_selected_row(row):
 
 # Function to display the risk value of the cluster
 def display_risk_cluster(cluster_id):
+    """
+    Display the risk value of the cluster.
+
+    Parameters
+    ----------
+    cluster_id :
+        The ID of the selected cluster
+
+    Returns
+    -------
+    str
+        The risk label of the cluster or an empty string if cluster_id is None or not an integer
+    """
     if cluster_id is None or not isinstance(cluster_id, int):
         return ""
     dao = DAO()
