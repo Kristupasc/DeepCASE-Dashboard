@@ -1,12 +1,7 @@
 import base64
-import os
-
-import dash
 import pandas as pd
-from dash import html
 import io
 from Dashboard.data.dao.dao import DAO
-import Dashboard.app.main.recources.style as style
 
 
 def parse_contents(contents: str, filename: str, date: float):

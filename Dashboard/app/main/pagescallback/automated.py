@@ -3,7 +3,7 @@ from dash.exceptions import PreventUpdate
 
 # Importing callback functions and data loading functions
 import Dashboard.app.main.pagescallback.common as display_sequence
-import Dashboard.app.main.recources.loaddata as load
+import Dashboard.app.main.recources.data_dao_combine as load
 
 # Setting suffixes for IDs
 id_str = "_sa"  # suffix for semi-automatic IDs

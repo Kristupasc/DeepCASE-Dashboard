@@ -1,8 +1,6 @@
 import pandas as pd
-from dash.exceptions import PreventUpdate
-
 from Dashboard.app.main.recources.label_tools import choose_risk
-import Dashboard.app.main.recources.loaddata as load
+import Dashboard.app.main.recources.data_dao_combine as load
 from Dashboard.data.dao.dao import DAO
 
 

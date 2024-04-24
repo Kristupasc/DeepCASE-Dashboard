@@ -6,7 +6,7 @@ from dash import callback, Output, Input, ctx, State
 from dash.exceptions import PreventUpdate
 
 import Dashboard.app.main.pagescallback.common as display_sequence
-import Dashboard.app.main.recources.loaddata as load
+import Dashboard.app.main.recources.data_dao_combine as load
 
 # Suffix for all the ids that might be the same
 id_str = "_ma"

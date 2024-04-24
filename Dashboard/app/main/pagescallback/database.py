@@ -2,8 +2,7 @@ import time
 
 from dash import callback, no_update, ctx
 from dash.dependencies import Input, Output, State
-
-import Dashboard.app.main.recources.database_data as load
+import Dashboard.app.main.recources.data_dao_combine as load
 from Dashboard.app.main.recources import create_database
 
 id_str = "_data"  # suffix for database IDs
