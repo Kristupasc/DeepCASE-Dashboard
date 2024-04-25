@@ -4,8 +4,8 @@ from dash import callback, Output, Input, State, callback_context
 from dash.exceptions import PreventUpdate
 
 # Importing callback functions, data loading functions, and DAO
-import Dashboard.app.main.pagescallback.display_sequence as display_sequence
-import Dashboard.app.main.recources.loaddata as load
+import Dashboard.app.main.pagescallback.common as display_sequence
+import Dashboard.app.main.recources.data_dao_combine as load
 from Dashboard.app.main.recources.label_tools import choose_risk, get_colors
 from Dashboard.data.dao.dao import DAO
 
@@ -25,15 +25,22 @@ callback(
     Output("dashboard", "data"),  # Output: data for dashboard table
     Input('selected cluster' + id_str, "data")  # Input: selected cluster data
 )
-def update_table_cluster(state):
+def update_table_cluster(state: int) -> dict or None:
     """
     Update the dashboard table based on the selected cluster.
 
-    :param state: the selected cluster
-    :return: the updated table data if the cluster is an integer
+    Parameters
+    ----------
+    state : int
+        The selected cluster
+
+    Returns
+    -------
+    dict or None
+        The updated table data if the cluster is an integer, else None
     """
     if isinstance(state, int):
-        dff = load.formatSequenceCluster(state, id_str)
+        dff = load.get_cluster_table(state, id_str)
         return dff.to_dict("records")
     raise PreventUpdate
 
@@ -50,13 +57,16 @@ callback(
 @callback(
     Output('dashboard', 'page_current'),  # Output: current page of dashboard
     Output('dashboard', 'selected_rows'),  # Output: selected rows in dashboard
-    Input('scatter-plot', 'clickData'),  # Input: click data from scatter plot
+    Input('scatter-plot', 'clickData')  # Input: click data from scatter plot
 )
 def display_context(click_data):
     """
     Display the context information based on the selected row and cluster.
 
-    :param click_data: the data from the click event on the scatter plot
+    Parameters
+    ----------
+    click_data : dict
+        The data from the click event on the scatter plot
     """
     # check if the graph point was clicked
     if click_data is not None:
@@ -70,6 +80,10 @@ def display_context(click_data):
 
 
 # Various callbacks for dropdown updates
+@callback(
+    Output("display risk cluster" + id_str, "children"),  # Output: Risk label of cluster
+    Input('selected cluster' + id_str, "data")  # Inputs: selected cluster data
+)(display_sequence.display_risk_cluster)
 @callback(
     Output("filter_dropdown" + id_str, 'options'),  # Output: options for filter dropdown
     Input('refresh-data', 'n_intervals')  # Input: number of intervals for refresh
@@ -98,9 +112,14 @@ def interact_with_data(selected_cluster, selected_row, filter_value):
     The selection can happen either in the table or in the graph.
     Once a user selects something in the graph, the point is also automatically selected in the table and vice versa.
 
-    :param selected_cluster: the selected cluster
-    :param selected_row: the selected row in the table
-    :param filter_value: the selected filter value
+    Parameters
+    ----------
+    selected_cluster : int
+        The selected cluster
+    selected_row : int
+        The selected row in the table
+    filter_value : str
+        The selected filter value
     """
     # get the trigger to determine the source of the callback
     triggered_input = callback_context.triggered[0]["prop_id"].split(".")[0]
@@ -111,7 +130,7 @@ def interact_with_data(selected_cluster, selected_row, filter_value):
     else:
         # it's a graph click
         click_data = {"points": [{"pointIndex": selected_row[0]}]}
-        df = load.formatContext(selected_cluster, selected_row[0], cid_str)
+        df = load.get_context_table(selected_cluster, selected_row[0], cid_str)
         events = df.to_dict("records")
     # start generating values for the scatter plot
     traces = []
@@ -184,9 +203,3 @@ callback(
     Output("dashboard", "style_data_conditional"),  # Output: style_data_conditional for dashboard table
     Input("selected row" + id_str, "data")  # Input: selected row data
 )(display_sequence.light_up_selected_row)
-
-# Callback to find the risk value of the cluster and display it
-callback(
-    Output("display risk cluster" + id_str, "children"),  # Output: children of display risk cluster component
-    Input('selected cluster' + id_str, "data")  # Input: selected cluster data
-)(display_sequence.display_risk_cluster)

@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from Dashboard.app.main.recources.loaddata import *
+from Dashboard.app.main.recources.setters_getters_cluster import *
 from Dashboard.data.dao.dao import DAO
 
 
@@ -13,7 +13,7 @@ class Test(TestCase):
             raise Exception("No file present, run first deepcase")
 
     def test_format_sequence_cluster(self):  # Call the function without DAO input
-        formatted_df = formatSequenceCluster(cluster=1, id_str='_test_')
+        formatted_df = get_cluster_table(cluster=1, id_str='_test_')
 
         # Assert the result
         self.assertIsInstance(formatted_df, pd.DataFrame)
@@ -34,19 +34,19 @@ class Test(TestCase):
             assert False, "Some values are not int, when expected."
 
     def test_possible_clusters(self):
-        tuples = possible_clusters()
+        tuples = get_clusters_tuple()
 
         # Assert the result
         self.assertIsInstance(tuples, list)
         for tu in tuples:
             try:
-                formatSequenceCluster(tu[0], "")
+                get_cluster_table(tu[0], "")
             except (ValueError, IndexError):
                 raise str(tu[0]) + "is not found"
 
     def test_format_context(self):
         # Call the function without DAO input
-        formatted_df = formatContext(cluster=1, index=0, id_str='_test_')
+        formatted_df = get_context_table(cluster=1, index=0, id_str='_test_')
 
         # Assert the result
         self.assertIsInstance(formatted_df, pd.DataFrame)

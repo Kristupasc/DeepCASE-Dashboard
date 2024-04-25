@@ -2,8 +2,8 @@ from dash import callback, Output, Input
 from dash.exceptions import PreventUpdate
 
 # Importing callback functions and data loading functions
-import Dashboard.app.main.pagescallback.display_sequence as display_sequence
-import Dashboard.app.main.recources.loaddata as load
+import Dashboard.app.main.pagescallback.common as display_sequence
+import Dashboard.app.main.recources.data_dao_combine as load
 
 # Setting suffixes for IDs
 id_str = "_sa"  # suffix for semi-automatic IDs
@@ -18,18 +18,22 @@ callback(
 
 # Callback to update the table based on the selected cluster
 @callback(
-    Output("semi-automatic", "data"),  # Output: data for semi-automatic table
-    Input('selected cluster' + id_str, "data")  # Input: selected cluster data
+    Output("semi-automatic", "data"),
+    Input('selected cluster' + id_str, "data")
 )
-def update_table_cluster(state):
+def update_table_cluster(state: int) -> int:
     """
-    Update the dashboard table based on the selected cluster.
+    Parameter
+    ----------
+    state : int
+        The selected cluster
 
-    :param state: the selected cluster
-    :return: the updated table data if the cluster is an integer
+    Returns
+    -------
+    The updated table data if the cluster is an integer
     """
     if isinstance(state, int):
-        dff = load.formatSequenceCluster(state, id_str)
+        dff = load.get_cluster_table(state, id_str)
         return dff.to_dict("records")
     raise PreventUpdate
 
@@ -48,16 +52,22 @@ callback(
     Input('selected row' + id_str, "data"),  # Input: selected row data
     Input('selected cluster' + id_str, "data")  # Input: selected cluster data
 )
-def display_context(row, cluster):
+def display_context(row: int, cluster: int) -> dict:
     """
-    Display the context information based on the selected row and cluster.
+    Parameter
+    ----------
+    row : int
+        The selected row
+    cluster : int
+        The selected cluster
 
-    :param row: the selected row
-    :param cluster: the selected cluster
-    :return: the context frame as a dictionary of records
+    Returns
+    -------
+    dict
+        The context frame as a dictionary of records
     """
     if isinstance(row, int) and isinstance(cluster, int):
-        df = load.formatContext(cluster, row, cid_str)
+        df = load.get_context_table(cluster, row, cid_str)
         return df.to_dict("records")
     raise PreventUpdate
 

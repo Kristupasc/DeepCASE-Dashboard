@@ -25,10 +25,10 @@ layout = html.Div(className='content', children=[
                 multi=False,
                 clearable=False,
             ),
+            html.Button('Start Security Analysis', id='start_deepcase_btn' + id_str, disabled=True),
         ]),
         html.Div([
             dcc.Location(id='url' + id_str, refresh=False),
-            html.Button('Start Security Analysis', id='start_deepcase_btn' + id_str, disabled =True),
             dash_table.DataTable(
                 id="uploaded data" + id_str,
                 columns=[
@@ -51,6 +51,7 @@ layout = html.Div(className='content', children=[
             ),
         ])
     ]),
+    # modals for pop-up
     dmc.Modal(title="Yeeeeeeeeaaaaaaaa", id="feedback_deepcase" + id_str),
     dmc.Modal(title="DeepCASE is running.\n\n This might take 20 minutes.\n\n Enjoy a cup of tea in the meantime.", id="feedback_start_deepcase" + id_str,
               children=[dcc.Loading(

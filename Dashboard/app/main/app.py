@@ -1,13 +1,10 @@
 import os
 import dash
-from dash.dependencies import Input, Output
-import plotly.graph_objs as go
-import Dashboard.app.main.recources.style as style
 
 
 from server import app
 
-from dash import Dash, html, dcc
+from dash import html, dcc
 
 GRAPH_INTERVAL = os.environ.get("GRAPH_INTERVAL", 5000)
 
@@ -58,8 +55,7 @@ app.layout = html.Div([
     dcc.Location(id='url'),
     sidebar(1),
     content
-    ],
-    style=style.wrapper_style)
+    ])
 
 
 if __name__ == '__main__':
