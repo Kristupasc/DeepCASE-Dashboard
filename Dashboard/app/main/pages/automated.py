@@ -32,7 +32,7 @@ layout = html.Div(className='content', children=[
                     ),
                 ], style={"display": "flex", "align-items": "center", "cursor": "pointer"}),
 
-                html.H2("Cluster:"),  # Heading for cluster information
+                html.H2("Cluster:", style={'marginRight': '10px'}),  # Heading for cluster information
                 html.H2('Cluster name unknown', id='cluster name' + id_str),  # Display cluster name
                 html.H3('', id="display risk cluster" + id_str, style={'marginLeft': '10px'}),
                 # Display risk information
