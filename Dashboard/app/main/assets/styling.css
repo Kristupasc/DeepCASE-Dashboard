@@ -17,11 +17,15 @@
 
 H2 {
     text-align:center !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
 }
 
-/*label {*/
-/*    color: black;*/
-/*}*/
+H1 {
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+
+}
 
 table {
     border-collapse: separate !important;
