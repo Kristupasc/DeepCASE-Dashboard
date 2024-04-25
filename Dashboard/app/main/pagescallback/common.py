@@ -1,9 +1,6 @@
 import pandas as pd
-from dash.exceptions import PreventUpdate
-
 from Dashboard.app.main.recources.label_tools import choose_risk
-import Dashboard.app.main.recources.loaddata as load
-from Dashboard.data.dao.dao import DAO
+import Dashboard.app.main.recources.data_dao_combine as load
 
 
 # Function to store the selected cluster
@@ -66,9 +63,9 @@ def update_options_dropdown(n):
         A list of options for the dropdown based on possible clusters with labels and values
     """
     if n is None:
-        return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if
+        return [{"label": i[1], "value": i[0]} for i in load.get_clusters_tuple() if
                 not pd.isna(i[1]) and not pd.isna(i[0])]
-    return [{"label": i[1], "value": i[0]} for i in load.possible_clusters() if not pd.isna(i[1]) and not pd.isna(i[0])]
+    return [{"label": i[1], "value": i[0]} for i in load.get_clusters_tuple() if not pd.isna(i[1]) and not pd.isna(i[0])]
 
 
 # Function to update the values in the dropdown
@@ -87,8 +84,8 @@ def update_values_dropdown(n):
         A list of values for the dropdown based on possible clusters
     """
     if n is None:
-        return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
-    return list([i[0] for i in load.possible_clusters() if not pd.isna(i[0])])
+        return list([i[0] for i in load.get_clusters_tuple() if not pd.isna(i[0])])
+    return list([i[0] for i in load.get_clusters_tuple() if not pd.isna(i[0])])
 
 
 # Function to get the name of the selected cluster
@@ -107,7 +104,7 @@ def get_name_cluster(data):
         The name of the selected cluster or a default message if no cluster is selected
     """
     if isinstance(data, int):
-        k = load.possible_clusters()
+        k = load.get_clusters_tuple()
         for z in k:
             if not pd.isna(z[0]) and z[0] == float(data):
                 return str(z[1])  # Don't change this this will create an easy infinity loop.
@@ -152,14 +149,5 @@ def display_risk_cluster(cluster_id):
     """
     if cluster_id is None or not isinstance(cluster_id, int):
         return ""
-    dao = DAO()
-    data = dao.get_sequences_per_cluster(cluster_id)
-    # if the cluster was just selected, we check for the label of the cluster
-    # set the risk label to the first sequence in the cluster
-    cluster_risk_label = "Security Score: " + str(choose_risk(data.iloc[0]["risk_label"]))
-    # iterate through the sequences and check if all have the same label
-    for sequence in data.to_dict('records'):
-        if sequence["risk_label"] != data.iloc[0]["risk_label"]:
-            cluster_risk_label = "Security Score: Suspicious"
-            break
+    cluster_risk_label = "Security Score: " + str(load.function_risk(cluster_id))
     return cluster_risk_label

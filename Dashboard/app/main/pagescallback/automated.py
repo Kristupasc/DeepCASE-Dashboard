@@ -3,7 +3,7 @@ from dash.exceptions import PreventUpdate
 
 # Importing callback functions and data loading functions
 import Dashboard.app.main.pagescallback.common as display_sequence
-import Dashboard.app.main.recources.loaddata as load
+import Dashboard.app.main.recources.data_dao_combine as load
 
 # Setting suffixes for IDs
 id_str = "_sa"  # suffix for semi-automatic IDs
@@ -33,7 +33,7 @@ def update_table_cluster(state: int) -> int:
     The updated table data if the cluster is an integer
     """
     if isinstance(state, int):
-        dff = load.formatSequenceCluster(state, id_str)
+        dff = load.get_cluster_table(state, id_str)
         return dff.to_dict("records")
     raise PreventUpdate
 
@@ -67,7 +67,7 @@ def display_context(row: int, cluster: int) -> dict:
         The context frame as a dictionary of records
     """
     if isinstance(row, int) and isinstance(cluster, int):
-        df = load.formatContext(cluster, row, cid_str)
+        df = load.get_context_table(cluster, row, cid_str)
         return df.to_dict("records")
     raise PreventUpdate
 

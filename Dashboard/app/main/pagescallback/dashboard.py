@@ -5,7 +5,7 @@ from dash.exceptions import PreventUpdate
 
 # Importing callback functions, data loading functions, and DAO
 import Dashboard.app.main.pagescallback.common as display_sequence
-import Dashboard.app.main.recources.loaddata as load
+import Dashboard.app.main.recources.data_dao_combine as load
 from Dashboard.app.main.recources.label_tools import choose_risk, get_colors
 from Dashboard.data.dao.dao import DAO
 
@@ -40,7 +40,7 @@ def update_table_cluster(state: int) -> dict or None:
         The updated table data if the cluster is an integer, else None
     """
     if isinstance(state, int):
-        dff = load.formatSequenceCluster(state, id_str)
+        dff = load.get_cluster_table(state, id_str)
         return dff.to_dict("records")
     raise PreventUpdate
 
@@ -130,7 +130,7 @@ def interact_with_data(selected_cluster, selected_row, filter_value):
     else:
         # it's a graph click
         click_data = {"points": [{"pointIndex": selected_row[0]}]}
-        df = load.formatContext(selected_cluster, selected_row[0], cid_str)
+        df = load.get_context_table(selected_cluster, selected_row[0], cid_str)
         events = df.to_dict("records")
     # start generating values for the scatter plot
     traces = []

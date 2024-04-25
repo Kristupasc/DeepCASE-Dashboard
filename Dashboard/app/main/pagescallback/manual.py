@@ -6,7 +6,7 @@ from dash import callback, Output, Input, ctx, State
 from dash.exceptions import PreventUpdate
 
 import Dashboard.app.main.pagescallback.common as display_sequence
-import Dashboard.app.main.recources.loaddata as load
+import Dashboard.app.main.recources.data_dao_combine as load
 
 # Suffix for all the ids that might be the same
 id_str = "_ma"
@@ -69,7 +69,7 @@ def update_table_cluster(state: int) -> dict:
 
     """
     if isinstance(state, int):
-        dff = load.formatSequenceCluster(state, id_str)
+        dff = load.get_cluster_table(state, id_str)
         return dff.to_dict("records")
     raise PreventUpdate
 
@@ -141,7 +141,7 @@ def display_context(row: int, cluster: int) -> dict:
     The context frame as a dictionary.
     """
     if isinstance(row, int) and isinstance(cluster, int) and row <= load.get_row(cluster):
-        df = load.formatContext(cluster, row, cid_str)
+        df = load.get_context_table(cluster, row, cid_str)
         return df.to_dict("records")
     raise PreventUpdate
 

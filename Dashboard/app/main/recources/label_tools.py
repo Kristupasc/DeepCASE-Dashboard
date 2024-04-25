@@ -1,3 +1,8 @@
+import pandas as pd
+
+from Dashboard.data.dao.dao import DAO
+
+
 def get_colors():
     """
         Get the color palette used for visualization.
@@ -50,3 +55,40 @@ def choose_risk(weight):
         return "High"
     else:
         return "Attack"
+
+
+def get_risk_cluster(cluster_id):
+    """
+    Get the maximum risk label for a cluster.
+
+    Parameters
+    ----------
+    cluster_id : int
+        Cluster ID.
+
+    Returns
+    -------
+    int
+        Maximum risk label.
+    """
+    dao = DAO()
+    df = dao.get_sequences_per_cluster(cluster_id).reindex()
+    df['risk_label'] = pd.to_numeric(df['risk_label'])
+    return df['risk_label'].max()
+
+
+def function_risk(cluster_id) -> str:
+    """
+    Helper function, to get risk value.
+
+    Parameters
+    ----------
+    cluster_id : int
+        The id of the cluster, where to get the risk value.
+
+    Returns
+    -------
+    str
+        Representing the risk label.
+    """
+    return choose_risk(get_risk_cluster(cluster_id))
