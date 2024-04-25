@@ -1,8 +1,12 @@
 deepCase
-dash
-pandas
 argformat
+dash
+dash_mantine_components
+numpy
+pandas
+plotly
+scikit_learn
+scipy
+setuptools
 torch
 tqdm
-scipy
-scikit-learn
