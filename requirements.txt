@@ -1,7 +1,7 @@
+dash_mantine_components
 deepCase
 argformat
 dash
-dash_mantine_components
 numpy
 pandas
 plotly
