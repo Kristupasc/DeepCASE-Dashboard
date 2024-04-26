@@ -19,7 +19,10 @@ This configuration uses the `python:3.9` Docker image, mounts the current direct
 docker-compose up
 ```
 
-This command will build and start the DeepCASE-Dashboard container. Once the application is running, you can access the dashboard through your web browser.
+This command will build and start the DeepCASE-Dashboard container. Once the application is running, you can access the dashboard through your web browser using:
+```
+http://127.0.0.1:8050/
+```
 
 4. **Stopping the Container**: To stop and remove the containers, use:
 
