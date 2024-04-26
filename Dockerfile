@@ -10,7 +10,8 @@ COPY . .
 RUN ls -la && find .
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# NOTE: if there are packaging issues, adding --no-cache-dir to the pip install command may help
+RUN pip install -r requirements.txt
 
 EXPOSE 8050
 
