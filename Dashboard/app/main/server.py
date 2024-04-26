@@ -1,7 +1,7 @@
 from dash import Dash
 from Dashboard.data.dao.database import Database
 
-#initialize database
+#initialize database when the program starts
 db = Database()
 db.create_tables()
 
