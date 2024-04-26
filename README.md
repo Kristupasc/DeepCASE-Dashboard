@@ -30,14 +30,15 @@ http://127.0.0.1:8050/
 docker-compose down
 ```
 
+## Usage
+
+Follow the instructions displayed in the command line. The web interface will guide you through the rest. For more help, you can consult the user manual page. 
+
 ## Notes
 * Currently, the dash app runs with INFO logging level. To change the logging level, you can uncomment the lines in the `app.py` file above the `run_server` function.
 * The `docker-compose.yml` file can be modified to suit your needs. For example, you can change the port mapping or add environment variables.
 * To enable dash's debug mode, change the `run_server` function in `app.py` to: `app.run_server(host='0.0.0.0', port=8050, debug=True)`
 
-## Usage
-
-Follow the instructions displayed in the command line. The web interface will guide you through the rest. For more help, you can consult the user manual page. 
 
 ## Credits
 Special thanks to Thijs van Ede for his assistance.
