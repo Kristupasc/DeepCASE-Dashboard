@@ -54,10 +54,9 @@ app.layout = html.Div([
 
 
 if __name__ == '__main__':
-    # UNCOMMENT THESE LINES TO:
     # Set the logging level to ERROR to suppress INFO-level logs
-    # log = logging.getLogger('werkzeug')
-    # log.setLevel(logging.ERROR)
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
 
     app.run_server(host='0.0.0.0', port=8050)
 
