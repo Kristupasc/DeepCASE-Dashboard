@@ -1,9 +1,7 @@
 import os
 import dash
-
-
+import logging
 from server import app
-
 from dash import html, dcc
 
 GRAPH_INTERVAL = os.environ.get("GRAPH_INTERVAL", 5000)
@@ -56,6 +54,11 @@ app.layout = html.Div([
 
 
 if __name__ == '__main__':
+    # UNCOMMENT THESE LINES TO:
+    # Set the logging level to ERROR to suppress INFO-level logs
+    # log = logging.getLogger('werkzeug')
+    # log.setLevel(logging.ERROR)
+
     app.run_server(host='0.0.0.0', port=8050)
 
 
