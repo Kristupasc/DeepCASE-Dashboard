@@ -11,7 +11,7 @@ To facilitate easy setup and running of DeepCASE-Dashboard, Docker and `docker-c
 
 2. **Dockerfile & Docker-Compose File**: Ensure a `docker-compose.yml` and `Dockerfile` in the root directory of your project.
 
-This configuration uses the `python:3.8-slim` Docker image, mounts the current directory to `.` inside the container, sets the working directory, and specifies the command to run the dashboard. It also maps port 8050 of the container to port 8050 on the host, allowing you to access the dashboard via `http://localhost:8050`.
+This configuration uses the `python:3.9` Docker image, mounts the current directory to `.` inside the container, sets the working directory, and specifies the command to run the dashboard. It also maps port 8050 of the container to port 8050 on the host, allowing you to access the dashboard via `http://localhost:8050`.
 
 3. **Running the Container**: Navigate to the directory, which is the root directory, containing the `docker-compose.yml` file and run:
 
@@ -33,7 +33,4 @@ Follow the instructions displayed in the command line. The web interface will gu
 
 ## Credits
 Special thanks to Thijs van Ede for his assistance.
-
-## License
-I suggest we use one, git can add a fancy one.
 
