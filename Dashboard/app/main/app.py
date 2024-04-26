@@ -12,8 +12,6 @@ GRAPH_INTERVAL = os.environ.get("GRAPH_INTERVAL", 5000)
 #Define sidebar
 def sidebar(active_index):
     active = [False] * 5
-    # active[active_index] = True
-
     sidebar = html.Div( className = 'sidebar', children= [
             html.H1('DeepCASE', style={'textAlign': 'center', 'padding-bottom': 10}),
             html.Div([
@@ -42,8 +40,7 @@ def sidebar_button(link, text, active):
                 html.Div([text], className = 'sidebar-button-text'),
                 html.Img(className = 'sidebar-button-arrow', src=arrow),
             ],
-                # style=style.sidebar_button_style_active if active else style.sidebar_button_style_inactive
-            ),
+        ),
             href=link)
 
 
