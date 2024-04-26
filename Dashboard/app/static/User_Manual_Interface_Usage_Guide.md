@@ -33,7 +33,7 @@ To perform manual analysis, follow the steps below:
    - The table below would show the **Context of the Sequence** with corresponding **attentions**.
 4. In order to **Change Labels**:
    - Navigate to the desired sequence in the sequences table.
-   - Type the correct value in the **Risk Label** column and pres **Enter**.
+   - Type the correct value in the **Risk Label** column and press **Enter**.
 
 ## Semi-Automatic Analysis
 
