@@ -56,7 +56,8 @@ def update_selected_file(value : int, opened: bool)->(int, bool, str):
         load.switch_file(value)
         return None, not opened, "File is changed"
     if load.process_going_on:
-        return None, not opened, "Server is going on,\n\n please don't interrupted"
+        return None, not opened, ("The server is still working on something else,\n\n"
+                                  "please wait for the process to finish first")
     return None, opened, "File unchanged"
 
 
