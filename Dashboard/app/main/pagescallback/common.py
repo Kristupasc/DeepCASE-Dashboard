@@ -1,6 +1,7 @@
 import pandas as pd
 from Dashboard.app.main.recources.label_tools import choose_risk
 import Dashboard.app.main.recources.data_dao_combine as load
+from Dashboard.data.dao.dao import DAO
 
 
 # Function to store the selected cluster
@@ -149,5 +150,14 @@ def display_risk_cluster(cluster_id):
     """
     if cluster_id is None or not isinstance(cluster_id, int):
         return ""
-    cluster_risk_label = "Security Score: " + str(load.function_risk(cluster_id))
+    dao = DAO()
+    data = dao.get_sequences_per_cluster(cluster_id)
+    # if the cluster was just selected, we check for the label of the cluster
+    # set the risk label to the first sequence in the cluster
+    cluster_risk_label = "Security Score: " + str(choose_risk(data.iloc[0]["risk_label"]))
+    # iterate through the sequences and check if all have the same label
+    for sequence in data.to_dict('records'):
+        if sequence["risk_label"] != data.iloc[0]["risk_label"]:
+            cluster_risk_label = "Security Score: Suspicious"
+            break
     return cluster_risk_label
